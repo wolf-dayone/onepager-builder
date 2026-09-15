@@ -29,7 +29,7 @@ body{margin:0;font-family:var(--font);background:var(--color-bg);color:var(--col
 h1,h2,h3,p{margin:0}
 img{max-width:100%;display:block}
 
-.wrap{max-width:var(--grid-max);margin-inline:auto;padding-inline:var(--grid-margin)}
+.wrap{max-width:var(--grid-max);width:100%;margin-inline:auto;padding-inline:var(--grid-margin)}
 /* Asymmetrischer Sektionskopf: Headline links (7 Spalten), Intro rechts (420px) */
 .section-head{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:var(--space-24);
   align-items:end;margin-bottom:var(--space-20)}
@@ -241,14 +241,19 @@ footer.cta{padding-block:var(--space-20)}
 /* ==== Roadmap-Timeline ==== */
 .timeline{position:relative;padding-top:20px}
 .timeline::before{content:"";position:absolute;top:6px;left:2px;right:0;height:1px;background:var(--color-border)}
+/* Farbige Linie vom Start bis zum aktuellen Punkt — Breite wird per JS anhand der Position
+   von .is-current gesetzt (--timeline-progress), die Animation zieht sie beim Reveal auf. */
+.timeline-progress{content:"";position:absolute;top:6px;left:2px;height:1px;background:var(--red-500);
+  width:0;transition:width 1.1s var(--ease)}
 .timeline-track{display:flex}
 .timeline-item{flex:1;display:flex;flex-direction:column;gap:14px;padding-right:var(--space-8)}
-.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text)}
-.timeline-item.is-current .timeline-dot{background:var(--red-500)}
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text);position:relative}
+.timeline-item.is-current .timeline-dot{background:var(--red-500);box-shadow:0 0 0 5px rgba(255,84,76,.18)}
 .timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .timeline-item.is-current .timeline-date{color:var(--red-500)}
 .timeline-title{font-size:16px;font-weight:600}
 .timeline-tag{font-size:var(--text-body-s);color:var(--red-500)}
+@media(prefers-reduced-motion:reduce){.timeline-progress{transition:none}}
 
 /* ==== Matrix 2x2 ==== */
 .matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
@@ -419,6 +424,7 @@ footer.cta{padding-block:var(--space-20)}
     <p class="eyebrow">03 — Termine</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">Von der Unterschrift bis zum Einzug</h2>
     <div class="timeline">
+      <div class="timeline-progress"></div>
       <div class="timeline-track">
         <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">Juli 2026</span><span class="timeline-title">Mietvertrag unterschrieben</span></div>
@@ -627,7 +633,33 @@ footer.cta{padding-block:var(--space-20)}
     counters.forEach(function (el) { el.textContent = el.dataset.countTo; });
   }
 
-  /* ---- 7) Karussell ---- */
+  /* ---- 7) Roadmap-Timeline: farbige Linie bis zum aktuellen Punkt ----
+     Breite = Position des .is-current-Punkts im Track (Dots sitzen am linken Rand
+     jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
+     Zielbreite animieren (transition auf .timeline-progress erledigt das optisch),
+     damit die Linie sich sichtbar "auffüllt" statt einfach dazustehen. */
+  document.querySelectorAll(".timeline").forEach(function (tl) {
+    var items = tl.querySelectorAll(".timeline-item");
+    var progress = tl.querySelector(".timeline-progress");
+    if (!items.length || !progress) return;
+    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
+      return it.classList.contains("is-current");
+    });
+    if (currentIndex < 0) return; // kein aktueller Punkt markiert -> keine Linie zeichnen
+    var targetPct = (currentIndex / items.length) * 100 + "%";
+    if (reduce) { progress.style.width = targetPct; return; }
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { progress.style.width = targetPct; obs.unobserve(e.target); }
+        });
+      }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 }).observe(tl);
+    } else {
+      progress.style.width = targetPct;
+    }
+  });
+
+  /* ---- 8) Karussell ---- */
   document.querySelectorAll("[data-carousel]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var track = document.getElementById(btn.dataset.carousel);
