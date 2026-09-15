@@ -10,8 +10,8 @@
 --gray-900:#1a1a1a;--gray-500:#333;--gray-400:#666;--gray-300:#999;--gray-200:#ccc;--gray-100:#f1f1f1;--gray-50:#fff;
 --sand-900:#544e47;--sand-600:#9e9a94;--sand-400:#c9c1b5;--sand-200:#ede7dd;--sand-100:#f7f3eb;
 --blue-3:#1487dd;--red-500:#ff544c;--red-300:#ff8580;
---color-main-text:var(--gray-900);--color-text:var(--sand-900);--color-bg:var(--sand-100);
---color-surface:var(--gray-50);--color-detail:var(--sand-200);--color-border:var(--gray-200);
+--color-main-text:var(--gray-900);--color-text:var(--sand-900);--color-bg:var(--sand-100);--color-muted:var(--gray-400);
+--color-detail:var(--sand-200);--color-border:var(--gray-200);
 --color-dark-bg:var(--gray-900);--color-dark-text:var(--gray-50);--color-dark-text-soft:var(--gray-300);--color-dark-border:var(--gray-500);
 --font:"Roobert","Inter",system-ui,-apple-system,sans-serif;
 --text-display-1:76px;--text-display-2:36px;--text-display-3:24px;
@@ -35,19 +35,22 @@ img{max-width:100%;display:block}
   align-items:end;margin-bottom:var(--space-20)}
 .section-head .intro{color:var(--color-text);font-size:var(--text-body-l);line-height:1.4}
 @media(max-width:900px){.section-head{grid-template-columns:1fr;gap:var(--space-6);align-items:start}}
-section{padding-block:var(--space-30)}
+section{padding-block:var(--space-30);min-height:100svh;display:flex;flex-direction:column;justify-content:center}
 footer.cta{padding-block:var(--space-20)}
-.dark{background:var(--color-dark-bg);color:var(--color-dark-text)}
-.dark .lead,.dark .muted{color:var(--color-dark-text-soft)}
+.dark{background:var(--color-dark-bg);color:var(--color-dark-text);
+  --color-main-text:var(--color-dark-text);
+  --color-text:var(--color-dark-text-soft);
+  --color-border:var(--color-dark-border);
+  --color-detail:var(--gray-500);
+  --color-muted:var(--color-dark-text-soft)}
 
 /* ==== Kapitelmarker (Eyebrow) ==== */
 /* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */
 .eyebrow{display:flex;flex-direction:column;align-items:flex-start;gap:14px;
-  font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--gray-400);margin-bottom:var(--space-6)}
+  font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-muted);margin-bottom:var(--space-6)}
 .eyebrow::after{content:"";width:68px;height:1px;background:currentColor;flex:none}
 /* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
 .eyebrow.is-centered{align-items:center;text-align:center}
-.dark .eyebrow{color:var(--color-dark-text-soft)}
 [data-chapter-marker="off"] .eyebrow{display:none}
 
 /* ==== Typo-Rollen ==== */
@@ -133,8 +136,8 @@ footer.cta{padding-block:var(--space-20)}
 .card{display:flex;flex-direction:column;gap:var(--space-4);
   border-top:1px solid var(--color-main-text);padding-top:28px;padding-bottom:var(--space-8)}
 .card.is-selected{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-8)}
-.card .label{font-size:var(--text-body-s);color:var(--gray-400)}
-.card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--gray-400)}
+.card .label{font-size:var(--text-body-s);color:var(--color-muted)}
+.card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--color-muted)}
 .card.is-selected .tag{color:var(--color-main-text)}
 .card .num{font-size:var(--text-display-1);font-weight:600;color:var(--color-text);line-height:1}
 /* Titel + Text gehören laut Figma als eine Gruppe zusammen (kleiner Abstand dazwischen);
@@ -153,10 +156,10 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Kennzahlen (dunkel) ==== */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0}
-.stat{border-top:1px solid rgba(255,255,255,.35);padding-top:28px;padding-right:var(--space-8)}
+.stat{border-top:1px solid var(--color-border);padding-top:28px;padding-right:var(--space-8)}
 .stat .value{font-size:var(--text-display-1);font-weight:600;line-height:1}
 .stat .label{margin-top:var(--space-4);font-size:16px;font-weight:600}
-.stat .note{margin-top:8px;font-size:var(--text-body-s);color:var(--color-dark-text-soft)}
+.stat .note{margin-top:8px;font-size:var(--text-body-s);color:var(--color-text)}
 
 /* ==== Zitat ==== */
 .quote{background:var(--color-detail);text-align:center}
@@ -189,17 +192,17 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Großbild (randabfallend) ==== */
 .fullbleed{width:100%;aspect-ratio:16/9;background:var(--color-detail);
-  display:grid;place-items:center;color:var(--gray-400);font-size:var(--text-body-s)}
+  display:grid;place-items:center;color:var(--color-muted);font-size:var(--text-body-s)}
 .fullbleed img{width:100%;height:100%;object-fit:cover;display:block}
 .caption{display:flex;gap:var(--space-12);justify-content:space-between;align-items:start;
   margin-top:var(--space-12)}
 .caption p{font-size:var(--text-body-l);line-height:1.4;color:var(--color-text);margin:0}
-.caption .credit{font-size:var(--text-body-s);color:var(--gray-400);white-space:nowrap}
+.caption .credit{font-size:var(--text-body-s);color:var(--color-muted);white-space:nowrap}
 @media(max-width:700px){.caption{flex-direction:column;gap:var(--space-4)}}
 
 /* ==== Hairline-Tabelle ==== */
 .table{width:100%;border-collapse:collapse}
-.table th{text-align:left;font-size:var(--text-body-s);font-weight:600;color:var(--gray-400);
+.table th{text-align:left;font-size:var(--text-body-s);font-weight:600;color:var(--color-muted);
   padding-bottom:var(--space-4);border-bottom:1px solid var(--color-main-text)}
 .table td{padding-block:20px;border-bottom:1px solid var(--color-border);
   font-size:var(--text-body-m);color:var(--color-text)}
@@ -209,7 +212,8 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Agenda ==== */
 /* Eigene weiße/helle Kartenfläche (--card-background in Figma), NICHT der Sand-Seitenhintergrund. */
-.agenda{background:var(--color-surface)}
+/* Kein eigener Hintergrund mehr — Agenda nutzt normales Sand/100 wie jedes andere
+   Modul (siehe Kommentar im Markup), dadurch per .dark umschaltbar wie alle anderen. */
 .agenda-list{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-16) var(--space-24)}
 .agenda-item{display:flex;gap:var(--space-6);align-items:flex-start}
 .agenda-item .num{font-size:var(--text-body-l);color:var(--color-text);flex:none}
@@ -236,7 +240,7 @@ footer.cta{padding-block:var(--space-20)}
 .timeline-item{flex:1;display:flex;flex-direction:column;gap:14px;padding-right:var(--space-8)}
 .timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text)}
 .timeline-item.is-current .timeline-dot{background:var(--red-500)}
-.timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--gray-400)}
+.timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-muted)}
 .timeline-item.is-current .timeline-date{color:var(--red-500)}
 .timeline-title{font-size:16px;font-weight:600}
 .timeline-tag{font-size:var(--text-body-s);color:var(--red-500)}
@@ -244,14 +248,14 @@ footer.cta{padding-block:var(--space-20)}
 /* ==== Matrix 2x2 ==== */
 .matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
 .matrix-axis-y{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;
-  font-size:var(--text-body-s);font-weight:600;color:var(--gray-400);letter-spacing:.08em;
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-muted);letter-spacing:.08em;
   text-transform:uppercase;display:flex;align-items:center;justify-content:center}
 .matrix-main{display:flex;flex-direction:column;gap:var(--space-8)}
 .matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
 .matrix-quadrant{background:var(--color-detail);padding:var(--space-8);border-radius:var(--radius-card);
   display:flex;flex-direction:column;gap:12px;min-height:130px}
 .matrix-quadrant h3{font-size:var(--text-display-3);font-weight:600}
-.matrix-axis-x{text-align:center;font-size:var(--text-body-s);font-weight:600;color:var(--gray-400);
+.matrix-axis-x{text-align:center;font-size:var(--text-body-s);font-weight:600;color:var(--color-muted);
   letter-spacing:.08em;text-transform:uppercase}
 @media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
   .matrix-axis-y{writing-mode:horizontal-tb;transform:none}}
@@ -276,7 +280,7 @@ footer.cta{padding-block:var(--space-20)}
 @media(max-width:900px){.facts{flex-direction:column;align-items:stretch}.facts-image{width:100%}}
 
 /* ==== Reveal on scroll ==== */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
@@ -566,7 +570,7 @@ footer.cta{padding-block:var(--space-20)}
   fitNav();
 
   /* ---- 5) Reveal: pro Sektion gestaffelt, Hero sofort beim Laden ---- */
-  var STAGGER_MS = 90, STAGGER_MAX_MS = 480;
+  var STAGGER_MS = 150, STAGGER_MAX_MS = 720;
   function stageReveal(container) {
     var items = container.classList && container.classList.contains("reveal")
       ? [container] : container.querySelectorAll(".reveal");
@@ -589,7 +593,7 @@ footer.cta{padding-block:var(--space-20)}
       entries.forEach(function (e) {
         if (e.isIntersecting) { stageReveal(e.target); revObs.unobserve(e.target); }
       });
-    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
     revealSections.forEach(function (s) { revObs.observe(s); });
   }
 
