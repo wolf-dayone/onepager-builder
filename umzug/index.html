@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>[TITEL] — DAYONE</title>
+<title>Neuer Standort — DAYONE</title>
 <style>
 /* ==== TOKENS (identisch zu assets/tokens.css) ==== */
 :root{
@@ -310,237 +310,150 @@ footer.cta{padding-block:var(--space-20)}
     <a class="brand-group" href="#hero" aria-label="Zum Seitenanfang">
       <svg class="logo-mark logo-mark-full" width="92" height="16" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
       <svg class="logo-mark logo-mark-icon" width="16" height="16" aria-label="DAYONE"><use href="#dayone-mark"></use></svg>
-      <span class="nav-title">[Präsentations-Titel]</span>
+      <span class="nav-title">Neuer Standort</span>
     </a>
-    <ol>
-      <!-- wird aus den <section data-chapter> automatisch erzeugt -->
-    </ol>
+    <ol></ol>
   </div>
 </nav>
 
 <!-- ============ HERO ============ -->
-<!-- .dark auf dem äußeren <header> (volle Breite), Inhalt in .wrap darunter (auf
-     --grid-max begrenzt) — siehe Kommentar bei den Hero-Styles im <style>-Block. -->
 <header class="hero dark" id="hero">
   <div class="wrap">
     <div class="top">
       <svg class="logo-mark" width="150" height="27"><use href="#dayone-logo"></use></svg>
-      <div class="badges">
-        <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
-        <span class="badge">[ANLASS – KW 00]</span>
-      </div>
+      <div class="badges"><span class="badge">WEEKLY – KW 39</span></div>
     </div>
-
     <div>
-      <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
-      <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
+      <h1 class="h1">Neuer Standort<span class="line2">Wo DAYONE ab März arbeitet</span></h1>
+      <p class="lead sub">Nach zwölf Jahren am Prenzlauer Berg zieht DAYONE im März in ein neues Büro am Gleisdreieck — hier ist alles, was ihr dazu wissen müsst.</p>
     </div>
-
     <div>
       <div class="rule"></div>
       <dl class="meta">
-        <div><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
-        <div><dt>Presenter</dt><dd>[Vorname &amp; Vorname]</dd></div>
-        <div><dt>Format</dt><dd>[DAYONE Weekly]</dd></div>
+        <div><dt>Datum</dt><dd>Montag, 22. September 2026</dd></div>
+        <div><dt>Presenter</dt><dd>Facility &amp; People Team</dd></div>
+        <div><dt>Format</dt><dd>DAYONE Weekly</dd></div>
       </dl>
     </div>
   </div>
 </header>
 
-<!-- ============ KAPITEL 01 — Sticky-Nummernliste ============ -->
-<section id="kapitel-01" data-chapter="01" data-chapter-title="[Ausgangslage]">
-  <div class="wrap sticky-list">
-    <div class="left reveal">
-      <p class="eyebrow">01 — [Ausgangslage]</p>
-      <h2 class="h1">[Die Leitfrage dieses Kapitels]</h2>
-      <p class="lead" style="margin-top:var(--space-6)">[Zwei bis vier Sätze Kontext.]</p>
-    </div>
-    <div class="right">
-      <div class="item reveal"><span class="num">01</span>
-        <div><h3 class="h3">[Erster Punkt als Aussage]</h3>
-        <p class="body" style="margin-top:12px">[Zwei bis vier Sätze.]</p></div></div>
-      <div class="item reveal"><span class="num">02</span>
-        <div><h3 class="h3">[Zweiter Punkt als Aussage]</h3>
-        <p class="body" style="margin-top:12px">[Zwei bis vier Sätze.]</p></div></div>
-      <div class="item reveal"><span class="num">03</span>
-        <div><h3 class="h3">[Dritter Punkt als Aussage]</h3>
-        <p class="body" style="margin-top:12px">[Zwei bis vier Sätze.]</p></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ DIVIDER (section-divider) ============ -->
-<!-- NUR verwenden, wenn im folgenden Kapitel viel Content kommt und es eine kurze
-     Vorwarnung/Einordnung braucht. Reicht der direkte Einstieg, diese Sektion komplett
-     weglassen und data-chapter/data-chapter-title/id sowie den Eyebrow stattdessen auf
-     die nächste Sektion setzen (z. B. auf das Karten-3er/Kartenraster darunter). -->
-<section class="divider dark" data-chapter="02" data-chapter-title="[Kapitelname]" id="kapitel-02">
-  <div class="wrap reveal">
-    <p class="eyebrow is-centered">02 — [Kapitelname]</p>
-    <h2 class="h2">[Kapitelname]</h2>
-  </div>
-</section>
-
-<!-- ============ KARTEN-3ER ============ -->
-<!-- Kein eigener Eyebrow hier: der Divider direkt darüber trägt bereits den
-     Kapitelmarker für dieses Kapitel — pro Kapitel bekommt nur die erste Sektion den
-     Marker. Wird der Divider weggelassen, gehören Eyebrow + data-chapter hierher. -->
-<section>
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <h2 class="h1">[Wie gehen wir vor?]</h2>
-      </div>
-      <p class="intro">[Ein Satz Einordnung — steht rechts neben der Headline.]</p>
-    </div>
-    <div class="cards">
-      <div class="card reveal"><span class="label">[Option A]</span><h3 class="h3">[Titel]</h3>
-        <p class="body">[2–3 Sätze.]</p><span class="tag">[Status]</span></div>
-      <!-- is-selected = die gewählte Option, trägt als einzige Fläche -->
-      <div class="card is-selected reveal"><span class="label">[Option B]</span><h3 class="h3">[Titel]</h3>
-        <p class="body">[2–3 Sätze.]</p><span class="tag">[Gewählt]</span></div>
-      <div class="card reveal"><span class="label">[Option C]</span><h3 class="h3">[Titel]</h3>
-        <p class="body">[2–3 Sätze.]</p><span class="tag">[Nicht evaluiert]</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ KENNZAHLEN (count-up) ============ -->
-<section class="dark" data-chapter="03" data-chapter-title="[Ergebnis]" id="kapitel-03">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div>
-        <p class="eyebrow">05 — [Bilanz]</p>
-        <h2 class="h1">[Das Projekt in Zahlen]</h2>
-      </div>
-    </div>
-    <div class="stats">
-      <div class="stat reveal"><div class="value" data-count-to="34">0</div>
-        <div class="label">[Projekttage]</div><div class="note">[Kurze Einordnung.]</div></div>
-      <div class="stat reveal"><div class="value" data-count-to="21">0</div>
-        <div class="label">[Tage/Jahr gespart]</div><div class="note">[Kurze Einordnung.]</div></div>
-      <div class="stat reveal"><div class="value" data-count-to="9">0</div>
-        <div class="label">[Aktive Nutzer:innen]</div><div class="note">[Kurze Einordnung.]</div></div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ AGENDA ============ -->
-<!-- Eigene helle Kartenfläche (.agenda), kein data-chapter — steht meist direkt nach dem
-     Hero, bevor die Kapitel-Nav den Trigger wechselt (siehe fitNav-Trigger im Script:
-     sucht zuerst #agenda). Nur bei längeren Onepagern (>6 Kapitel) nötig. -->
 <section class="agenda" id="agenda">
   <div class="wrap">
     <h2 class="h2" style="margin-bottom:var(--space-12)">Agenda</h2>
     <div class="agenda-list">
       <div class="agenda-item"><span class="num">01</span>
-        <div><h3>[Agendapunkt 1]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+        <div><h3>Warum wir umziehen</h3><p>Was am alten Standort nicht mehr funktioniert hat.</p></div></div>
       <div class="agenda-item"><span class="num">02</span>
-        <div><h3>[Agendapunkt 2]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+        <div><h3>Wie der Ablauf aussieht</h3><p>Wer macht was, und wann.</p></div></div>
       <div class="agenda-item"><span class="num">03</span>
-        <div><h3>[Agendapunkt 3]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+        <div><h3>Die wichtigsten Termine</h3><p>Von der Vertragsunterschrift bis zum Einzug.</p></div></div>
       <div class="agenda-item"><span class="num">04</span>
-        <div><h3>[Agendapunkt 4]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+        <div><h3>Was sich für euch ändert</h3><p>Altes vs. neues Büro im Vergleich.</p></div></div>
     </div>
   </div>
 </section>
 
-<!-- ============ PROZESS-SCHRITTE (mit Rollen) ============ -->
-<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]">
+<!-- ============ KAPITEL 01 — Matrix 2x2 ============ -->
+<section data-chapter="01" data-chapter-title="Auswahl" id="kapitel-01">
   <div class="wrap">
-    <p class="eyebrow">[NN] — [Vorgehen]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
+    <p class="eyebrow">01 — Auswahl</p>
+    <h2 class="h1" style="margin-bottom:var(--space-12)">Wonach wir gesucht haben</h2>
+    <div class="matrix-wrap">
+      <div class="matrix-axis-y">Teamnähe</div>
+      <div class="matrix-main">
+        <div class="matrix-grid">
+          <div class="matrix-quadrant"><h3>Ideal</h3><p class="body">Zentral, gut erreichbar, genug Fläche für Wachstum — das Gleisdreieck-Büro.</p></div>
+          <div class="matrix-quadrant"><h3>Kompromiss A</h3><p class="body">Sehr zentral, aber zu klein für die nächsten zwei Jahre — verworfen.</p></div>
+          <div class="matrix-quadrant"><h3>Kompromiss B</h3><p class="body">Viel Fläche, aber 20 Minuten weiter draußen — im Rennen bis zur letzten Runde.</p></div>
+          <div class="matrix-quadrant"><h3>Verworfen</h3><p class="body">Günstig, aber ohne Anbindung an Tram oder S-Bahn — für ein Team, das pendelt, keine Option.</p></div>
+        </div>
+        <div class="matrix-axis-x">Erreichbarkeit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KAPITEL 02 — Prozess-Schritte ============ -->
+<section data-chapter="02" data-chapter-title="Ablauf" id="kapitel-02">
+  <div class="wrap">
+    <p class="eyebrow">02 — Ablauf</p>
+    <h2 class="h1" style="margin-bottom:var(--space-12)">So läuft der Umzug ab</h2>
     <div class="process-steps">
       <div class="process-step"><span class="num">01</span>
-        <div class="process-step-body"><h3>[Erster Schritt]</h3>
+        <div class="process-step-body"><h3>Vorbereitung (Oktober–Februar)</h3>
           <div class="process-roles">
-            <div class="process-role"><p class="role-name">[Rolle A]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
-            <div class="process-role"><p class="role-name">[Rolle B]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
+            <div class="process-role"><p class="role-name">Facility-Team</p><p>Kümmert sich um Umzugsfirma, Möbel und Netzwerk-Aufbau im neuen Büro.</p></div>
+            <div class="process-role"><p class="role-name">Mitarbeitende</p><p>Packen Persönliches in die bereitgestellten Kisten, alles andere bleibt stehen.</p></div>
           </div></div></div>
       <div class="process-step"><span class="num">02</span>
-        <div class="process-step-body"><h3>[Zweiter Schritt]</h3>
+        <div class="process-step-body"><h3>Umzugswoche (2.–6. März)</h3>
           <div class="process-roles">
-            <div class="process-role"><p class="role-name">[Rolle A]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
-            <div class="process-role"><p class="role-name">[Rolle B]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
+            <div class="process-role"><p class="role-name">Facility-Team</p><p>Koordiniert den Transport, Aufbau und die IT-Inbetriebnahme vor Ort.</p></div>
+            <div class="process-role"><p class="role-name">Mitarbeitende</p><p>Arbeiten remote — Zugang zum Altbüro ist ab Mittwoch nicht mehr möglich.</p></div>
           </div></div></div>
       <div class="process-step"><span class="num">03</span>
-        <div class="process-step-body"><h3>[Dritter Schritt]</h3>
+        <div class="process-step-body"><h3>Ankommen (ab 9. März)</h3>
           <div class="process-roles">
-            <div class="process-role"><p class="role-name">[Rolle A]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
-            <div class="process-role"><p class="role-name">[Rolle B]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
+            <div class="process-role"><p class="role-name">Facility-Team</p><p>Steht die ersten zwei Wochen durchgehend vor Ort für Fragen bereit.</p></div>
+            <div class="process-role"><p class="role-name">Mitarbeitende</p><p>Suchen sich einen festen Platz aus — Desksharing gibt's im neuen Büro nicht mehr.</p></div>
           </div></div></div>
     </div>
   </div>
 </section>
 
-<!-- ============ ROADMAP-TIMELINE ============ -->
-<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]b">
+<!-- ============ KAPITEL 03 — Roadmap-Timeline ============ -->
+<section data-chapter="03" data-chapter-title="Termine" id="kapitel-03">
   <div class="wrap">
-    <p class="eyebrow">[NN] — [Timeline]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
+    <p class="eyebrow">03 — Termine</p>
+    <h2 class="h1" style="margin-bottom:var(--space-20)">Von der Unterschrift bis zum Einzug</h2>
     <div class="timeline">
       <div class="timeline-track">
         <div class="timeline-item"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 1]</span><span class="timeline-title">[Meilenstein 1]</span></div>
+          <span class="timeline-date">Juli 2026</span><span class="timeline-title">Mietvertrag unterschrieben</span></div>
         <div class="timeline-item"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 2]</span><span class="timeline-title">[Meilenstein 2]</span></div>
+          <span class="timeline-date">Dez 2026</span><span class="timeline-title">Umbau abgeschlossen</span></div>
         <div class="timeline-item is-current"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 3]</span><span class="timeline-title">[Meilenstein 3]</span>
+          <span class="timeline-date">Jetzt</span><span class="timeline-title">Vorbereitung läuft</span>
           <span class="timeline-tag">Aktuell</span></div>
         <div class="timeline-item"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 4]</span><span class="timeline-title">[Meilenstein 4]</span></div>
+          <span class="timeline-date">2.–6. März</span><span class="timeline-title">Umzugswoche</span></div>
+        <div class="timeline-item"><span class="timeline-dot"></span>
+          <span class="timeline-date">30. April</span><span class="timeline-title">Altvertrag endet</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ MATRIX 2X2 ============ -->
-<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]c">
-  <div class="wrap">
-    <p class="eyebrow">[NN] — [Einordnung]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
-    <div class="matrix-wrap">
-      <div class="matrix-axis-y">[ACHSE Y]</div>
-      <div class="matrix-main">
-        <div class="matrix-grid">
-          <div class="matrix-quadrant"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-        </div>
-        <div class="matrix-axis-x">[ACHSE X]</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TABELLE ============ -->
-<!-- Nutzt die schon vorhandenen .table-Styles — bisher gab es dafür nur CSS, kein Markup. -->
-<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]d">
+<!-- ============ KAPITEL 04 — Tabelle ============ -->
+<section data-chapter="04" data-chapter-title="Vergleich" id="kapitel-04">
   <div class="wrap table-scroll">
-    <p class="eyebrow">[NN] — [Übersicht]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-16)">[Tabellentitel]</h2>
+    <p class="eyebrow">04 — Vergleich</p>
+    <h2 class="h1" style="margin-bottom:var(--space-16)">Altes vs. neues Büro</h2>
     <table class="table">
-      <thead><tr><th>[Spalte A]</th><th>[Spalte B]</th><th>[Spalte C]</th><th>[Spalte D]</th></tr></thead>
+      <thead><tr><th>Merkmal</th><th>Prenzlauer Berg</th><th>Gleisdreieck</th><th>Veränderung</th></tr></thead>
       <tbody>
-        <tr><td>[Zeile 1]</td><td>[Wert]</td><td>[Wert]</td><td>[Wert]</td></tr>
-        <tr><td>[Zeile 2]</td><td>[Wert]</td><td>[Wert]</td><td>[Wert]</td></tr>
-        <tr><td>[Zeile 3]</td><td>[Wert]</td><td>[Wert]</td><td>[Wert]</td></tr>
+        <tr><td>Fläche</td><td>420 m²</td><td>680 m²</td><td class="num">+62 %</td></tr>
+        <tr><td>Arbeitsplätze</td><td>38 (Desksharing)</td><td>55 (fest)</td><td class="num">+45 %</td></tr>
+        <tr><td>Meetingräume</td><td>3</td><td>7</td><td class="num">+4</td></tr>
+        <tr><td>Nächste S-Bahn</td><td>9 Min. Fußweg</td><td>3 Min. Fußweg</td><td class="num">−6 Min.</td></tr>
+        <tr><td>Dachterrasse</td><td>Nein</td><td>Ja</td><td class="num">neu</td></tr>
       </tbody>
     </table>
   </div>
 </section>
 
-<!-- ============ TEAM-GRID ============ -->
-<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]e">
+<!-- ============ KAPITEL 05 — Team-Grid ============ -->
+<section data-chapter="05" data-chapter-title="Ansprechpartner" id="kapitel-05">
   <div class="wrap">
-    <p class="eyebrow">[NN] — [Team]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
+    <p class="eyebrow">05 — Ansprechpartner</p>
+    <h2 class="h1" style="margin-bottom:var(--space-20)">Wer euch bei Fragen weiterhilft</h2>
     <div class="team-grid">
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member"><div class="team-avatar">JM</div><p class="name">Jonas M.</p><p class="role">Facility &amp; Umzugslogistik</p></div>
+      <div class="team-member"><div class="team-avatar">SK</div><p class="name">Sara K.</p><p class="role">IT &amp; Netzwerk vor Ort</p></div>
+      <div class="team-member"><div class="team-avatar">TW</div><p class="name">Tom W.</p><p class="role">People &amp; Culture</p></div>
+      <div class="team-member"><div class="team-avatar">LP</div><p class="name">Lea P.</p><p class="role">Büroausstattung &amp; Möbel</p></div>
     </div>
   </div>
 </section>
@@ -549,12 +462,12 @@ footer.cta{padding-block:var(--space-20)}
 <section>
   <div class="wrap">
     <div class="facts">
-      <div class="facts-image">[Bild]</div>
+      <div class="facts-image">Bild: Neues Büro am Gleisdreieck</div>
       <dl class="facts-list">
-        <div><dt>[Kennzahl A]</dt><dd>[Wert]</dd></div>
-        <div><dt>[Kennzahl B]</dt><dd>[Wert]</dd></div>
-        <div><dt>[Kennzahl C]</dt><dd>[Wert]</dd></div>
-        <div><dt>[Kennzahl D]</dt><dd>[Wert]</dd></div>
+        <div><dt>Adresse</dt><dd>Gleisdreieckpark 4, 10963 Berlin</dd></div>
+        <div><dt>Verfügbar ab</dt><dd>9. März 2026</dd></div>
+        <div><dt>Fläche</dt><dd>680 m² über zwei Etagen</dd></div>
+        <div><dt>Arbeitsplätze</dt><dd>55 feste Plätze</dd></div>
       </dl>
     </div>
   </div>
@@ -563,48 +476,19 @@ footer.cta{padding-block:var(--space-20)}
 <!-- ============ ZITAT ============ -->
 <section class="quote">
   <div class="wrap reveal">
-    <blockquote>„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</blockquote>
-    <cite>[Name Nachname, Rolle]</cite>
-  </div>
-</section>
-
-<!-- ============ KARTEN-KARUSSELL ============ -->
-<!-- Generisches Modul für nummerierte Textinhalte, nicht nur für Abschluss-Takeaways —
-     kann auch mitten im Content-Teil stehen. .carousel-shell begrenzt den Track auf
-     --grid-max, damit die erste Karte im Ausgangszustand am linken Grid-Rand startet
-     statt am nackten Viewport-Rand. -->
-<section data-chapter="04" data-chapter-title="[Kapitelname]" id="kapitel-04" style="padding-inline:0">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <div><p class="eyebrow">04 — [Kapitelname]</p><h2 class="h1">[Was wir euch mitgeben]</h2></div>
-    </div>
-  </div>
-  <div class="carousel-shell">
-    <div class="carousel" id="karten-karussell">
-      <div class="card"><span class="num">01</span>
-        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
-      <div class="card"><span class="num">02</span>
-        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
-      <div class="card"><span class="num">03</span>
-        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
-      <div class="card"><span class="num">04</span>
-        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
-    </div>
-  </div>
-  <div class="wrap carousel-controls">
-    <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">‹</button>
-    <button type="button" data-carousel="karten-karussell" data-dir="1" aria-label="Weiter">›</button>
+    <blockquote>„Ich hab erst gedacht, ein Umzug im März ist ein schlechter Scherz. Jetzt freu ich mich mehr auf die Dachterrasse als auf mein neues Notebook.“</blockquote>
+    <cite>Anonyme Stimme aus dem Slack-Channel #umzug</cite>
   </div>
 </section>
 
 <!-- ============ CTA-FOOTER ============ -->
 <footer class="cta dark">
   <div class="wrap">
-    <h2 class="h2 reveal">[Check it out.]</h2>
-    <p class="lead reveal" style="margin-top:var(--space-4)">[Ein Satz Aufforderung.]</p>
+    <h2 class="h2 reveal">Fragen zum Umzug?</h2>
+    <p class="lead reveal" style="margin-top:var(--space-4)">Der komplette Umzugsplan mit FAQ steht im internen Wiki.</p>
     <div class="actions reveal">
-      <a class="btn btn-primary" href="[URL]">[Zum Tool] <span aria-hidden="true">→</span></a>
-      <a class="btn btn-secondary" href="[URL]">[Feedback] <span aria-hidden="true">→</span></a>
+      <a class="btn btn-primary" href="#">Zum Umzugsplan <span aria-hidden="true">→</span></a>
+      <a class="btn btn-secondary" href="#">Frage im #umzug-Channel stellen <span aria-hidden="true">→</span></a>
     </div>
     <div class="footer-row">
       <svg class="logo-mark" width="92" height="16" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
