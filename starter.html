@@ -40,7 +40,11 @@ img{max-width:100%;display:block}
    zentriert den Inhalt, SOLANGE er kürzer als der verfügbare Raum ist — sobald er das
    Padding oben/unten erreicht, gibt es keinen Raum zum Zentrieren mehr, die Sektion
    wächst einfach mit normalem Fluss weiter. */
-section{padding-block:var(--space-30);min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+/* Jede Section/CTA-Footer mind. eine Viewport-Hoehe, Padding zaehlt mit (box-sizing:border-box) -
+   hoeher ist erlaubt, niedriger nicht. Nicht mit eigener kleinerer min-height ueberschreiben
+   (das war frueher beim Divider der Fall, siehe dort). */
+section,footer.cta{min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+section{padding-block:var(--space-30)}
 footer.cta{padding-block:var(--space-20)}
 /* .dark schaltet nicht nur Hintergrund/Grundschrift um, sondern die komplette
    semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche) — dadurch braucht
@@ -58,7 +62,7 @@ footer.cta{padding-block:var(--space-20)}
 /* ==== Kapitelmarker (Eyebrow) ==== */
 /* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */
 .eyebrow{display:flex;flex-direction:column;align-items:flex-start;gap:14px;
-  font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-muted);margin-bottom:var(--space-6)}
+  font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text);margin-bottom:var(--space-6)}
 .eyebrow::after{content:"";width:68px;height:1px;background:currentColor;flex:none}
 /* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
 .eyebrow.is-centered{align-items:center;text-align:center}
@@ -135,7 +139,8 @@ footer.cta{padding-block:var(--space-20)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
 
 /* ==== Divider ==== */
-.divider{min-height:60svh;display:flex;align-items:center;justify-content:center;text-align:center}
+/* Kein eigenes min-height mehr (frueher 60svh) - erbt die globale Section-Mindesthoehe (100svh). */
+.divider{display:flex;align-items:center;justify-content:center;text-align:center}
 
 /* ==== Sticky-Nummernliste ==== */
 .sticky-list{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-24);align-items:start}
@@ -151,8 +156,8 @@ footer.cta{padding-block:var(--space-20)}
 .card{display:flex;flex-direction:column;gap:var(--space-4);
   border-top:1px solid var(--color-main-text);padding-top:28px;padding-bottom:var(--space-8)}
 .card.is-selected{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-8)}
-.card .label{font-size:var(--text-body-s);color:var(--color-muted)}
-.card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--color-muted)}
+.card .label{font-size:var(--text-body-s);color:var(--color-text)}
+.card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .card.is-selected .tag{color:var(--color-main-text)}
 .card .num{font-size:var(--text-display-1);font-weight:600;color:var(--color-text);line-height:1}
 /* Titel + Text gehören laut Figma als eine Gruppe zusammen (kleiner Abstand dazwischen);
@@ -212,12 +217,12 @@ footer.cta{padding-block:var(--space-20)}
 .caption{display:flex;gap:var(--space-12);justify-content:space-between;align-items:start;
   margin-top:var(--space-12)}
 .caption p{font-size:var(--text-body-l);line-height:1.4;color:var(--color-text);margin:0}
-.caption .credit{font-size:var(--text-body-s);color:var(--color-muted);white-space:nowrap}
+.caption .credit{font-size:var(--text-body-s);color:var(--color-text);white-space:nowrap}
 @media(max-width:700px){.caption{flex-direction:column;gap:var(--space-4)}}
 
 /* ==== Hairline-Tabelle ==== */
 .table{width:100%;border-collapse:collapse}
-.table th{text-align:left;font-size:var(--text-body-s);font-weight:600;color:var(--color-muted);
+.table th{text-align:left;font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
   padding-bottom:var(--space-4);border-bottom:1px solid var(--color-main-text)}
 .table td{padding-block:20px;border-bottom:1px solid var(--color-border);
   font-size:var(--text-body-m);color:var(--color-text)}
@@ -256,7 +261,7 @@ footer.cta{padding-block:var(--space-20)}
 .timeline-item{flex:1;display:flex;flex-direction:column;gap:14px;padding-right:var(--space-8)}
 .timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text)}
 .timeline-item.is-current .timeline-dot{background:var(--red-500)}
-.timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-muted)}
+.timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .timeline-item.is-current .timeline-date{color:var(--red-500)}
 .timeline-title{font-size:16px;font-weight:600}
 .timeline-tag{font-size:var(--text-body-s);color:var(--red-500)}
@@ -264,14 +269,14 @@ footer.cta{padding-block:var(--space-20)}
 /* ==== Matrix 2x2 ==== */
 .matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
 .matrix-axis-y{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-muted);letter-spacing:.08em;
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);letter-spacing:.08em;
   text-transform:uppercase;display:flex;align-items:center;justify-content:center}
 .matrix-main{display:flex;flex-direction:column;gap:var(--space-8)}
 .matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
 .matrix-quadrant{background:var(--color-detail);padding:var(--space-8);border-radius:var(--radius-card);
   display:flex;flex-direction:column;gap:12px;min-height:130px}
 .matrix-quadrant h3{font-size:var(--text-display-3);font-weight:600}
-.matrix-axis-x{text-align:center;font-size:var(--text-body-s);font-weight:600;color:var(--color-muted);
+.matrix-axis-x{text-align:center;font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
   letter-spacing:.08em;text-transform:uppercase}
 @media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
   .matrix-axis-y{writing-mode:horizontal-tb;transform:none}}
@@ -296,7 +301,7 @@ footer.cta{padding-block:var(--space-20)}
 @media(max-width:900px){.facts{flex-direction:column;align-items:stretch}.facts-image{width:100%}}
 
 /* ==== Reveal on scroll ==== */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 1.4s var(--ease),transform 1.4s var(--ease)}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
@@ -710,7 +715,7 @@ footer.cta{padding-block:var(--space-20)}
      kommen. Die Verzögerung pro Element wird per data-Attribut auf jeder Sektion
      gesteuert, nicht global — dadurch bleibt eine 3-Item-Section knackig und eine
      8-Item-Section trotzdem lesbar gestaffelt statt trödelnd. ---- */
-  var STAGGER_MS = 150, STAGGER_MAX_MS = 720;
+  var STAGGER_MS = 220, STAGGER_MAX_MS = 960;
   function stageReveal(container) {
     var items = container.classList && container.classList.contains("reveal")
       ? [container] : container.querySelectorAll(".reveal");
@@ -736,7 +741,7 @@ footer.cta{padding-block:var(--space-20)}
       entries.forEach(function (e) {
         if (e.isIntersecting) { stageReveal(e.target); revObs.unobserve(e.target); }
       });
-    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+    }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 });
     revealSections.forEach(function (s) { revObs.observe(s); });
   }
 
