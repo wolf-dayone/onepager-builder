@@ -106,11 +106,12 @@ footer.cta{padding-block:var(--space-20)}
 .logo-mark{display:block;color:var(--gray-50)}
 .hero .badges{display:flex;gap:12px}
 .badge{border:1px solid var(--color-dark-border);border-radius:var(--radius-pill);padding:10px 20px;
-  font-size:var(--text-body-s);font-weight:600;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
+  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
 .badge.accent{border-color:var(--red-500);color:var(--red-500)}
 .hero h1 .line2{display:block;font-weight:400;color:var(--color-dark-text-soft)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
-.hero .rule{height:1px;background:var(--color-dark-border);width:min(640px,100%);margin-bottom:var(--space-8)}
+.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
+  background:linear-gradient(90deg,var(--color-dark-border) 0%,transparent 100%)}
 .hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
 .hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-dark-text-soft)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
@@ -319,15 +320,15 @@ footer.cta{padding-block:var(--space-20)}
 <!-- ============ HERO ============ -->
 <header class="hero dark" id="hero">
   <div class="wrap">
-    <div class="top">
+    <div class="top reveal">
       <svg class="logo-mark" width="150" height="27"><use href="#dayone-logo"></use></svg>
       <div class="badges"><span class="badge">WEEKLY – KW 39</span></div>
     </div>
-    <div>
+    <div class="reveal">
       <h1 class="h1">Neuer Standort<span class="line2">Wo DAYONE ab März arbeitet</span></h1>
       <p class="lead sub">Nach zwölf Jahren am Prenzlauer Berg zieht DAYONE im März in ein neues Büro am Gleisdreieck — hier ist alles, was ihr dazu wissen müsst.</p>
     </div>
-    <div>
+    <div class="reveal">
       <div class="rule"></div>
       <dl class="meta">
         <div><dt>Datum</dt><dd>Montag, 22. September 2026</dd></div>
@@ -341,15 +342,15 @@ footer.cta{padding-block:var(--space-20)}
 <!-- ============ AGENDA ============ -->
 <section class="agenda" id="agenda">
   <div class="wrap">
-    <h2 class="h2" style="margin-bottom:var(--space-12)">Agenda</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">Agenda</h2>
     <div class="agenda-list">
-      <div class="agenda-item"><span class="num">01</span>
+      <div class="agenda-item reveal"><span class="num">01</span>
         <div><h3>Warum wir umziehen</h3><p>Was am alten Standort nicht mehr funktioniert hat.</p></div></div>
-      <div class="agenda-item"><span class="num">02</span>
+      <div class="agenda-item reveal"><span class="num">02</span>
         <div><h3>Wie der Ablauf aussieht</h3><p>Wer macht was, und wann.</p></div></div>
-      <div class="agenda-item"><span class="num">03</span>
+      <div class="agenda-item reveal"><span class="num">03</span>
         <div><h3>Die wichtigsten Termine</h3><p>Von der Vertragsunterschrift bis zum Einzug.</p></div></div>
-      <div class="agenda-item"><span class="num">04</span>
+      <div class="agenda-item reveal"><span class="num">04</span>
         <div><h3>Was sich für euch ändert</h3><p>Altes vs. neues Büro im Vergleich.</p></div></div>
     </div>
   </div>
@@ -359,15 +360,15 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="01" data-chapter-title="Auswahl" id="kapitel-01">
   <div class="wrap">
     <p class="eyebrow">01 — Auswahl</p>
-    <h2 class="h1" style="margin-bottom:var(--space-12)">Wonach wir gesucht haben</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">Wonach wir gesucht haben</h2>
     <div class="matrix-wrap">
       <div class="matrix-axis-y">Teamnähe</div>
       <div class="matrix-main">
         <div class="matrix-grid">
-          <div class="matrix-quadrant"><h3>Ideal</h3><p class="body">Zentral, gut erreichbar, genug Fläche für Wachstum — das Gleisdreieck-Büro.</p></div>
-          <div class="matrix-quadrant"><h3>Kompromiss A</h3><p class="body">Sehr zentral, aber zu klein für die nächsten zwei Jahre — verworfen.</p></div>
-          <div class="matrix-quadrant"><h3>Kompromiss B</h3><p class="body">Viel Fläche, aber 20 Minuten weiter draußen — im Rennen bis zur letzten Runde.</p></div>
-          <div class="matrix-quadrant"><h3>Verworfen</h3><p class="body">Günstig, aber ohne Anbindung an Tram oder S-Bahn — für ein Team, das pendelt, keine Option.</p></div>
+          <div class="matrix-quadrant reveal"><h3>Ideal</h3><p class="body">Zentral, gut erreichbar, genug Fläche für Wachstum — das Gleisdreieck-Büro.</p></div>
+          <div class="matrix-quadrant reveal"><h3>Kompromiss A</h3><p class="body">Sehr zentral, aber zu klein für die nächsten zwei Jahre — verworfen.</p></div>
+          <div class="matrix-quadrant reveal"><h3>Kompromiss B</h3><p class="body">Viel Fläche, aber 20 Minuten weiter draußen — im Rennen bis zur letzten Runde.</p></div>
+          <div class="matrix-quadrant reveal"><h3>Verworfen</h3><p class="body">Günstig, aber ohne Anbindung an Tram oder S-Bahn — für ein Team, das pendelt, keine Option.</p></div>
         </div>
         <div class="matrix-axis-x">Erreichbarkeit</div>
       </div>
@@ -379,21 +380,21 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="02" data-chapter-title="Ablauf" id="kapitel-02">
   <div class="wrap">
     <p class="eyebrow">02 — Ablauf</p>
-    <h2 class="h1" style="margin-bottom:var(--space-12)">So läuft der Umzug ab</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">So läuft der Umzug ab</h2>
     <div class="process-steps">
-      <div class="process-step"><span class="num">01</span>
+      <div class="process-step reveal"><span class="num">01</span>
         <div class="process-step-body"><h3>Vorbereitung (Oktober–Februar)</h3>
           <div class="process-roles">
             <div class="process-role"><p class="role-name">Facility-Team</p><p>Kümmert sich um Umzugsfirma, Möbel und Netzwerk-Aufbau im neuen Büro.</p></div>
             <div class="process-role"><p class="role-name">Mitarbeitende</p><p>Packen Persönliches in die bereitgestellten Kisten, alles andere bleibt stehen.</p></div>
           </div></div></div>
-      <div class="process-step"><span class="num">02</span>
+      <div class="process-step reveal"><span class="num">02</span>
         <div class="process-step-body"><h3>Umzugswoche (2.–6. März)</h3>
           <div class="process-roles">
             <div class="process-role"><p class="role-name">Facility-Team</p><p>Koordiniert den Transport, Aufbau und die IT-Inbetriebnahme vor Ort.</p></div>
             <div class="process-role"><p class="role-name">Mitarbeitende</p><p>Arbeiten remote — Zugang zum Altbüro ist ab Mittwoch nicht mehr möglich.</p></div>
           </div></div></div>
-      <div class="process-step"><span class="num">03</span>
+      <div class="process-step reveal"><span class="num">03</span>
         <div class="process-step-body"><h3>Ankommen (ab 9. März)</h3>
           <div class="process-roles">
             <div class="process-role"><p class="role-name">Facility-Team</p><p>Steht die ersten zwei Wochen durchgehend vor Ort für Fragen bereit.</p></div>
@@ -407,19 +408,19 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="03" data-chapter-title="Termine" id="kapitel-03">
   <div class="wrap">
     <p class="eyebrow">03 — Termine</p>
-    <h2 class="h1" style="margin-bottom:var(--space-20)">Von der Unterschrift bis zum Einzug</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">Von der Unterschrift bis zum Einzug</h2>
     <div class="timeline">
       <div class="timeline-track">
-        <div class="timeline-item"><span class="timeline-dot"></span>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">Juli 2026</span><span class="timeline-title">Mietvertrag unterschrieben</span></div>
-        <div class="timeline-item"><span class="timeline-dot"></span>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">Dez 2026</span><span class="timeline-title">Umbau abgeschlossen</span></div>
-        <div class="timeline-item is-current"><span class="timeline-dot"></span>
+        <div class="timeline-item is-current reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">Jetzt</span><span class="timeline-title">Vorbereitung läuft</span>
           <span class="timeline-tag">Aktuell</span></div>
-        <div class="timeline-item"><span class="timeline-dot"></span>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">2.–6. März</span><span class="timeline-title">Umzugswoche</span></div>
-        <div class="timeline-item"><span class="timeline-dot"></span>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">30. April</span><span class="timeline-title">Altvertrag endet</span></div>
       </div>
     </div>
@@ -430,8 +431,8 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="04" data-chapter-title="Vergleich" id="kapitel-04">
   <div class="wrap table-scroll">
     <p class="eyebrow">04 — Vergleich</p>
-    <h2 class="h1" style="margin-bottom:var(--space-16)">Altes vs. neues Büro</h2>
-    <table class="table">
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">Altes vs. neues Büro</h2>
+    <table class="table reveal">
       <thead><tr><th>Merkmal</th><th>Prenzlauer Berg</th><th>Gleisdreieck</th><th>Veränderung</th></tr></thead>
       <tbody>
         <tr><td>Fläche</td><td>420 m²</td><td>680 m²</td><td class="num">+62 %</td></tr>
@@ -448,12 +449,12 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="05" data-chapter-title="Ansprechpartner" id="kapitel-05">
   <div class="wrap">
     <p class="eyebrow">05 — Ansprechpartner</p>
-    <h2 class="h1" style="margin-bottom:var(--space-20)">Wer euch bei Fragen weiterhilft</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">Wer euch bei Fragen weiterhilft</h2>
     <div class="team-grid">
-      <div class="team-member"><div class="team-avatar">JM</div><p class="name">Jonas M.</p><p class="role">Facility &amp; Umzugslogistik</p></div>
-      <div class="team-member"><div class="team-avatar">SK</div><p class="name">Sara K.</p><p class="role">IT &amp; Netzwerk vor Ort</p></div>
-      <div class="team-member"><div class="team-avatar">TW</div><p class="name">Tom W.</p><p class="role">People &amp; Culture</p></div>
-      <div class="team-member"><div class="team-avatar">LP</div><p class="name">Lea P.</p><p class="role">Büroausstattung &amp; Möbel</p></div>
+      <div class="team-member reveal"><div class="team-avatar">JM</div><p class="name">Jonas M.</p><p class="role">Facility &amp; Umzugslogistik</p></div>
+      <div class="team-member reveal"><div class="team-avatar">SK</div><p class="name">Sara K.</p><p class="role">IT &amp; Netzwerk vor Ort</p></div>
+      <div class="team-member reveal"><div class="team-avatar">TW</div><p class="name">Tom W.</p><p class="role">People &amp; Culture</p></div>
+      <div class="team-member reveal"><div class="team-avatar">LP</div><p class="name">Lea P.</p><p class="role">Büroausstattung &amp; Möbel</p></div>
     </div>
   </div>
 </section>
@@ -462,12 +463,12 @@ footer.cta{padding-block:var(--space-20)}
 <section>
   <div class="wrap">
     <div class="facts">
-      <div class="facts-image">Bild: Neues Büro am Gleisdreieck</div>
+      <div class="facts-image reveal">Bild: Neues Büro am Gleisdreieck</div>
       <dl class="facts-list">
-        <div><dt>Adresse</dt><dd>Gleisdreieckpark 4, 10963 Berlin</dd></div>
-        <div><dt>Verfügbar ab</dt><dd>9. März 2026</dd></div>
-        <div><dt>Fläche</dt><dd>680 m² über zwei Etagen</dd></div>
-        <div><dt>Arbeitsplätze</dt><dd>55 feste Plätze</dd></div>
+        <div class="reveal"><dt>Adresse</dt><dd>Gleisdreieckpark 4, 10963 Berlin</dd></div>
+        <div class="reveal"><dt>Verfügbar ab</dt><dd>9. März 2026</dd></div>
+        <div class="reveal"><dt>Fläche</dt><dd>680 m² über zwei Etagen</dd></div>
+        <div class="reveal"><dt>Arbeitsplätze</dt><dd>55 feste Plätze</dd></div>
       </dl>
     </div>
   </div>
@@ -564,17 +565,32 @@ footer.cta{padding-block:var(--space-20)}
   window.addEventListener("resize", fitNav);
   fitNav();
 
-  /* ---- 5) Reveal beim Scrollen ---- */
-  var revealables = document.querySelectorAll(".reveal");
+  /* ---- 5) Reveal: pro Sektion gestaffelt, Hero sofort beim Laden ---- */
+  var STAGGER_MS = 90, STAGGER_MAX_MS = 480;
+  function stageReveal(container) {
+    var items = container.classList && container.classList.contains("reveal")
+      ? [container] : container.querySelectorAll(".reveal");
+    items.forEach(function (el, i) {
+      el.style.transitionDelay = Math.min(i * STAGGER_MS, STAGGER_MAX_MS) + "ms";
+      el.classList.add("in");
+    });
+  }
+  var heroEl = document.getElementById("hero");
+  if (heroEl) {
+    if (reduce) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
+    else { stageReveal(heroEl); }
+  }
+  var revealSections = Array.prototype.slice.call(document.querySelectorAll("section, footer"))
+    .filter(function (s) { return s !== heroEl && s.querySelector(".reveal"); });
   if (reduce || !("IntersectionObserver" in window)) {
-    revealables.forEach(function (el) { el.classList.add("in"); });
+    revealSections.forEach(function (s) { stageReveal(s); });
   } else {
     var revObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("in"); revObs.unobserve(e.target); }
+        if (e.isIntersecting) { stageReveal(e.target); revObs.unobserve(e.target); }
       });
     }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
-    revealables.forEach(function (el) { revObs.observe(el); });
+    revealSections.forEach(function (s) { revObs.observe(s); });
   }
 
   /* ---- 6) Kennzahlen hochzählen ---- */

@@ -99,11 +99,12 @@ footer.cta{padding-block:var(--space-20)}
 .logo-mark{display:block;color:var(--gray-50)}
 .hero .badges{display:flex;gap:12px}
 .badge{border:1px solid var(--color-dark-border);border-radius:var(--radius-pill);padding:10px 20px;
-  font-size:var(--text-body-s);font-weight:600;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
+  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
 .badge.accent{border-color:var(--red-500);color:var(--red-500)}
 .hero h1 .line2{display:block;font-weight:400;color:var(--color-dark-text-soft)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
-.hero .rule{height:1px;background:var(--color-dark-border);width:min(640px,100%);margin-bottom:var(--space-8)}
+.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
+  background:linear-gradient(90deg,var(--color-dark-border) 0%,transparent 100%)}
 .hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
 .hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-dark-text-soft)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
@@ -240,19 +241,19 @@ footer.cta{padding-block:var(--space-20)}
      --grid-max begrenzt) — siehe Kommentar bei den Hero-Styles im <style>-Block. -->
 <header class="hero dark" id="hero">
   <div class="wrap">
-    <div class="top">
+    <div class="top reveal">
       <svg class="logo-mark" width="150" height="27"><use href="#dayone-logo"></use></svg>
       <div class="badges">
         <span class="badge">WEEKLY – KW 38</span>
       </div>
     </div>
 
-    <div>
+    <div class="reveal">
       <h1 class="h1">Kekse für alle<span class="line2">Wie das neue DAYONE-Keksprogramm funktioniert</span></h1>
       <p class="lead sub">Ab sofort bekommt jede*r DAYONEeee einen Keks pro Jahr — bei besonderer Leistung gibt's Sonderkekse wie Makadamia.</p>
     </div>
 
-    <div>
+    <div class="reveal">
       <div class="rule"></div>
       <dl class="meta">
         <div><dt>Datum</dt><dd>Montag, 14. September 2026</dd></div>
@@ -451,17 +452,32 @@ footer.cta{padding-block:var(--space-20)}
   window.addEventListener("resize", fitNav);
   fitNav();
 
-  /* ---- 5) Reveal beim Scrollen ---- */
-  var revealables = document.querySelectorAll(".reveal");
+  /* ---- 5) Reveal: pro Sektion gestaffelt, Hero sofort beim Laden ---- */
+  var STAGGER_MS = 90, STAGGER_MAX_MS = 480;
+  function stageReveal(container) {
+    var items = container.classList && container.classList.contains("reveal")
+      ? [container] : container.querySelectorAll(".reveal");
+    items.forEach(function (el, i) {
+      el.style.transitionDelay = Math.min(i * STAGGER_MS, STAGGER_MAX_MS) + "ms";
+      el.classList.add("in");
+    });
+  }
+  var heroEl = document.getElementById("hero");
+  if (heroEl) {
+    if (reduce) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
+    else { stageReveal(heroEl); }
+  }
+  var revealSections = Array.prototype.slice.call(document.querySelectorAll("section, footer"))
+    .filter(function (s) { return s !== heroEl && s.querySelector(".reveal"); });
   if (reduce || !("IntersectionObserver" in window)) {
-    revealables.forEach(function (el) { el.classList.add("in"); });
+    revealSections.forEach(function (s) { stageReveal(s); });
   } else {
     var revObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("in"); revObs.unobserve(e.target); }
+        if (e.isIntersecting) { stageReveal(e.target); revObs.unobserve(e.target); }
       });
     }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
-    revealables.forEach(function (el) { revObs.observe(el); });
+    revealSections.forEach(function (s) { revObs.observe(s); });
   }
 
   /* ---- 6) Kennzahlen hochzählen ---- */

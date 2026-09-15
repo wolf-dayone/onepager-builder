@@ -106,11 +106,12 @@ footer.cta{padding-block:var(--space-20)}
 .logo-mark{display:block;color:var(--gray-50)}
 .hero .badges{display:flex;gap:12px}
 .badge{border:1px solid var(--color-dark-border);border-radius:var(--radius-pill);padding:10px 20px;
-  font-size:var(--text-body-s);font-weight:600;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
+  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
 .badge.accent{border-color:var(--red-500);color:var(--red-500)}
 .hero h1 .line2{display:block;font-weight:400;color:var(--color-dark-text-soft)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
-.hero .rule{height:1px;background:var(--color-dark-border);width:min(640px,100%);margin-bottom:var(--space-8)}
+.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
+  background:linear-gradient(90deg,var(--color-dark-border) 0%,transparent 100%)}
 .hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
 .hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-dark-text-soft)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
@@ -323,7 +324,7 @@ footer.cta{padding-block:var(--space-20)}
      --grid-max begrenzt) — siehe Kommentar bei den Hero-Styles im <style>-Block. -->
 <header class="hero dark" id="hero">
   <div class="wrap">
-    <div class="top">
+    <div class="top reveal">
       <svg class="logo-mark" width="150" height="27"><use href="#dayone-logo"></use></svg>
       <div class="badges">
         <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
@@ -331,12 +332,12 @@ footer.cta{padding-block:var(--space-20)}
       </div>
     </div>
 
-    <div>
+    <div class="reveal">
       <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
       <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
     </div>
 
-    <div>
+    <div class="reveal">
       <div class="rule"></div>
       <dl class="meta">
         <div><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
@@ -431,15 +432,15 @@ footer.cta{padding-block:var(--space-20)}
      sucht zuerst #agenda). Nur bei längeren Onepagern (>6 Kapitel) nötig. -->
 <section class="agenda" id="agenda">
   <div class="wrap">
-    <h2 class="h2" style="margin-bottom:var(--space-12)">Agenda</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">Agenda</h2>
     <div class="agenda-list">
-      <div class="agenda-item"><span class="num">01</span>
+      <div class="agenda-item reveal"><span class="num">01</span>
         <div><h3>[Agendapunkt 1]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
-      <div class="agenda-item"><span class="num">02</span>
+      <div class="agenda-item reveal"><span class="num">02</span>
         <div><h3>[Agendapunkt 2]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
-      <div class="agenda-item"><span class="num">03</span>
+      <div class="agenda-item reveal"><span class="num">03</span>
         <div><h3>[Agendapunkt 3]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
-      <div class="agenda-item"><span class="num">04</span>
+      <div class="agenda-item reveal"><span class="num">04</span>
         <div><h3>[Agendapunkt 4]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
     </div>
   </div>
@@ -449,21 +450,21 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]">
   <div class="wrap">
     <p class="eyebrow">[NN] — [Vorgehen]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
     <div class="process-steps">
-      <div class="process-step"><span class="num">01</span>
+      <div class="process-step reveal"><span class="num">01</span>
         <div class="process-step-body"><h3>[Erster Schritt]</h3>
           <div class="process-roles">
             <div class="process-role"><p class="role-name">[Rolle A]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
             <div class="process-role"><p class="role-name">[Rolle B]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
           </div></div></div>
-      <div class="process-step"><span class="num">02</span>
+      <div class="process-step reveal"><span class="num">02</span>
         <div class="process-step-body"><h3>[Zweiter Schritt]</h3>
           <div class="process-roles">
             <div class="process-role"><p class="role-name">[Rolle A]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
             <div class="process-role"><p class="role-name">[Rolle B]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
           </div></div></div>
-      <div class="process-step"><span class="num">03</span>
+      <div class="process-step reveal"><span class="num">03</span>
         <div class="process-step-body"><h3>[Dritter Schritt]</h3>
           <div class="process-roles">
             <div class="process-role"><p class="role-name">[Rolle A]</p><p>[Was diese Rolle hier beiträgt.]</p></div>
@@ -477,17 +478,17 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]b">
   <div class="wrap">
     <p class="eyebrow">[NN] — [Timeline]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
     <div class="timeline">
       <div class="timeline-track">
-        <div class="timeline-item"><span class="timeline-dot"></span>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">[Zeitpunkt 1]</span><span class="timeline-title">[Meilenstein 1]</span></div>
-        <div class="timeline-item"><span class="timeline-dot"></span>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">[Zeitpunkt 2]</span><span class="timeline-title">[Meilenstein 2]</span></div>
-        <div class="timeline-item is-current"><span class="timeline-dot"></span>
+        <div class="timeline-item is-current reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">[Zeitpunkt 3]</span><span class="timeline-title">[Meilenstein 3]</span>
           <span class="timeline-tag">Aktuell</span></div>
-        <div class="timeline-item"><span class="timeline-dot"></span>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
           <span class="timeline-date">[Zeitpunkt 4]</span><span class="timeline-title">[Meilenstein 4]</span></div>
       </div>
     </div>
@@ -498,15 +499,15 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]c">
   <div class="wrap">
     <p class="eyebrow">[NN] — [Einordnung]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
     <div class="matrix-wrap">
       <div class="matrix-axis-y">[ACHSE Y]</div>
       <div class="matrix-main">
         <div class="matrix-grid">
-          <div class="matrix-quadrant"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+          <div class="matrix-quadrant reveal"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+          <div class="matrix-quadrant reveal"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+          <div class="matrix-quadrant reveal"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+          <div class="matrix-quadrant reveal"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
         </div>
         <div class="matrix-axis-x">[ACHSE X]</div>
       </div>
@@ -519,8 +520,8 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]d">
   <div class="wrap table-scroll">
     <p class="eyebrow">[NN] — [Übersicht]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-16)">[Tabellentitel]</h2>
-    <table class="table">
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">[Tabellentitel]</h2>
+    <table class="table reveal">
       <thead><tr><th>[Spalte A]</th><th>[Spalte B]</th><th>[Spalte C]</th><th>[Spalte D]</th></tr></thead>
       <tbody>
         <tr><td>[Zeile 1]</td><td>[Wert]</td><td>[Wert]</td><td>[Wert]</td></tr>
@@ -535,12 +536,12 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]e">
   <div class="wrap">
     <p class="eyebrow">[NN] — [Team]</p>
-    <h2 class="h1" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
     <div class="team-grid">
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[NN]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
     </div>
   </div>
 </section>
@@ -549,15 +550,17 @@ footer.cta{padding-block:var(--space-20)}
 <section>
   <div class="wrap">
     <div class="facts">
-      <div class="facts-image">[Bild]</div>
+      <div class="facts-image reveal">[Bild]</div>
       <dl class="facts-list">
-        <div><dt>[Kennzahl A]</dt><dd>[Wert]</dd></div>
-        <div><dt>[Kennzahl B]</dt><dd>[Wert]</dd></div>
-        <div><dt>[Kennzahl C]</dt><dd>[Wert]</dd></div>
-        <div><dt>[Kennzahl D]</dt><dd>[Wert]</dd></div>
+        <div class="reveal"><dt>[Kennzahl A]</dt><dd>[Wert]</dd></div>
+        <div class="reveal"><dt>[Kennzahl B]</dt><dd>[Wert]</dd></div>
+        <div class="reveal"><dt>[Kennzahl C]</dt><dd>[Wert]</dd></div>
+        <div class="reveal"><dt>[Kennzahl D]</dt><dd>[Wert]</dd></div>
       </dl>
     </div>
   </div>
+</section>
+
 </section>
 
 <!-- ============ ZITAT ============ -->
@@ -680,17 +683,36 @@ footer.cta{padding-block:var(--space-20)}
   window.addEventListener("resize", fitNav);
   fitNav();
 
-  /* ---- 5) Reveal beim Scrollen ---- */
-  var revealables = document.querySelectorAll(".reveal");
+  /* ---- 5) Reveal: pro Sektion gestaffelt (Opacity + Y-Verschiebung), Hero sofort beim
+     Laden statt beim Scrollen — alle anderen Sektionen erst wenn sie in den Viewport
+     kommen. Die Verzögerung pro Element wird per data-Attribut auf jeder Sektion
+     gesteuert, nicht global — dadurch bleibt eine 3-Item-Section knackig und eine
+     8-Item-Section trotzdem lesbar gestaffelt statt trödelnd. ---- */
+  var STAGGER_MS = 90, STAGGER_MAX_MS = 480;
+  function stageReveal(container) {
+    var items = container.classList && container.classList.contains("reveal")
+      ? [container] : container.querySelectorAll(".reveal");
+    items.forEach(function (el, i) {
+      el.style.transitionDelay = Math.min(i * STAGGER_MS, STAGGER_MAX_MS) + "ms";
+      el.classList.add("in");
+    });
+  }
+  var heroEl = document.getElementById("hero");
+  if (heroEl) {
+    if (reduce) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
+    else { stageReveal(heroEl); }
+  }
+  var revealSections = Array.prototype.slice.call(document.querySelectorAll("section, footer"))
+    .filter(function (s) { return s !== heroEl && s.querySelector(".reveal"); });
   if (reduce || !("IntersectionObserver" in window)) {
-    revealables.forEach(function (el) { el.classList.add("in"); });
+    revealSections.forEach(function (s) { stageReveal(s); });
   } else {
     var revObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("in"); revObs.unobserve(e.target); }
+        if (e.isIntersecting) { stageReveal(e.target); revObs.unobserve(e.target); }
       });
     }, { rootMargin: "0px 0px -10% 0px", threshold: 0.1 });
-    revealables.forEach(function (el) { revObs.observe(el); });
+    revealSections.forEach(function (s) { revObs.observe(s); });
   }
 
   /* ---- 6) Kennzahlen hochzählen ---- */
