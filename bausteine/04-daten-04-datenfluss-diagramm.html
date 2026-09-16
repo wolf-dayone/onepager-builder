@@ -1,0 +1,29 @@
+<style>
+/* ==== Datenfluss-Diagramm ==== */
+.datenfluss{display:flex;align-items:center;gap:var(--space-6);margin-top:var(--space-8)}
+.fluss-station{flex:1;min-height:120px;border-radius:var(--radius-card);
+  background:var(--color-detail);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;padding:var(--space-4);text-align:center}
+.fluss-station .name{font-size:var(--text-body-m);line-height:1.3;color:var(--color-main-text)}
+.fluss-station .art{font-size:var(--text-body-s);line-height:1.2;color:var(--color-text)}
+.fluss-pfeil{flex:none;font-size:var(--text-body-m);color:var(--color-text)}
+@media(max-width:900px){
+  .datenfluss{flex-direction:column;align-items:stretch}
+  .fluss-pfeil{align-self:center;transform:rotate(90deg)}
+}
+</style>
+
+<!-- 3-5 Stationen, Pfeilrichtung konsequent links nach rechts. -->
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="04 Daten/04 datenfluss-diagramm">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Architektur]</p>
+    <h2 class="h1 reveal">[Was fließt von wo nach wo]</h2>
+    <div class="datenfluss reveal">
+      <div class="fluss-station"><span class="name">[Quelle]</span><span class="art">[System / Dienst]</span></div>
+      <span class="fluss-pfeil" aria-hidden="true">→</span>
+      <div class="fluss-station"><span class="name">[Verarbeitung]</span><span class="art">[System / Dienst]</span></div>
+      <span class="fluss-pfeil" aria-hidden="true">→</span>
+      <div class="fluss-station"><span class="name">[Ziel]</span><span class="art">[System / Dienst]</span></div>
+    </div>
+  </div>
+</section>

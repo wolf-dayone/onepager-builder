@@ -1,0 +1,30 @@
+<style>
+/* ==== Sticky-Nummernliste ==== */
+.sticky-list{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-24);align-items:start}
+.sticky-list .left{position:sticky;top:140px}
+.sticky-list .item{display:flex;gap:var(--space-10);padding-block:var(--space-12);border-top:1px solid var(--color-border)}
+.sticky-list .item:last-child{border-bottom:1px solid var(--color-border)}
+.sticky-list .num{font-size:var(--text-display-2);font-weight:600;color:var(--gray-300);line-height:1;flex:none}
+@media(max-width:900px){.sticky-list{grid-template-columns:1fr;gap:var(--space-12)}.sticky-list .left{position:static}}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="03 Inhalt/03 sticky-nummernliste">
+  <div class="wrap sticky-list">
+    <div class="left reveal">
+      <p class="eyebrow">[NN] — [Kapitelname]</p>
+      <h2 class="h1">[Die Leitfrage dieses Kapitels]</h2>
+      <p class="lead" style="margin-top:var(--space-6)">[Zwei bis vier Sätze Kontext.]</p>
+    </div>
+    <div class="right">
+      <div class="item reveal"><span class="num">01</span>
+        <div><h3 class="h3">[Erster Punkt als Aussage]</h3>
+        <p class="body" style="margin-top:12px">[Zwei bis vier Sätze.]</p></div></div>
+      <div class="item reveal"><span class="num">02</span>
+        <div><h3 class="h3">[Zweiter Punkt als Aussage]</h3>
+        <p class="body" style="margin-top:12px">[Zwei bis vier Sätze.]</p></div></div>
+      <div class="item reveal"><span class="num">03</span>
+        <div><h3 class="h3">[Dritter Punkt als Aussage]</h3>
+        <p class="body" style="margin-top:12px">[Zwei bis vier Sätze.]</p></div></div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,31 @@
+<style>
+/* ==== Headline + Text + Bild ==== */
+/* Das Arbeitspferd. Bei mehrfacher Verwendung .is-gedreht setzen, damit das
+   Bild die Seite wechselt - sonst wirkt die Seite monoton (Figma). */
+.text-bild{display:grid;grid-template-columns:minmax(0,1fr) 560px;gap:var(--space-16);
+  align-items:center}
+.text-bild.is-gedreht{grid-template-columns:560px minmax(0,1fr)}
+.text-bild.is-gedreht .text-bild-text{order:2}
+.text-bild.is-gedreht .text-bild-bild{order:1}
+.text-bild-bild{aspect-ratio:560/400;border-radius:var(--radius-card);overflow:hidden;
+  background:var(--color-detail);display:flex;align-items:center;justify-content:center;
+  color:var(--color-text);font-size:var(--text-body-s)}
+.text-bild-bild img{width:100%;height:100%;object-fit:cover}
+@media(max-width:900px){
+  .text-bild,.text-bild.is-gedreht{grid-template-columns:1fr;gap:var(--space-8)}
+  .text-bild.is-gedreht .text-bild-text{order:0}
+  .text-bild.is-gedreht .text-bild-bild{order:0}
+}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="03 Inhalt/01 headline-text-bild">
+  <div class="wrap text-bild">
+    <div class="text-bild-text reveal">
+      <p class="eyebrow">[NN] — [Kapitelname]</p>
+      <h2 class="h1">[Die Aussage dieses Abschnitts]</h2>
+      <p class="lead" style="margin-top:var(--space-6)">[Zwei bis vier Sätze. Längeres gehört in headline-textraster.]</p>
+    </div>
+    <!-- Bild inhaltlich, nicht dekorativ: Screenshot, Foto, Diagramm. -->
+    <div class="text-bild-bild reveal">[Bild / Illustration]</div>
+  </div>
+</section>

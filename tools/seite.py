@@ -88,6 +88,13 @@ class _Bauer(HTMLParser):
             self.code[aktuell.tag].append(daten)
 
 
+def _ohne_kommentare(css):
+    """Entfernt /* ... */ - ersetzt durch Leerzeilen, damit Zeilennummern passen."""
+    import re as _re
+    return _re.sub(r"/\*.*?\*/",
+                   lambda m: "\n" * m.group().count("\n"), css, flags=_re.DOTALL)
+
+
 class Seite:
     """Eine eingelesene Onepager-Datei."""
 
@@ -133,7 +140,12 @@ class Seite:
         return 0
 
     def css_ohne_tokens(self):
-        """CSS ohne den :root-Block - dort duerfen Rohwerte stehen."""
+        """CSS ohne :root-Block und ohne Kommentare.
+
+        Im :root-Block duerfen Rohwerte stehen - das ist die Token-Definition.
+        Kommentare sind Dokumentation, kein Style: ein Hexwert darin ist keine
+        Regelverletzung.
+        """
         out, tiefe, im_root = [], 0, False
         for zeile in self.css.splitlines():
             if not im_root and zeile.strip().startswith(":root{"):
@@ -145,4 +157,4 @@ class Seite:
                     im_root = False
                 continue
             out.append(zeile)
-        return "\n".join(out)
+        return _ohne_kommentare("\n".join(out))

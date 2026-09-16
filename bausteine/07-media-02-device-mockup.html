@@ -1,0 +1,41 @@
+<style>
+/* ==== Device-Mockup ==== */
+/* Figma: echte Geraete aus dem DAYONE Designsystem. Hier als CSS-Rahmen
+   nachgebaut, damit kein Bild-Asset noetig ist. Max. 3 Devices pro Modul. */
+.device-buehne{display:flex;justify-content:center;align-items:flex-end;
+  gap:var(--space-10);flex-wrap:wrap;margin-top:var(--space-12)}
+.device{flex:none}
+.device .schirm{background:var(--color-detail);overflow:hidden;display:flex;
+  align-items:center;justify-content:center;color:var(--color-text);
+  font-size:var(--text-body-s)}
+.device .schirm img{width:100%;height:100%;object-fit:cover}
+.device.ist-laptop{width:min(720px,100%)}
+.device.ist-laptop .schirm{aspect-ratio:16/10;border:10px solid var(--color-main-text);
+  border-radius:12px}
+.device.ist-laptop .fuss{height:10px;border-radius:0 0 8px 8px;
+  background:var(--color-main-text);width:112%;margin-left:-6%}
+.device.ist-phone{width:min(220px,100%)}
+.device.ist-phone .schirm{aspect-ratio:9/19.5;border:8px solid var(--color-main-text);
+  border-radius:28px}
+.device-legende{margin-top:var(--space-8);text-align:center}
+.device-legende h3{font-size:var(--text-body-l);font-weight:600;line-height:1.2;
+  color:var(--color-main-text)}
+.device-legende p{margin-top:6px;font-size:var(--text-body-s);line-height:1.2;
+  color:var(--color-text)}
+@media(max-width:900px){.device-buehne{gap:var(--space-8)}}
+</style>
+
+<!-- Mobile-Screens paarweise, Desktop einzeln - so bleibt die Komposition ruhig. -->
+<section data-modul="07 Media/02 device-mockup">
+  <div class="wrap">
+    <p class="eyebrow is-centered">[NN] — [Prototyp]</p>
+    <div class="device-buehne reveal">
+      <div class="device ist-laptop"><div class="schirm">[Screen]</div><div class="fuss"></div></div>
+      <div class="device ist-phone"><div class="schirm">[Screen]</div></div>
+    </div>
+    <div class="device-legende reveal">
+      <h3>[Prototyp im Device]</h3>
+      <p>[Ein Satz, warum die Plattform Teil der Aussage ist.]</p>
+    </div>
+  </div>
+</section>

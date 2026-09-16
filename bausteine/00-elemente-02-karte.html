@@ -1,0 +1,30 @@
+<style>
+/* ==== Karte (Baustein) ==== */
+/* Kein Abschnitt, sondern ein Element innerhalb anderer Module - laut Figma
+   eingesetzt in karten-3er und karten-karussell. Deshalb liegt das Karten-CSS
+   hier und nicht bei einem der beiden Module: sonst fehlt es einer Seite, die
+   nur das Karussell verwendet. */
+.card{display:flex;flex-direction:column;gap:var(--space-4);
+  border-top:1px solid var(--color-main-text);padding-top:28px;padding-bottom:var(--space-8)}
+/* Editorial: Hairline statt Flaeche. Nur die hervorgehobene Karte bekommt
+   Flaeche (Sand/200) - im Hairline-Raster ist das die Auszeichnung fuer
+   "hervorgehoben", deshalb sparsam einsetzen (Figma). */
+.card.is-selected{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-8)}
+.card .label{font-size:var(--text-body-s);color:var(--color-text)}
+.card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
+.card.is-selected .tag{color:var(--color-main-text)}
+/* Nummer gross in Text-Secondary - keine Sonderfarbe (Figma). */
+.card .num{font-size:var(--text-display-1);font-weight:600;color:var(--color-text);line-height:1}
+/* Titel + Text gehoeren laut Figma als Gruppe zusammen (kleiner Abstand);
+   die Nummer steht allein. */
+.card-copy{display:flex;flex-direction:column;gap:8px}
+</style>
+
+<!-- Nummer zweistellig, gross, in Text-Secondary - keine Sonderfarbe. -->
+<div class="card" data-modul="00 Elemente/02 karte">
+  <span class="num">01</span>
+  <div class="card-copy">
+    <h3 class="h3">[Merksatz, eine Zeile]</h3>
+    <p class="body">[2–3 Sätze. Alle Karten einer Reihe gleich lang halten.]</p>
+  </div>
+</div>

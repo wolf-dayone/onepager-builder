@@ -1,0 +1,52 @@
+<style>
+/* ==== Roadmap Zoom-In (Gantt) ==== */
+/* Detailplanung: Phasenbalken ueber eine Zeitachse. Balken werden ueber
+   --von und --bis (Spalten im Raster) positioniert. Max. 6 Arbeitspakete. */
+.roadmap-zoom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:var(--space-16);align-items:start}
+.gantt{margin-top:var(--space-6);display:flex;flex-direction:column;gap:10px;
+  padding:var(--space-6);border-radius:var(--radius-card);background:var(--color-detail)}
+.gantt-kopf{display:grid;grid-template-columns:repeat(var(--spalten,6),1fr);gap:4px;
+  font-size:var(--text-body-s);color:var(--color-text)}
+.gantt-zeile{display:grid;grid-template-columns:repeat(var(--spalten,6),1fr);gap:4px;
+  align-items:center}
+.gantt-balken{grid-column:var(--von) / calc(var(--bis) + 1);height:28px;border-radius:4px;
+  background:var(--color-border);display:flex;align-items:center;padding-inline:10px;
+  font-size:var(--text-body-s);color:var(--color-main-text);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.gantt-balken.ist-aktuell{background:var(--blue-3);color:var(--gray-50)}
+.zoom-meilenstein{padding-block:var(--space-4);border-top:1px solid var(--color-border)}
+.zoom-meilenstein dt{font-size:var(--text-body-s);color:var(--color-main-text)}
+.zoom-meilenstein dd{margin:4px 0 0;font-size:var(--text-body-s);color:var(--color-text);
+  line-height:1.2}
+/* Figma: bricht auf Mobile schnell - dort als vertikale Liste. */
+@media(max-width:900px){
+  .roadmap-zoom{grid-template-columns:1fr;gap:var(--space-10)}
+  .gantt-zeile{grid-template-columns:1fr}
+  .gantt-kopf{display:none}
+  .gantt-balken{grid-column:1 / -1}
+}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="06 Zeitachse/02 roadmap-zoom-in">
+  <div class="wrap roadmap-zoom">
+    <div class="reveal">
+      <p class="eyebrow">[NN] — [Planung]</p>
+      <h2 class="h1">[Wie die Phasen liegen]</h2>
+      <div class="gantt" style="--spalten:6">
+        <div class="gantt-kopf">
+          <span>[Q1]</span><span>[Q2]</span><span>[Q3]</span><span>[Q4]</span><span>[Q1]</span><span>[Q2]</span>
+        </div>
+        <div class="gantt-zeile"><div class="gantt-balken" style="--von:1;--bis:2">[Arbeitspaket 1]</div></div>
+        <div class="gantt-zeile"><div class="gantt-balken ist-aktuell" style="--von:2;--bis:4">[Arbeitspaket 2]</div></div>
+        <div class="gantt-zeile"><div class="gantt-balken" style="--von:4;--bis:6">[Arbeitspaket 3]</div></div>
+      </div>
+    </div>
+    <dl class="reveal" style="margin:0">
+      <p class="lead" style="margin-bottom:var(--space-4)">[Meilensteine]</p>
+      <div class="zoom-meilenstein"><dt>[Meilenstein 1]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
+      <div class="zoom-meilenstein"><dt>[Meilenstein 2]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
+      <div class="zoom-meilenstein"><dt>[Meilenstein 3]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
+    </dl>
+  </div>
+</section>

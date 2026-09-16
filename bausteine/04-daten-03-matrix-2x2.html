@@ -1,0 +1,35 @@
+<style>
+/* ==== Matrix 2x2 ==== */
+.matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
+.matrix-axis-y{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);letter-spacing:.08em;
+  text-transform:uppercase;display:flex;align-items:center;justify-content:center}
+.matrix-main{display:flex;flex-direction:column;gap:var(--space-8)}
+.matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
+.matrix-quadrant{background:var(--color-detail);padding:var(--space-8);border-radius:var(--radius-card);
+  display:flex;flex-direction:column;gap:12px;min-height:130px}
+.matrix-quadrant h3{font-size:var(--text-display-3);font-weight:600}
+.matrix-axis-x{text-align:center;font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
+  letter-spacing:.08em;text-transform:uppercase}
+@media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
+  .matrix-axis-y{writing-mode:horizontal-tb;transform:none}}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="04 Daten/03 matrix-2x2">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Einordnung]</p>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
+    <div class="matrix-wrap">
+      <div class="matrix-axis-y">[ACHSE Y]</div>
+      <div class="matrix-main">
+        <div class="matrix-grid">
+          <div class="matrix-quadrant reveal"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+          <div class="matrix-quadrant reveal"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+          <div class="matrix-quadrant reveal"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+          <div class="matrix-quadrant reveal"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+        </div>
+        <div class="matrix-axis-x">[ACHSE X]</div>
+      </div>
+    </div>
+  </div>
+</section>

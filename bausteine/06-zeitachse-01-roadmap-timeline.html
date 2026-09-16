@@ -1,0 +1,39 @@
+<style>
+/* ==== Roadmap-Timeline ==== */
+.timeline{position:relative;padding-top:20px}
+.timeline::before{content:"";position:absolute;top:6px;left:2px;right:0;height:1px;background:var(--color-border)}
+/* Farbige Linie vom Start bis zum aktuellen Punkt — Breite wird per JS anhand der Position
+   von .is-current gesetzt (--timeline-progress), die Animation zieht sie beim Reveal auf. */
+.timeline-progress{content:"";position:absolute;top:6px;left:2px;height:1px;background:var(--red-500);
+  width:0;transition:width 1.1s var(--ease)}
+.timeline-track{display:flex}
+.timeline-item{flex:1;display:flex;flex-direction:column;gap:14px;padding-right:var(--space-8)}
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text);position:relative}
+.timeline-item.is-current .timeline-dot{background:var(--red-500);box-shadow:0 0 0 5px rgba(255,84,76,.18)}
+.timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
+.timeline-item.is-current .timeline-date{color:var(--red-500)}
+.timeline-title{font-size:var(--text-body-ms);font-weight:600}
+.timeline-tag{font-size:var(--text-body-s);color:var(--red-500)}
+@media(prefers-reduced-motion:reduce){.timeline-progress{transition:none}}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="06 Zeitachse/01 roadmap-timeline">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Timeline]</p>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
+    <div class="timeline">
+      <div class="timeline-progress"></div>
+      <div class="timeline-track">
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
+          <span class="timeline-date">[Zeitpunkt 1]</span><span class="timeline-title">[Meilenstein 1]</span></div>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
+          <span class="timeline-date">[Zeitpunkt 2]</span><span class="timeline-title">[Meilenstein 2]</span></div>
+        <div class="timeline-item is-current reveal"><span class="timeline-dot"></span>
+          <span class="timeline-date">[Zeitpunkt 3]</span><span class="timeline-title">[Meilenstein 3]</span>
+          <span class="timeline-tag">Aktuell</span></div>
+        <div class="timeline-item reveal"><span class="timeline-dot"></span>
+          <span class="timeline-date">[Zeitpunkt 4]</span><span class="timeline-title">[Meilenstein 4]</span></div>
+      </div>
+    </div>
+  </div>
+</section>

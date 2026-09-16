@@ -1,0 +1,32 @@
+<style>
+/* ==== QR-/Tool-Verweis ==== */
+.qr-verweis{display:grid;grid-template-columns:minmax(0,1fr) 620px;gap:var(--space-16);
+  align-items:center}
+/* Figma: mind. 180px, sonst scannt der Code im Raum nicht zuverlaessig. */
+.qr-code{width:180px;height:180px;margin-top:var(--space-6);border-radius:var(--radius-card);
+  background:var(--gray-50);display:flex;align-items:center;justify-content:center;
+  color:var(--gray-900);font-size:var(--text-body-s)}
+.qr-code img{width:100%;height:100%;object-fit:contain}
+.qr-url{margin-top:var(--space-4);font-size:var(--text-body-s);line-height:1.2;
+  color:var(--color-text)}
+.qr-screenshot{aspect-ratio:620/360;border-radius:var(--radius-card);overflow:hidden;
+  background:var(--color-detail);display:flex;align-items:center;justify-content:center;
+  color:var(--color-text);font-size:var(--text-body-s)}
+.qr-screenshot img{width:100%;height:100%;object-fit:cover}
+@media(max-width:1200px){.qr-verweis{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+@media(max-width:900px){.qr-verweis{grid-template-columns:1fr;gap:var(--space-8)}}
+</style>
+
+<!-- QR muss auf eine echte URL zeigen. Ziel zusaetzlich als Text nennen:
+     am Desktop im PDF laesst sich kein QR-Code scannen. -->
+<section data-modul="10 Abschluss/02 qr-tool-verweis">
+  <div class="wrap qr-verweis">
+    <div class="reveal">
+      <p class="eyebrow">[NN] — [Ausprobieren]</p>
+      <h2 class="h1">[Unsere interne Toolbox]</h2>
+      <div class="qr-code">[QR-Code]</div>
+      <p class="qr-url">Scannen oder öffnen: <a href="[URL]">[url.dayone.de/tool]</a></p>
+    </div>
+    <div class="qr-screenshot reveal">[Screenshot: was hinter dem Code wartet]</div>
+  </div>
+</section>

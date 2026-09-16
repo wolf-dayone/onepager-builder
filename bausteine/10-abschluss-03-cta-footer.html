@@ -1,0 +1,28 @@
+<style>
+/* ==== CTA-Footer ==== */
+.cta .actions{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-8)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
+  font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;font-family:inherit}
+.btn-primary{background:var(--gray-50);color:var(--gray-900)}
+.btn-primary:hover{background:var(--gray-200)}
+.btn-secondary{border:1px solid var(--gray-50);color:var(--gray-50)}
+.btn-secondary:hover{background:rgba(255,255,255,.1)}
+.cta .footer-row{display:flex;gap:var(--space-4);align-items:center;margin-top:var(--space-20);
+  font-size:var(--text-body-s);color:var(--color-dark-text-soft)}
+@media(max-width:700px){.btn{width:100%;justify-content:center}}
+</style>
+
+<footer class="cta dark" data-modul="10 Abschluss/03 cta-footer">
+  <div class="wrap">
+    <h2 class="h2 reveal">[Check it out.]</h2>
+    <p class="lead reveal" style="margin-top:var(--space-4)">[Ein Satz Aufforderung.]</p>
+    <div class="actions reveal">
+      <a class="btn btn-primary" href="[URL]">[Zum Tool] <span aria-hidden="true">→</span></a>
+      <a class="btn btn-secondary" href="[URL]">[Feedback] <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="footer-row">
+      <svg class="logo-mark" width="92" height="16" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
+      <span>© 2026 DAYONE</span>
+    </div>
+  </div>
+</footer>

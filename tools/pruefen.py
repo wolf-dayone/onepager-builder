@@ -276,6 +276,93 @@ def pruefe_touch(s, b):
                      f"Antippen hinein.", knopf.zeile)
 
 
+SPALTEN_REGEL = re.compile(r"grid-template-columns\s*:\s*([^;}]+)")
+
+
+def _spaltenzahl(wert):
+    """Wie viele feste Spalten legt ein grid-template-columns-Wert an?
+
+    0 heisst: nicht zu beanstanden. Das gilt fuer eine einzelne Spalte und
+    fuer repeat(auto-fit|auto-fill, minmax(...)) - letzteres bricht von selbst
+    um und braucht keine Media Query.
+    """
+    wert = wert.strip()
+    if "auto-fit" in wert or "auto-fill" in wert:
+        return 0
+
+    m = re.search(r"repeat\(\s*(\d+)", wert)
+    if m:
+        return int(m.group(1))
+
+    # Tracks auf oberster Ebene zaehlen - Klammern von minmax()/calc() ueberspringen.
+    tracks, tiefe, aktuell = 0, 0, ""
+    for zeichen in wert:
+        if zeichen == "(":
+            tiefe += 1
+        elif zeichen == ")":
+            tiefe -= 1
+        if zeichen.isspace() and tiefe == 0:
+            if aktuell:
+                tracks += 1
+                aktuell = ""
+        else:
+            aktuell += zeichen
+    if aktuell:
+        tracks += 1
+    return tracks
+
+
+def pruefe_mobil(s, b):
+    """Figma: 'Mobile wird zuerst kaputt' - bei Sticky-Spalten, Tabellen, Roadmaps.
+
+    Prueft nicht das Rendering (dafuer braucht es einen Browser), sondern ob
+    ein mehrspaltiges Raster ueberhaupt eine Regel fuer schmale Viewports hat.
+    Ein Raster mit fester Spaltenzahl und ohne Media Query bricht dort sicher.
+    """
+    css = s.css_ohne_tokens()
+
+    # Zeichenweise durchgehen und je Position merken, ob wir gerade in einer
+    # max-width-Media-Query stecken. Zeilenweise geht nicht: eine einzeilige
+    # Query wie "@media(max-width:900px){.a{...}}" hat oeffnende und
+    # schliessende Klammern in derselben Zeile.
+    in_query = [False] * len(css)
+    for m in re.finditer(r"@media[^{]*max-width[^{]*\{", css):
+        tiefe, i = 1, m.end()
+        while i < len(css) and tiefe > 0:
+            if css[i] == "{":
+                tiefe += 1
+            elif css[i] == "}":
+                tiefe -= 1
+            in_query[i] = True
+            i += 1
+
+    # Welche Klassen bekommen irgendwo eine Regel fuer schmale Viewports?
+    mit_mobilregel = set()
+    for m in re.finditer(r"\.([a-z0-9-]+)", css):
+        if in_query[m.start()]:
+            mit_mobilregel.add(m.group(1))
+
+    gemeldet = set()
+    for m in SPALTEN_REGEL.finditer(css):
+        if in_query[m.start()] or _spaltenzahl(m.group(1)) < 2:
+            continue
+        # Selektor dieser Regel: alles zwischen der letzten schliessenden
+        # Klammer davor und der oeffnenden Klammer dieser Regel.
+        block_start = css.rfind("{", 0, m.start())
+        selektor_start = max(css.rfind("}", 0, block_start),
+                             css.rfind("{", 0, block_start)) + 1
+        selektor = css[selektor_start:block_start]
+        for klasse in re.findall(r"\.([a-z0-9-]+)", selektor):
+            if klasse in mit_mobilregel or klasse in gemeldet:
+                continue
+            gemeldet.add(klasse)
+            b.melden(WARNUNG, "mobil",
+                     f".{klasse} legt {_spaltenzahl(m.group(1))} feste Spalten "
+                     f"fest, hat aber keine Regel für schmale Viewports. "
+                     f"Figma: „Mobile wird zuerst kaputt“.",
+                     s.zeile_von(m.group(0)[:40]))
+
+
 def pruefe_ueberschriften(s, b):
     h1 = list(s.alle("h1"))
     if len(h1) > 1:
@@ -380,18 +467,23 @@ def bericht(pfad, befund, farbig):
           f"{zahl[HINWEIS]} Hinweise")
 
 
-def pruefe_datei(pfad, regeln, zuordnung, ist_vorlage):
+def pruefe_datei(pfad, regeln, zuordnung, ist_vorlage, ist_galerie=False):
     s = Seite(pfad)
     b = Befund()
-    pruefe_geruest(s, b, ist_vorlage)
-    pruefe_kapitel(s, b, ist_vorlage)
-    pruefe_doppelmarker(s, b)
-    pruefe_rhythmus(s, b, zuordnung)
+    pruefe_geruest(s, b, ist_vorlage or ist_galerie)
+    pruefe_kapitel(s, b, ist_vorlage or ist_galerie)
+    # Eine Galerie zeigt jedes Modul einmal - Dramaturgie-Regeln (Rhythmus,
+    # Kapitelmarker-Abfolge, eine Headline) gelten dort nicht.
+    if not ist_galerie:
+        pruefe_doppelmarker(s, b)
+        pruefe_rhythmus(s, b, zuordnung)
     pruefe_tokens(s, b)
     pruefe_bilder(s, b)
     pruefe_bewegung(s, b)
+    pruefe_mobil(s, b)
     pruefe_touch(s, b)
-    pruefe_ueberschriften(s, b)
+    if not ist_galerie:
+        pruefe_ueberschriften(s, b)
     pruefe_modulkennung(s, b, zuordnung)
     pruefe_stueckzahlen(s, b, regeln, zuordnung)
     if not ist_vorlage:
@@ -405,6 +497,8 @@ def main():
     p.add_argument("dateien", nargs="+", type=pathlib.Path)
     p.add_argument("--vorlage", action="store_true",
                    help="Datei ist ein Template — Platzhalter sind dort erwünscht")
+    p.add_argument("--galerie", action="store_true",
+                   help="Datei ist die Modul-Galerie — Dramaturgie-Regeln gelten nicht")
     p.add_argument("--keine-farbe", action="store_true")
     args = p.parse_args()
 
@@ -419,8 +513,9 @@ def main():
             print(f"nicht gefunden: {pfad}", file=sys.stderr)
             fehler_gesamt += 1
             continue
-        ist_vorlage = args.vorlage or pfad.name == "starter.html"
-        befund = pruefe_datei(pfad, regeln, zuordnung, ist_vorlage)
+        ist_galerie = args.galerie or pfad.name == "modul-galerie.html"
+        ist_vorlage = args.vorlage or ist_galerie or pfad.name == "starter.html"
+        befund = pruefe_datei(pfad, regeln, zuordnung, ist_vorlage, ist_galerie)
         bericht(pfad, befund, farbig)
         fehler_gesamt += sum(1 for x in befund if x["grad"] == FEHLER)
 

@@ -1,0 +1,31 @@
+<style>
+/* ==== Agenda ==== */
+/* Eigene weiße/helle Kartenfläche (--card-background in Figma), NICHT der Sand-Seitenhintergrund. */
+/* Kein eigener Hintergrund mehr — Agenda nutzt seit dem letzten Figma-Update ganz normal
+   Sand/100 wie jedes andere Modul, kein weißer Sonderfall (siehe Kommentar oben im
+   Markup). Dadurch ist sie wie alle anderen Module per .dark umschaltbar. */
+.agenda-list{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-16) var(--space-24)}
+.agenda-item{display:flex;gap:var(--space-6);align-items:flex-start}
+.agenda-item .num{font-size:var(--text-body-l);color:var(--color-text);flex:none}
+.agenda-item h3{font-size:var(--text-body-l);font-weight:400;color:var(--color-main-text)}
+.agenda-item p{font-size:var(--text-body-s);color:var(--color-text);margin-top:4px}
+@media(max-width:900px){.agenda-list{grid-template-columns:1fr}}
+</style>
+
+<!-- Kein data-chapter: steht meist direkt nach dem Hero und ist selbst kein Kapitel.
+     Die Kapitel-Nav erscheint dann erst nach der Agenda (siehe #agenda im Script). -->
+<section class="agenda" id="agenda" data-modul="01 Einstieg/02 agenda">
+  <div class="wrap">
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">Agenda</h2>
+    <div class="agenda-list">
+      <div class="agenda-item reveal"><span class="num">01</span>
+        <div><h3>[Agendapunkt 1]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+      <div class="agenda-item reveal"><span class="num">02</span>
+        <div><h3>[Agendapunkt 2]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+      <div class="agenda-item reveal"><span class="num">03</span>
+        <div><h3>[Agendapunkt 3]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+      <div class="agenda-item reveal"><span class="num">04</span>
+        <div><h3>[Agendapunkt 4]</h3><p>[Welche Frage klärt dieser Abschnitt?]</p></div></div>
+    </div>
+  </div>
+</section>
