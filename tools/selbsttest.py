@@ -91,6 +91,21 @@ FAELLE = [
      lambda s: s.replace('href="#hero"', 'href="#gibt-es-nicht"', 1),
      "links"),
 
+    # Dreimal dasselbe Modul liest sich wie eine Formatierung, nicht wie
+    # eine Aussage (Wunsch aus dem Praxistest).
+    ("Dreimal dasselbe Modul",
+     lambda s: s.replace(
+         'data-modul="04 Daten/01 kennzahlen-grid"',
+         'data-modul="03 Inhalt/03 sticky-nummernliste"').replace(
+         'data-modul="08 Menschen/03 quote-block"',
+         'data-modul="03 Inhalt/03 sticky-nummernliste"'),
+     "vielfalt"),
+
+    ("Agenda bei zu wenigen Kapiteln",
+     lambda s: s.replace('data-chapter="04"', 'data-chapter-weg="04"').replace(
+         'data-chapter="05"', 'data-chapter-weg="05"'),
+     "agenda"),
+
     ("Modul mit erfundenem data-modul",
      lambda s: s.replace('data-modul="08 Menschen/03 quote-block"',
                          'data-modul="08 Menschen/09 gibt-es-nicht"'),

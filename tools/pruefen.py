@@ -396,6 +396,89 @@ def pruefe_links(s, b, ist_vorlage):
                      f"Element mit dieser id.", a.zeile)
 
 
+# Module, die etwas Visuelles tragen (Bild, Screenshot, Diagramm, Portrait).
+# Eine Seite ganz ohne so ein Modul ist eine Textwueste.
+VISUELLE_MODULE = {
+    "03 Inhalt/01 headline-text-bild", "04 Daten/02 chart-slide",
+    "05 Diagramme/01 way-of-working-kreis",
+    "05 Diagramme/02 case-study-diagrammkarte",
+    "07 Media/01 screenshot-showcase", "07 Media/02 device-mockup",
+    "07 Media/03 medien-karten-grid", "07 Media/04 grossbild",
+    "08 Menschen/01 team-grid", "08 Menschen/02 personen-intro",
+    "09 Referenzen/01 logo-wand", "09 Referenzen/02 facts-figures",
+    "10 Abschluss/02 qr-tool-verweis",
+}
+
+# Zaehlen beim Rhythmus nicht als eigenstaendiger Inhalt.
+RAHMEN_MODULE = {
+    "00 Elemente/01 kapitel-nav", "00 Elemente/02 karte",
+    "01 Einstieg/01 cover-hero", "10 Abschluss/03 cta-footer",
+}
+
+
+def _inhaltsmodule(s):
+    """data-modul aller Abschnitte, die echten Inhalt tragen."""
+    namen = []
+    for sek in s.sektionen():
+        name = sek.attrs.get("data-modul")
+        if name and name not in RAHMEN_MODULE:
+            namen.append(name)
+    return namen
+
+
+def pruefe_vielfalt(s, b, regeln):
+    """Nicht zu oft dasselbe Modul - sonst liest sich die Seite wie eine Liste."""
+    namen = _inhaltsmodule(s)
+    if len(namen) < 4:
+        return
+
+    haeufigkeit = {n: namen.count(n) for n in set(namen)}
+    kurz = lambda n: regeln["module"].get(n, {}).get("kurzname", n)
+
+    for name, anzahl in sorted(haeufigkeit.items(), key=lambda x: -x[1]):
+        if anzahl >= 3:
+            b.melden(WARNUNG, "vielfalt",
+                     f"{kurz(name)} kommt {anzahl}× vor. Ab dem dritten Mal wirkt "
+                     f"ein Modul wie eine Formatierung statt wie eine Aussage — "
+                     f"im Katalog nach einer Alternative sehen.")
+
+    haeufigstes, spitze = max(haeufigkeit.items(), key=lambda x: x[1])
+    if spitze / len(namen) > 0.4 and spitze >= 2:
+        b.melden(HINWEIS, "vielfalt",
+                 f"{spitze} von {len(namen)} Inhaltsmodulen sind "
+                 f"{kurz(haeufigstes)}. Mehr Abwechslung trägt besser durch "
+                 f"eine ganze Seite.")
+
+
+def pruefe_bildanteil(s, b, ist_vorlage):
+    """Figma-Prinzip: ein visueller Ruhepunkt zwischen textlastigen Abschnitten."""
+    if ist_vorlage:
+        return
+    namen = _inhaltsmodule(s)
+    if len(namen) < 4:
+        return
+    visuell = [n for n in namen if n in VISUELLE_MODULE]
+    if not visuell and not list(s.alle("img")):
+        b.melden(WARNUNG, "bildanteil",
+                 f"Keines der {len(namen)} Inhaltsmodule trägt ein Bild, einen "
+                 f"Screenshot oder ein Diagramm. Beim Menschen nachfragen, ob "
+                 f"Material vorliegt — eine reine Textseite ermüdet.")
+
+
+def pruefe_agenda(s, b):
+    """Die Agenda muss sich verdienen: nur bei echter thematischer Übersicht."""
+    agenda = next((k for k in s.sektionen()
+                   if k.attrs.get("data-modul") == "01 Einstieg/02 agenda"), None)
+    if not agenda:
+        return
+    kapitel = len([k for k in s.alle() if "data-chapter" in k.attrs])
+    if kapitel and kapitel < 4:
+        b.melden(HINWEIS, "agenda",
+                 f"Agenda bei nur {kapitel} Kapiteln. Sie lohnt sich erst, wenn "
+                 f"die Seite genug Umfang hat, dass eine Übersicht Orientierung "
+                 f"gibt — sonst kündigt sie an, was man ohnehin gleich sieht.")
+
+
 def pruefe_ueberschriften(s, b):
     h1 = list(s.alle("h1"))
     if len(h1) > 1:
@@ -514,6 +597,10 @@ def pruefe_datei(pfad, regeln, zuordnung, ist_vorlage, ist_galerie=False):
     pruefe_bilder(s, b)
     pruefe_bewegung(s, b)
     pruefe_links(s, b, ist_vorlage)
+    if not ist_galerie:
+        pruefe_vielfalt(s, b, regeln)
+        pruefe_bildanteil(s, b, ist_vorlage)
+        pruefe_agenda(s, b)
     pruefe_mobil(s, b)
     pruefe_touch(s, b)
     if not ist_galerie:

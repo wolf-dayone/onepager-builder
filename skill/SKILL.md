@@ -61,6 +61,10 @@ Erprobte Abfolgen je Anlass stehen in `references/module-katalog.md`. Faustregel
 - **Rhythmus wechseln** — nie zwei textlastige Module hintereinander. Alle 3–4 Sektionen
   ein dunkles Modul als Zäsur.
 - **Ein Gedanke pro Modul.** Zwei Aussagen = zwei Module.
+- **Nicht zweimal dasselbe Modul, wenn es auch anders geht.** Ab dem dritten
+  Vorkommen wirkt ein Modul wie eine Formatierung statt wie eine Aussage — die
+  Seite liest sich dann wie eine Liste. Der Katalog hat für fast jeden Inhalt
+  zwei bis drei passende Module; die Abgrenzungen dort nennen die Alternative.
 - Genau **ein** Hero am Anfang, genau **ein** CTA-Footer am Ende.
 
 ### 3. Module wählen
@@ -73,6 +77,18 @@ Die Abgrenzungen ernst nehmen — sie verhindern die häufigsten Fehlgriffe:
 `big-statement` vs. `quote-block` (Namensnennung?), `karten-3er` vs.
 `headline-textraster` (visuell abgesetzt?), `roadmap-timeline` vs. `roadmap-zoom-in`
 (Überblick oder Planung?).
+
+**Die Agenda muss sich verdienen.** Sie ist kein Standardbaustein. Nur einsetzen,
+wenn eine thematische Übersicht wirklich Teil der Präsentation ist — also wenn:
+
+- jemand sie ausdrücklich nennt („erst ein Überblick, dann die Details"), **oder**
+- die Seite genug Umfang hat, dass eine Übersicht Orientierung gibt — Faustregel:
+  ab vier Kapiteln, und der Inhalt reicht für mehr als ein paar Minuten Lesen.
+
+Bei einer kurzen Seite mit zwei oder drei Kapiteln kündigt die Agenda nur an, was man
+zwei Bildschirme später ohnehin sieht. Dann weglassen — die Kapitel-Navigation oben
+leistet die Orientierung bereits. Im Zweifel nachfragen, statt sie vorsorglich zu
+setzen.
 
 **Farbe ist bei jedem Modul frei wählbar** (hell Sand/100 oder dunkel Gray/900). Es gibt
 keine feste Zuordnung von Farbe zu Modul. Der Wechsel markiert einen neuen Sinnabschnitt,
@@ -124,6 +140,21 @@ Wo Inhalt fehlt, nicht erfinden: sinnvollen Platzhalter setzen und beim Übergeb
 
 ### 6. Bilder einsetzen
 
+**Im Zweifel mehr Bilder.** Eine reine Textseite ermüdet, egal wie gut die Texte sind —
+die Module sind darauf ausgelegt, dass zwischen den textlastigen Abschnitten visuelle
+Ruhepunkte liegen. Wenn nach Schritt 1 kein Bildmaterial genannt wurde, **aktiv
+nachfragen**, bevor gebaut wird:
+
+> „Hast du Screenshots, Fotos vom Team oder Grafiken dazu? Auch grobe reichen — die
+> Seite trägt deutlich besser, wenn zwischen den Textabschnitten etwas zu sehen ist."
+
+Konkret fragen, nicht allgemein: Screenshots vom Produkt, Fotos vom Workshop, das
+Diagramm aus dem Konzept, Portraits fürs Team-Grid. Wer „hast du Bilder?" gefragt wird,
+antwortet meistens nein; wer „hast du einen Screenshot von dem Prototyp?" gefragt wird,
+sucht ihn heraus.
+
+Der Qualitäts-Check meldet es, wenn keines der Inhaltsmodule etwas Visuelles trägt.
+
 Das Template enthält Bild-Platzhalter. Damit umgehen:
 
 - **Bilder liegen vor:** neben die HTML-Datei legen und relativ verlinken
@@ -157,7 +188,12 @@ Deshalb gehören sie in die Rückfrage aus Schritt 1 und nicht erst ans Ende.
 
 - **Screenshot liegt vor:** einsetzen. Alle Kacheln einer Reihe im gleichen
   Seitenverhältnis, sonst wirkt die Reihe unruhig.
-- **Screenshot fehlt:** danach fragen — ein Prototyp-Link ohne Bild ist deutlich
+- **Screenshot fehlt, Link zeigt auf Figma:** selbst einen ziehen, wenn ein
+  Figma-Zugang zur Verfügung steht (`get_screenshot` über den Figma-MCP, Node-ID aus
+  der URL). Das ist ein echtes Abbild des Prototyps, keine Erfindung — und erspart dem
+  Menschen einen Arbeitsschritt. Geht der Zugriff nicht (kein MCP, geschützte Datei),
+  einmal nachfragen statt es schweigend zu lassen.
+- **Screenshot fehlt sonst:** danach fragen — ein Prototyp-Link ohne Bild ist deutlich
   schwächer. Kommt keiner, eine **beschriftete Kachel** setzen: Zielname und Domain
   als Text auf der Platzhalterfläche. Das sagt ehrlich, was dahinter wartet.
 - **Keine erfundenen Screenshots.** Ein selbst gebautes Bild, das aussieht wie das
