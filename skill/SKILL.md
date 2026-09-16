@@ -32,7 +32,10 @@ drei Fragen**, und zwar diese:
 
 1. **Was ist der Anlass?** (Weekly, Kundenpitch, Case Study, Credentials — bestimmt die Dramaturgie)
 2. **Was sind die 3–6 Kernbotschaften?** (bestimmt, welche Module gebraucht werden)
-3. **Gibt es Zahlen, Zitate, Screenshots oder Logos?** (bestimmt, welche Belege eingebaut werden können)
+3. **Gibt es Zahlen, Zitate, Screenshots, Logos — und Links?** (bestimmt, welche
+   Belege eingebaut werden können). **Links ausdrücklich mitfragen**: Prototyp,
+   Notion-Seite, Slack-Channel, Wiki, Tool. Sie bestimmen nicht nur den Inhalt,
+   sondern die Modulauswahl — siehe Schritt 7.
 
 Mehr nicht. Alles Weitere ergibt sich oder wird sinnvoll angenommen und beim Übergeben
 benannt. Wer einen langen, fertigen Input liefert, bekommt gar keine Rückfragen — dann
@@ -89,7 +92,7 @@ Dann:
 - Jede Kapitel-Sektion behält `id`, `data-chapter` und `data-chapter-title` — die
   Navigation baut sich daraus selbst auf.
 - Jede Sektion behält ihr `data-modul="<Figma-Name>"`. Daran erkennt der Qualitäts-Check
-  in Schritt 7, welche Regeln für sie gelten. Nicht entfernen.
+  in Schritt 8, welche Regeln für sie gelten. Nicht entfernen.
 - Kapitelnummern durchgehend halten: `data-chapter`, `id` und der Kapitelmarker
   (`.eyebrow`) tragen dieselbe Nummer.
 - Pro Kapitel trägt nur die **erste** Sektion den Kapitelmarker. Steht ein Divider davor,
@@ -136,7 +139,45 @@ Das Template enthält Bild-Platzhalter. Damit umgehen:
 
 Sensible Inhalte in Screenshots vor dem Teilen anonymisieren.
 
-### 7. Qualitäts-Check laufen lassen
+### 7. Links einsetzen
+
+Links sind kein Nachtrag, sondern bestimmen mit, welche Module gebraucht werden.
+Deshalb gehören sie in die Rückfrage aus Schritt 1 und nicht erst ans Ende.
+
+**Wohin welcher Link gehört:**
+
+| Was verlinkt wird | Wohin damit |
+|---|---|
+| **Prototyp, klickbare Demo** | `07 Media/02 device-mockup`, wenn die Plattform Teil der Aussage ist (Mobile-App, Desktop-Tool). Mehrere Prototypen oder Unterseiten: `07 Media/03 medien-karten-grid` — dort ist die ganze Kachel klickbar. |
+| **Notion, Confluence, Wiki, Slack-Channel** | CTA-Footer. Das sind Anlaufstellen zum Weiterlesen, keine eigenen Abschnitte — sie würden die Dramaturgie unterbrechen. |
+| **Tool, das im Raum ausprobiert werden soll** | `10 Abschluss/02 qr-tool-verweis`. Der QR-Code funktioniert nur, wenn er auf eine echte URL zeigt. |
+| **Quelle oder Beleg zu einer Zahl** | direkt im Text des jeweiligen Moduls, nicht in den Footer. |
+
+**Vorschaubilder für verlinkte Prototypen:**
+
+- **Screenshot liegt vor:** einsetzen. Alle Kacheln einer Reihe im gleichen
+  Seitenverhältnis, sonst wirkt die Reihe unruhig.
+- **Screenshot fehlt:** danach fragen — ein Prototyp-Link ohne Bild ist deutlich
+  schwächer. Kommt keiner, eine **beschriftete Kachel** setzen: Zielname und Domain
+  als Text auf der Platzhalterfläche. Das sagt ehrlich, was dahinter wartet.
+- **Keine erfundenen Screenshots.** Ein selbst gebautes Bild, das aussieht wie das
+  Produkt, aber keines ist, führt Leser:innen in die Irre — schlimmer als ein leeres
+  Feld, weil niemand es mehr hinterfragt. Dasselbe gilt für Stockfotos.
+
+**Harte Regel: kein Button ohne Ziel.**
+
+Fehlt eine URL, `href="#"` **nicht** als Platzhalter setzen. Ein Knopf, der nichts tut,
+fällt erst der Empfängerin auf — und bis dahin sieht die Seite fertig aus. Stattdessen:
+
+- nach der URL fragen, oder
+- den Button weglassen und beim Übergeben nennen, was noch fehlt, oder
+- `href="[URL: Umzugsplan im Wiki]"` setzen — ein sichtbarer Platzhalter, den der
+  Qualitäts-Check meldet.
+
+Der Check in Schritt 8 prüft das: leeres `href`, `href="#"` und Anker, die auf eine
+nicht existierende `id` zeigen, sind Fehler.
+
+### 8. Qualitäts-Check laufen lassen
 
 **Vor dem Übergeben.** Der Check ist Teil der Arbeit, nicht optional. Er liegt diesem
 Skill bei und braucht nichts weiter als `python3` — das bringt macOS mit:
@@ -170,14 +211,15 @@ dass er nicht lief:
 - jedes Bild mit `alt` und `loading="lazy"`
 - genau ein Hero, genau ein CTA-Footer, 6–10 Module
 
-### 8. Übergeben
+### 9. Übergeben
 
 Datei in den Output-Ordner legen und mit `present_files` übergeben — ohne diesen Schritt
 ist sie für den Menschen nicht erreichbar.
 
 Dazu kurz sagen:
 - welche Abschnitte die Seite hat,
-- was noch fehlt (Bilder, Zahlen, Freigaben),
+- was noch fehlt (Bilder, Zahlen, Freigaben) — **Links einzeln nennen**: welcher
+  Button noch kein Ziel hat und welcher Prototyp noch kein Vorschaubild,
 - was der Qualitäts-Check gemeldet hat und was davon bewusst so bleibt,
 - dass sie sich per Doppelklick im Browser öffnen lässt.
 
@@ -222,7 +264,7 @@ Viewports mitschreiben. Der Qualitäts-Check meldet mehrspaltige Raster ohne sol
 | `assets/starter.html` | Immer — Grundlage jeder neuen Seite (Weekly-Abfolge) |
 | `assets/modul-galerie.html` | Sobald ein Modul gebraucht wird, das nicht im Starter steht — alle 34 zum Herauskopieren |
 | `assets/tokens.css` | Wenn ein Modul von Grund auf neu gebaut wird |
-| `tools/pruefen.py` | Schritt 7 — prüft eine fertige Seite gegen die Figma-Regeln |
+| `tools/pruefen.py` | Schritt 8 — prüft eine fertige Seite gegen die Figma-Regeln |
 
 Die Figma-Quelle der Module:
 `https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides`

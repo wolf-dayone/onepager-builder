@@ -558,6 +558,15 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   align-items:center;justify-content:center;color:var(--color-text);
   font-size:var(--text-body-s)}
 .medien-karte .bild img{width:100%;height:100%;object-fit:cover}
+/* Beschriftete Kachel: wenn zu einem verlinkten Prototyp kein Screenshot
+   vorliegt. Sagt ehrlich, was dahinter wartet, statt ein Bild zu erfinden,
+   das aussieht wie das Produkt, aber keines ist. */
+.medien-karte .bild.ist-beschriftet{flex-direction:column;gap:6px;text-align:center;
+  padding:var(--space-6)}
+.medien-karte .bild.ist-beschriftet .ziel{font-size:var(--text-body-ms);font-weight:600;
+  color:var(--color-main-text)}
+.medien-karte .bild.ist-beschriftet .domain{font-size:var(--text-body-s);
+  color:var(--color-text)}
 .medien-karte .text{padding:var(--space-5) var(--space-6) var(--space-6)}
 .medien-karte h3{font-size:var(--text-body-m);font-weight:400;line-height:1.3;
   color:var(--color-main-text)}
@@ -1164,8 +1173,12 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
         <div class="bild">[Bild]</div>
         <div class="text"><h3>[Ziel der Kachel]</h3><p>[Was hinter dem Klick wartet.]</p></div>
       </a>
+      <!-- Ohne Screenshot: beschriftete Kachel statt erfundenem Vorschaubild. -->
       <a class="medien-karte reveal" href="[URL]">
-        <div class="bild">[Bild]</div>
+        <div class="bild ist-beschriftet">
+          <span class="ziel">[Name des Prototyps]</span>
+          <span class="domain">[figma.com/proto/…]</span>
+        </div>
         <div class="text"><h3>[Ziel der Kachel]</h3><p>[Was hinter dem Klick wartet.]</p></div>
       </a>
     </div>
