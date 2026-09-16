@@ -1,0 +1,26 @@
+<style>
+/* ==== Hairline-Tabelle ==== */
+.table{width:100%;border-collapse:collapse}
+.table th{text-align:left;font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
+  padding-bottom:var(--space-4);border-bottom:1px solid var(--color-main-text)}
+.table td{padding-block:20px;border-bottom:1px solid var(--color-border);
+  font-size:var(--text-body-m);color:var(--color-text)}
+.table td:first-child{font-weight:600;font-size:var(--text-body-ms);color:var(--color-main-text)}
+.table td.num{text-align:right;font-variant-numeric:tabular-nums}
+@media(max-width:700px){.table-scroll{overflow-x:auto}.table{min-width:560px}}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="04 Daten/05 tabelle">
+  <div class="wrap table-scroll">
+    <p class="eyebrow">[NN] — [Übersicht]</p>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">[Tabellentitel]</h2>
+    <table class="table reveal">
+      <thead><tr><th>[Spalte A]</th><th>[Spalte B]</th><th>[Spalte C]</th><th>[Spalte D]</th></tr></thead>
+      <tbody>
+        <tr><td>[Zeile 1]</td><td>[Wert]</td><td>[Wert]</td><td>[Wert]</td></tr>
+        <tr><td>[Zeile 2]</td><td>[Wert]</td><td>[Wert]</td><td>[Wert]</td></tr>
+        <tr><td>[Zeile 3]</td><td>[Wert]</td><td>[Wert]</td><td>[Wert]</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,76 @@
+<style>
+/* ==== Stepper (Phasen) ==== */
+/* Figma: Sticky Scrollspy - die Phasenleiste bleibt oben stehen, der Inhalt
+   darunter wechselt. top-Offset laesst Platz fuer die Kapitel-Navigation. */
+.stepper-tabs{display:flex;gap:0;border-bottom:2px solid var(--color-border);
+  position:sticky;top:72px;background:var(--color-bg);z-index:10;overflow-x:auto;
+  scrollbar-width:none}
+.stepper-tabs::-webkit-scrollbar{display:none}
+.stepper-tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+  margin-bottom:-2px;padding:0 var(--space-4) var(--space-4);cursor:pointer;
+  font-family:inherit;font-size:var(--text-body-m);font-weight:600;line-height:1.3;
+  color:var(--color-text);opacity:.45;white-space:nowrap;transition:opacity .2s var(--ease)}
+.stepper-tab:hover{opacity:.75}
+.stepper-tab[aria-selected="true"]{opacity:1;color:var(--color-main-text);
+  border-bottom-color:var(--color-main-text)}
+.stepper-panel{padding-top:var(--space-8)}
+.stepper-panel[hidden]{display:none}
+.stepper-panel h3{font-size:var(--text-body-m);font-weight:600;line-height:1.3;
+  color:var(--color-main-text)}
+.stepper-panel .desc{margin-top:var(--space-4);font-size:var(--text-body-s);
+  line-height:1.2;color:var(--color-text)}
+.stepper-chancen{margin-top:var(--space-4);display:flex;flex-direction:column;gap:8px}
+.stepper-chancen li{display:flex;gap:12px;font-size:var(--text-body-s);line-height:1.2;
+  color:var(--color-text);list-style:none}
+.stepper-chancen{padding:0;margin-block:var(--space-4) 0}
+@media(max-width:900px){.stepper-tabs{top:0}}
+</style>
+
+<!-- 3-6 Phasen. Die Leiste bleibt beim Scrollen stehen, der Inhalt wechselt. -->
+<section class="stepper" data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="02 Struktur/03 stepper">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Lifecycle]</p>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Der Ablauf in Phasen]</h2>
+
+    <div class="stepper-tabs" role="tablist" aria-label="[Phasen]">
+      <button class="stepper-tab" type="button" role="tab" aria-selected="true"  aria-controls="phase-1" id="tab-1">[Phase 1]</button>
+      <button class="stepper-tab" type="button" role="tab" aria-selected="false" aria-controls="phase-2" id="tab-2">[Phase 2]</button>
+      <button class="stepper-tab" type="button" role="tab" aria-selected="false" aria-controls="phase-3" id="tab-3">[Phase 3]</button>
+      <button class="stepper-tab" type="button" role="tab" aria-selected="false" aria-controls="phase-4" id="tab-4">[Phase 4]</button>
+    </div>
+
+    <div class="stepper-panel reveal" role="tabpanel" id="phase-1" aria-labelledby="tab-1">
+      <h3>[Phase 1]</h3>
+      <p class="desc">[Ein Satz, der diese Phase beschreibt.]</p>
+      <ul class="stepper-chancen">
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+      </ul>
+    </div>
+    <div class="stepper-panel reveal" role="tabpanel" id="phase-2" aria-labelledby="tab-2" hidden>
+      <h3>[Phase 2]</h3>
+      <p class="desc">[Ein Satz, der diese Phase beschreibt.]</p>
+      <ul class="stepper-chancen">
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+      </ul>
+    </div>
+    <div class="stepper-panel reveal" role="tabpanel" id="phase-3" aria-labelledby="tab-3" hidden>
+      <h3>[Phase 3]</h3>
+      <p class="desc">[Ein Satz, der diese Phase beschreibt.]</p>
+      <ul class="stepper-chancen">
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+      </ul>
+    </div>
+    <div class="stepper-panel reveal" role="tabpanel" id="phase-4" aria-labelledby="tab-4" hidden>
+      <h3>[Phase 4]</h3>
+      <p class="desc">[Ein Satz, der diese Phase beschreibt.]</p>
+      <ul class="stepper-chancen">
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
+      </ul>
+    </div>
+  </div>
+</section>

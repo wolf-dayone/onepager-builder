@@ -1,0 +1,26 @@
+<style>
+/* ==== Großbild (randabfallend) ==== */
+.fullbleed{width:100%;aspect-ratio:16/9;background:var(--color-detail);
+  display:grid;place-items:center;color:var(--color-muted);font-size:var(--text-body-s)}
+.fullbleed img{width:100%;height:100%;object-fit:cover;display:block}
+.caption{display:flex;gap:var(--space-12);justify-content:space-between;align-items:start;
+  margin-top:var(--space-12)}
+.caption p{font-size:var(--text-body-l);line-height:1.4;color:var(--color-text);margin:0}
+.caption .credit{font-size:var(--text-body-s);color:var(--color-text);white-space:nowrap}
+@media(max-width:700px){.caption{flex-direction:column;gap:var(--space-4)}}
+</style>
+
+<section data-modul="07 Media/04 grossbild">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Eindruck]</p>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Was das Bild sagt — nicht was es zeigt]</h2>
+  </div>
+  <!-- Randabfallend: bricht bewusst aus dem Raster aus. Mind. 2880px breit. -->
+  <img class="fullbleed reveal" src="[bild.jpg]" alt="[Was auf dem Bild zu sehen ist]" loading="lazy">
+  <div class="wrap">
+    <div class="caption">
+      <p class="lead">[Ein Satz Einordnung, was hier zu sehen ist und warum es hier steht.]</p>
+      <p class="small">[Foto: Name]</p>
+    </div>
+  </div>
+</section>

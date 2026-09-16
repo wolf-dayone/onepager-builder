@@ -1,0 +1,36 @@
+<style>
+/* ==== Chart-Slide ==== */
+/* Figma: Charts entstehen aus echten Daten, nicht als Bild. Deshalb ein
+   einfaches Balkendiagramm aus divs - Hoehe ueber --wert (0..1) gesteuert.
+   Die hervorgehobene Serie traegt .ist-betont (Blue Highlight). */
+.chart-slide .chart{margin-top:var(--space-8);height:300px;display:flex;align-items:flex-end;
+  gap:var(--space-6);padding:var(--space-6);border-radius:var(--radius-card);
+  background:var(--color-detail)}
+.chart-balken{flex:1;display:flex;flex-direction:column;justify-content:flex-end;
+  align-items:center;gap:8px;height:100%}
+.chart-balken .saeule{width:100%;border-radius:4px 4px 0 0;background:var(--color-border);
+  height:calc(var(--wert) * 100%);transition:height .8s var(--ease)}
+.chart-balken.ist-betont .saeule{background:var(--blue-3)}
+.chart-balken .achse{font-size:var(--text-body-s);color:var(--color-text);line-height:1.2}
+.chart-quelle{margin-top:var(--space-4);font-size:var(--text-body-s);color:var(--color-text);
+  opacity:.7}
+@media(prefers-reduced-motion:reduce){.chart-balken .saeule{transition:none}}
+@media(max-width:900px){.chart-slide .chart{height:220px;gap:var(--space-4)}}
+</style>
+
+<!-- Ein Chart pro Modul. Titel sagt die Erkenntnis, nicht die Datenart. -->
+<section class="chart-slide" data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="04 Daten/02 chart-slide">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Daten]</p>
+    <h2 class="h1 reveal">[Nutzung verdoppelt sich ab März]</h2>
+    <p class="small" style="margin-top:6px;color:var(--color-text)">[Kurze Einordnung, was das Chart zeigt.]</p>
+    <div class="chart reveal" role="img" aria-label="[Beschreibung des Diagramms für Screenreader]">
+      <div class="chart-balken" style="--wert:.35"><div class="saeule"></div><span class="achse">[Jan]</span></div>
+      <div class="chart-balken" style="--wert:.42"><div class="saeule"></div><span class="achse">[Feb]</span></div>
+      <div class="chart-balken ist-betont" style="--wert:.86"><div class="saeule"></div><span class="achse">[Mär]</span></div>
+      <div class="chart-balken" style="--wert:.79"><div class="saeule"></div><span class="achse">[Apr]</span></div>
+      <div class="chart-balken" style="--wert:.91"><div class="saeule"></div><span class="achse">[Mai]</span></div>
+    </div>
+    <p class="chart-quelle">Quelle: [Datenquelle], [Zeitraum]</p>
+  </div>
+</section>

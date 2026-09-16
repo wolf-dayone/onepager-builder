@@ -1,0 +1,48 @@
+<style>
+/* ==== Kapitel-Navigation ==== */
+#chapter-nav{position:fixed;top:0;left:0;right:0;z-index:50;background:var(--color-bg);
+  border-bottom:1px solid var(--color-border);transform:translateY(-100%);transition:transform .35s var(--ease)}
+#chapter-nav.visible{transform:translateY(0)}
+#chapter-nav .inner{display:flex;align-items:center;justify-content:space-between;gap:var(--space-8);height:72px}
+#chapter-nav .brand-group{display:flex;align-items:center;gap:12px;min-width:0;
+  text-decoration:none;opacity:1;transition:opacity .2s var(--ease)}
+#chapter-nav .brand-group:hover{opacity:.7}
+#chapter-nav .logo-mark{color:var(--color-main-text);flex:0 0 auto}
+#chapter-nav .logo-mark-icon{display:none}
+#chapter-nav.icon-only .logo-mark-full{display:none}
+#chapter-nav.icon-only .logo-mark-icon{display:block}
+#chapter-nav .nav-title{font-size:var(--text-body-s);color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#chapter-nav.no-title .nav-title{display:none}
+#chapter-nav ol{display:flex;align-items:center;gap:var(--space-8);list-style:none;margin:0;padding:0;
+  overflow-x:auto;scrollbar-width:none} /* Sicherheitsnetz, falls selbst Stufe 4 noch nicht reicht */
+#chapter-nav a{display:flex;gap:8px;text-decoration:none;color:var(--color-text);
+  font-size:var(--text-body-s);font-weight:600;opacity:.55;transition:opacity .2s var(--ease);white-space:nowrap}
+#chapter-nav a:hover,#chapter-nav a.active{opacity:1;color:var(--color-main-text)}
+#chapter-nav.compact ol{gap:var(--space-4)}
+#chapter-nav.compact .ch-title{display:none}
+#chapter-nav.compact a{position:relative}
+/* Tooltip im Nummern-Fallback */
+#chapter-nav.compact a::after{content:attr(data-title);position:absolute;top:calc(100% + 10px);left:50%;
+  transform:translateX(-50%);background:var(--color-main-text);color:var(--gray-50);font-size:var(--text-body-s);font-weight:400;
+  padding:6px 10px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s var(--ease)}
+#chapter-nav.compact a:hover::after{opacity:1}
+/* Präsentationstitel, Kapitel-Anzeige und Logo-Form sind keine festen Breakpoints,
+   sondern eine Prioritäts-Kaskade nach verfügbarem Platz: fitNav() unten misst den
+   tatsächlichen Überlauf und setzt .no-title / .compact / .icon-only in dieser
+   Reihenfolge — je nach Kapitelanzahl und Titellängen kann das bei jeder Breite
+   passieren, nicht nur unterhalb eines fixen px-Werts. */
+/* Kein komplettes Ausblenden mehr auf Mobile: fitNav() schaltet bei Platzmangel
+   automatisch auf .compact (nur Nummern + Tooltip) — das greift bei jeder Breite,
+   auch auf dem Handy. Ein hartes display:none hier würde diesen Fallback übersteuern. */
+</style>
+
+<nav id="chapter-nav" aria-label="Kapitel" data-modul="00 Elemente/01 kapitel-nav">
+  <div class="wrap inner">
+    <a class="brand-group" href="#hero" aria-label="Zum Seitenanfang">
+      <svg class="logo-mark logo-mark-full" width="92" height="16" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
+      <svg class="logo-mark logo-mark-icon" width="16" height="16" aria-label="DAYONE"><use href="#dayone-mark"></use></svg>
+      <span class="nav-title">[Präsentations-Titel]</span>
+    </a>
+    <ol><!-- wird aus den <section data-chapter> automatisch erzeugt --></ol>
+  </div>
+</nav>

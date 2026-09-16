@@ -1,0 +1,51 @@
+<style>
+/* ==== Hero ==== */
+/* Hintergrund (.dark) sitzt auf dem ungebremsten <header>, Inhalt in .wrap darunter —
+   sonst entstehen auf sehr breiten Screens helle Ränder links/rechts (wrap+dark auf
+   demselben Element begrenzt auch den Hintergrund auf --grid-max). */
+.hero{min-height:100svh}
+.hero .wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;
+  padding-block:var(--space-16) var(--space-20)}
+.hero .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
+.logo-mark{display:block;color:var(--gray-50)}
+.hero .badges{display:flex;gap:12px}
+.badge{border:1px solid var(--color-dark-border);border-radius:var(--radius-pill);padding:10px 20px;
+  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
+.badge.accent{border-color:var(--red-500);color:var(--red-500)}
+.hero h1 .line2{display:block;font-weight:400;color:var(--color-dark-text-soft)}
+.hero .sub{margin-top:var(--space-6);max-width:46ch}
+.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
+  /* Figma nennt diese Graustufe "Gray/400", ihr Wert entspricht aber unserem
+     --gray-300 — die Nummerierung zwischen Figma-Variablen und diesen Tokens ist NICHT
+     deckungsgleich. Beim Übersetzen von Figma-Werten immer den Hex-Wert vergleichen,
+     nicht den Variablennamen übernehmen. */
+  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-dark-bg) 100%)}
+.hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
+.hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-dark-text-soft)}
+.hero .meta dd{margin:8px 0 0;font-weight:600}
+</style>
+
+<!-- .dark auf dem äußeren <header> (volle Breite), Inhalt in .wrap darunter. -->
+<header class="hero dark" id="hero" data-modul="01 Einstieg/01 cover-hero">
+  <div class="wrap">
+    <div class="top reveal">
+      <svg class="logo-mark" width="150" height="27" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
+      <div class="badges">
+        <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
+        <span class="badge">[ANLASS – KW 00]</span>
+      </div>
+    </div>
+    <div class="reveal">
+      <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
+      <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
+    </div>
+    <div class="reveal">
+      <div class="rule"></div>
+      <dl class="meta">
+        <div><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
+        <div><dt>Presenter</dt><dd>[Vorname &amp; Vorname]</dd></div>
+        <div><dt>Format</dt><dd>[DAYONE Weekly]</dd></div>
+      </dl>
+    </div>
+  </div>
+</header>

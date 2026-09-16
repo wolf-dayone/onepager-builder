@@ -1,0 +1,30 @@
+<style>
+/* ==== Logo-Wand ==== */
+/* Figma: Logos optisch auf gleiche HOEHE bringen, nicht auf gleiche Breite -
+   deshalb begrenzt der Slot die Hoehe und laesst die Breite laufen. */
+.logo-wand{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-6);
+  margin-top:var(--space-12)}
+.logo-slot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  padding:var(--space-6);font-size:var(--text-body-s);color:var(--color-text)}
+.logo-slot img{max-height:44px;width:auto;max-width:100%;object-fit:contain;
+  filter:grayscale(1);opacity:.85}
+@media(max-width:900px){.logo-wand{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+
+<!-- 12-24 Logos, bekannteste oben links. Leere Slots am Zeilenende vermeiden. -->
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="09 Referenzen/01 logo-wand">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Referenzen]</p>
+    <h2 class="h1 reveal">[Unsere Kunden]</h2>
+    <div class="logo-wand">
+      <div class="logo-slot reveal">[Logo 01]</div><div class="logo-slot reveal">[Logo 02]</div>
+      <div class="logo-slot reveal">[Logo 03]</div><div class="logo-slot reveal">[Logo 04]</div>
+      <div class="logo-slot reveal">[Logo 05]</div><div class="logo-slot reveal">[Logo 06]</div>
+      <div class="logo-slot reveal">[Logo 07]</div><div class="logo-slot reveal">[Logo 08]</div>
+      <div class="logo-slot reveal">[Logo 09]</div><div class="logo-slot reveal">[Logo 10]</div>
+      <div class="logo-slot reveal">[Logo 11]</div><div class="logo-slot reveal">[Logo 12]</div>
+      <div class="logo-slot reveal">[Logo 13]</div><div class="logo-slot reveal">[Logo 14]</div>
+      <div class="logo-slot reveal">[Logo 15]</div>
+    </div>
+  </div>
+</section>

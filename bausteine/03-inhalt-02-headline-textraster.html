@@ -1,0 +1,28 @@
+<style>
+/* ==== Headline + Textraster ==== */
+/* Gleichrangige Aspekte ohne Karten-Optik: Hairline statt Flaeche. */
+.textraster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-8)}
+.textraster.ist-dreispaltig{grid-template-columns:repeat(3,minmax(0,1fr))}
+.raster-col{padding-top:var(--space-6);border-top:1px solid var(--color-main-text)}
+.raster-col h3{font-size:var(--text-body-ms);font-weight:600;line-height:1;
+  color:var(--color-main-text)}
+.raster-col p{margin-top:var(--space-4);font-size:var(--text-body-s);line-height:1.2;
+  color:var(--color-text)}
+@media(max-width:900px){
+  .textraster,.textraster.ist-dreispaltig{grid-template-columns:1fr;gap:var(--space-6)}
+}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="03 Inhalt/02 headline-textraster">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Kapitelname]</p>
+    <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">[Headline]</h2>
+    <!-- 3-4 Spalten, etwa gleich lang halten - sonst kippt das Raster optisch. -->
+    <div class="textraster">
+      <div class="raster-col reveal"><h3>[Spalten-Titel 1]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col reveal"><h3>[Spalten-Titel 2]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col reveal"><h3>[Spalten-Titel 3]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col reveal"><h3>[Spalten-Titel 4]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+    </div>
+  </div>
+</section>

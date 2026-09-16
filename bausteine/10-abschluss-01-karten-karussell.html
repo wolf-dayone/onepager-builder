@@ -1,0 +1,52 @@
+<!-- braucht: 00 Elemente/02 karte -->
+<style>
+/* ==== Karten-Karussell ==== */
+.carousel{overflow-x:auto;scroll-snap-type:x mandatory;display:flex;gap:var(--space-8);
+  padding-inline:var(--grid-margin);padding-bottom:var(--space-6);scrollbar-width:none}
+.carousel::-webkit-scrollbar{display:none}
+.carousel>.card{flex:0 0 400px;scroll-snap-align:start;min-height:500px;justify-content:space-between}
+/* Im Karussell tragen die Karten Flaeche - dort ist Abgrenzung wichtiger als
+   Leichtigkeit. gap:0, weil der Abstand hier ueber justify-content entsteht. */
+.carousel>.card{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-10);gap:0}
+/* Begrenzt den scrollbaren Track auf --grid-max, damit die erste Karte am
+   selben linken Rand startet wie der Kopf darueber (.wrap).
+   width + min-width sind noetig, nicht optional: die Sektion ist ein
+   Flex-Container, und ein Flex-Item bekommt min-width:auto. Ohne min-width:0
+   wird die Shell so breit wie ihr max-width (1440px) statt so breit wie der
+   Viewport - die ganze Seite scrollt dann seitlich, auf jedem Display unter
+   1440px. */
+.carousel-shell{width:100%;min-width:0;max-width:var(--grid-max);margin-inline:auto}
+.carousel-controls{display:flex;gap:12px;justify-content:flex-end;margin-top:var(--space-6)}
+.carousel-controls button{width:56px;height:56px;border-radius:var(--radius-pill);border:1px solid var(--gray-300);
+  background:none;cursor:pointer;font-size:var(--text-display-3);color:var(--color-main-text);font-family:inherit}
+.carousel-controls button:hover{border-color:var(--color-main-text)}
+.carousel-controls button:disabled{opacity:.3;cursor:default}
+@media(max-width:700px){.carousel>.card{flex-basis:80vw}}
+</style>
+
+<!-- Generisches Modul für nummerierte Textinhalte, nicht nur für Abschluss-Takeaways.
+     .carousel-shell begrenzt den Track auf --grid-max, damit die erste Karte am
+     linken Grid-Rand startet statt am nackten Viewport-Rand. -->
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">[NN] — [Kapitelname]</p><h2 class="h1">[Was wir euch mitgeben]</h2></div>
+    </div>
+  </div>
+  <div class="carousel-shell">
+    <div class="carousel" id="karten-karussell">
+      <div class="card"><span class="num">01</span>
+        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
+      <div class="card"><span class="num">02</span>
+        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
+      <div class="card"><span class="num">03</span>
+        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
+      <div class="card"><span class="num">04</span>
+        <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
+    </div>
+  </div>
+  <div class="wrap carousel-controls">
+    <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">‹</button>
+    <button type="button" data-carousel="karten-karussell" data-dir="1" aria-label="Weiter">›</button>
+  </div>
+</section>

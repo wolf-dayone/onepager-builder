@@ -15,7 +15,7 @@
 --color-dark-bg:var(--gray-900);--color-dark-text:var(--gray-50);--color-dark-text-soft:var(--gray-300);--color-dark-border:var(--gray-500);
 --font:"Roobert","Inter",system-ui,-apple-system,sans-serif;
 --text-display-1:76px;--text-display-2:36px;--text-display-3:24px;
---text-body-xl:36px;--text-body-l:24px;--text-body-m:19px;--text-body-s:14px;
+--text-body-xl:36px;--text-body-l:24px;--text-body-m:19px;--text-body-ms:16px;--text-body-s:14px;
 --grid-max:1440px;--grid-margin:96px;
 --space-4:16px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--space-16:64px;--space-20:80px;--space-24:96px;--space-30:120px;
 --radius-card:8px;--radius-pill:9999px;--ease:cubic-bezier(.4,0,.2,1);
@@ -58,6 +58,7 @@ footer.cta{padding-block:var(--space-20)}
 [data-chapter-marker="off"] .eyebrow{display:none}
 
 /* ==== Typo-Rollen ==== */
+.h1,.h2,.h3{overflow-wrap:break-word}
 .h1{font-size:var(--text-display-1);font-weight:600;line-height:1.2;letter-spacing:-.01em}
 .h2{font-size:var(--text-display-2);font-weight:600;line-height:1.2}
 .h3{font-size:var(--text-display-3);font-weight:600;line-height:1.2}
@@ -78,7 +79,7 @@ footer.cta{padding-block:var(--space-20)}
 #chapter-nav .logo-mark-icon{display:none}
 #chapter-nav.icon-only .logo-mark-full{display:none}
 #chapter-nav.icon-only .logo-mark-icon{display:block}
-#chapter-nav .nav-title{font-size:17px;color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#chapter-nav .nav-title{font-size:var(--text-body-s);color:var(--color-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #chapter-nav.no-title .nav-title{display:none}
 #chapter-nav ol{display:flex;align-items:center;gap:var(--space-8);list-style:none;margin:0;padding:0;
   overflow-x:auto;scrollbar-width:none} /* Sicherheitsnetz, falls selbst Stufe 4 noch nicht reicht */
@@ -90,7 +91,7 @@ footer.cta{padding-block:var(--space-20)}
 #chapter-nav.compact a{position:relative}
 /* Tooltip im Nummern-Fallback */
 #chapter-nav.compact a::after{content:attr(data-title);position:absolute;top:calc(100% + 10px);left:50%;
-  transform:translateX(-50%);background:var(--color-main-text);color:var(--gray-50);font-size:12px;font-weight:400;
+  transform:translateX(-50%);background:var(--color-main-text);color:var(--gray-50);font-size:var(--text-body-s);font-weight:400;
   padding:6px 10px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s var(--ease)}
 #chapter-nav.compact a:hover::after{opacity:1}
 /* Präsentationstitel, Kapitel-Anzeige und Logo-Form sind keine festen Breakpoints,
@@ -157,13 +158,13 @@ footer.cta{padding-block:var(--space-20)}
 /* Begrenzt den scrollbaren Track auf --grid-max, damit die erste Karte im Ausgangszustand
    am selben linken Rand startet wie der Kopf darüber (.wrap) — sonst weicht der Track auf
    sehr breiten Screens vom Grid ab, weil .carousel selbst nicht auf --grid-max begrenzt ist. */
-.carousel-shell{max-width:var(--grid-max);margin-inline:auto}
+.carousel-shell{width:100%;min-width:0;max-width:var(--grid-max);margin-inline:auto}
 
 /* ==== Kennzahlen (dunkel) ==== */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0}
 .stat{border-top:1px solid var(--color-border);padding-top:28px;padding-right:var(--space-8)}
 .stat .value{font-size:var(--text-display-1);font-weight:600;line-height:1}
-.stat .label{margin-top:var(--space-4);font-size:16px;font-weight:600}
+.stat .label{margin-top:var(--space-4);font-size:var(--text-body-ms);font-weight:600}
 .stat .note{margin-top:8px;font-size:var(--text-body-s);color:var(--color-text)}
 
 /* ==== Zitat ==== */
@@ -178,7 +179,7 @@ footer.cta{padding-block:var(--space-20)}
 .carousel>.card{flex:0 0 400px;scroll-snap-align:start;min-height:500px;justify-content:space-between}
 .carousel-controls{display:flex;gap:12px;justify-content:flex-end;margin-top:var(--space-6)}
 .carousel-controls button{width:56px;height:56px;border-radius:var(--radius-pill);border:1px solid var(--gray-300);
-  background:none;cursor:pointer;font-size:20px;color:var(--color-main-text);font-family:inherit}
+  background:none;cursor:pointer;font-size:var(--text-display-3);color:var(--color-main-text);font-family:inherit}
 .carousel-controls button:hover{border-color:var(--color-main-text)}
 .carousel-controls button:disabled{opacity:.3;cursor:default}
 @media(max-width:700px){.carousel>.card{flex-basis:80vw}}
@@ -186,7 +187,7 @@ footer.cta{padding-block:var(--space-20)}
 /* ==== CTA-Footer ==== */
 .cta .actions{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-8)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
-  font-weight:600;font-size:16px;text-decoration:none;min-height:44px;font-family:inherit}
+  font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;font-family:inherit}
 .btn-primary{background:var(--gray-50);color:var(--gray-900)}
 .btn-primary:hover{background:var(--gray-200)}
 .btn-secondary{border:1px solid var(--gray-50);color:var(--gray-50)}
@@ -211,7 +212,7 @@ footer.cta{padding-block:var(--space-20)}
   padding-bottom:var(--space-4);border-bottom:1px solid var(--color-main-text)}
 .table td{padding-block:20px;border-bottom:1px solid var(--color-border);
   font-size:var(--text-body-m);color:var(--color-text)}
-.table td:first-child{font-weight:600;font-size:16px;color:var(--color-main-text)}
+.table td:first-child{font-weight:600;font-size:var(--text-body-ms);color:var(--color-main-text)}
 .table td.num{text-align:right;font-variant-numeric:tabular-nums}
 @media(max-width:700px){.table-scroll{overflow-x:auto}.table{min-width:560px}}
 
@@ -251,7 +252,7 @@ footer.cta{padding-block:var(--space-20)}
 .timeline-item.is-current .timeline-dot{background:var(--red-500);box-shadow:0 0 0 5px rgba(255,84,76,.18)}
 .timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .timeline-item.is-current .timeline-date{color:var(--red-500)}
-.timeline-title{font-size:16px;font-weight:600}
+.timeline-title{font-size:var(--text-body-ms);font-weight:600}
 .timeline-tag{font-size:var(--text-body-s);color:var(--red-500)}
 @media(prefers-reduced-motion:reduce){.timeline-progress{transition:none}}
 
@@ -276,8 +277,8 @@ footer.cta{padding-block:var(--space-20)}
 .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-6)}
 .team-member{display:flex;flex-direction:column;gap:16px}
 .team-avatar{aspect-ratio:4/5;border-radius:var(--radius-card);background:var(--color-detail);
-  display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:600;color:var(--color-text)}
-.team-member .name{font-weight:600;font-size:16px}
+  display:flex;align-items:center;justify-content:center;font-size:var(--text-display-3);font-weight:600;color:var(--color-text)}
+.team-member .name{font-weight:600;font-size:var(--text-body-ms)}
 .team-member .role{font-size:var(--text-body-s);color:var(--color-text)}
 
 /* ==== Facts & Figures ==== */
@@ -320,7 +321,7 @@ footer.cta{padding-block:var(--space-20)}
 </svg>
 
 <!-- ============ KAPITEL-NAVIGATION ============ -->
-<nav id="chapter-nav" aria-label="Kapitel">
+<nav id="chapter-nav" aria-label="Kapitel" data-modul="00 Elemente/01 kapitel-nav">
   <div class="wrap inner">
     <a class="brand-group" href="#hero" aria-label="Zum Seitenanfang">
       <svg class="logo-mark logo-mark-full" width="92" height="16" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
@@ -332,7 +333,7 @@ footer.cta{padding-block:var(--space-20)}
 </nav>
 
 <!-- ============ HERO ============ -->
-<header class="hero dark" id="hero">
+<header class="hero dark" id="hero" data-modul="01 Einstieg/01 cover-hero">
   <div class="wrap">
     <div class="top reveal">
       <svg class="logo-mark" width="150" height="27"><use href="#dayone-logo"></use></svg>
@@ -354,7 +355,7 @@ footer.cta{padding-block:var(--space-20)}
 </header>
 
 <!-- ============ AGENDA ============ -->
-<section class="agenda dark" id="agenda">
+<section class="agenda dark" id="agenda" data-modul="01 Einstieg/02 agenda">
   <div class="wrap">
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">Agenda</h2>
     <div class="agenda-list">
@@ -371,7 +372,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ KAPITEL 01 — Matrix 2x2 ============ -->
-<section data-chapter="01" data-chapter-title="Auswahl" id="kapitel-01">
+<section data-chapter="01" data-chapter-title="Auswahl" id="kapitel-01" data-modul="04 Daten/03 matrix-2x2">
   <div class="wrap">
     <p class="eyebrow">01 — Auswahl</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">Wonach wir gesucht haben</h2>
@@ -391,7 +392,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ KAPITEL 02 — Prozess-Schritte ============ -->
-<section data-chapter="02" data-chapter-title="Ablauf" id="kapitel-02">
+<section data-chapter="02" data-chapter-title="Ablauf" id="kapitel-02" data-modul="03 Inhalt/05 prozess-schritte">
   <div class="wrap">
     <p class="eyebrow">02 — Ablauf</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">So läuft der Umzug ab</h2>
@@ -419,7 +420,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ KAPITEL 03 — Roadmap-Timeline ============ -->
-<section data-chapter="03" data-chapter-title="Termine" id="kapitel-03">
+<section data-chapter="03" data-chapter-title="Termine" id="kapitel-03" data-modul="06 Zeitachse/01 roadmap-timeline">
   <div class="wrap">
     <p class="eyebrow">03 — Termine</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">Von der Unterschrift bis zum Einzug</h2>
@@ -443,7 +444,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ KAPITEL 04 — Tabelle ============ -->
-<section data-chapter="04" data-chapter-title="Vergleich" id="kapitel-04">
+<section data-chapter="04" data-chapter-title="Vergleich" id="kapitel-04" data-modul="04 Daten/05 tabelle">
   <div class="wrap table-scroll">
     <p class="eyebrow">04 — Vergleich</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">Altes vs. neues Büro</h2>
@@ -461,7 +462,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ KAPITEL 05 — Team-Grid ============ -->
-<section data-chapter="05" data-chapter-title="Ansprechpartner" id="kapitel-05">
+<section data-chapter="05" data-chapter-title="Ansprechpartner" id="kapitel-05" data-modul="08 Menschen/01 team-grid">
   <div class="wrap">
     <p class="eyebrow">05 — Ansprechpartner</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">Wer euch bei Fragen weiterhilft</h2>
@@ -475,7 +476,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ FACTS & FIGURES ============ -->
-<section>
+<section data-modul="09 Referenzen/02 facts-figures">
   <div class="wrap">
     <div class="facts">
       <div class="facts-image reveal">Bild: Neues Büro am Gleisdreieck</div>
@@ -490,7 +491,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ ZITAT ============ -->
-<section class="quote">
+<section class="quote" data-modul="08 Menschen/03 quote-block">
   <div class="wrap reveal">
     <blockquote>„Ich hab erst gedacht, ein Umzug im März ist ein schlechter Scherz. Jetzt freu ich mich mehr auf die Dachterrasse als auf mein neues Notebook.“</blockquote>
     <cite>Anonyme Stimme aus dem Slack-Channel #umzug</cite>
@@ -498,7 +499,7 @@ footer.cta{padding-block:var(--space-20)}
 </section>
 
 <!-- ============ CTA-FOOTER ============ -->
-<footer class="cta dark">
+<footer class="cta dark" data-modul="10 Abschluss/03 cta-footer">
   <div class="wrap">
     <h2 class="h2 reveal">Fragen zum Umzug?</h2>
     <p class="lead reveal" style="margin-top:var(--space-4)">Der komplette Umzugsplan mit FAQ steht im internen Wiki.</p>

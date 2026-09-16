@@ -1,0 +1,72 @@
+
+
+/* ==== TOKENS (identisch zu assets/tokens.css) ==== */
+/* Die Tokens werden beim Bauen aus referenzen/tokens.css eingesetzt -
+   es gibt sie nur an einer Stelle. */
+/*__TOKENS__*/
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font);background:var(--color-bg);color:var(--color-main-text);
+     font-size:var(--text-body-m);line-height:1.3;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p{margin:0}
+img{max-width:100%;display:block}
+
+.wrap{max-width:var(--grid-max);width:100%;margin-inline:auto;padding-inline:var(--grid-margin)}
+/* Asymmetrischer Sektionskopf: Headline links (7 Spalten), Intro rechts (420px) */
+.section-head{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:var(--space-24);
+  align-items:end;margin-bottom:var(--space-20)}
+.section-head .intro{color:var(--color-text);font-size:var(--text-body-l);line-height:1.4}
+@media(max-width:900px){.section-head{grid-template-columns:1fr;gap:var(--space-6);align-items:start}}
+/* min-height statt height: kurze Module (z. B. Agenda) wirken nicht mehr gestaucht,
+   lange wachsen ganz normal über die Viewport-Höhe hinaus. justify-content:center
+   zentriert den Inhalt, SOLANGE er kürzer als der verfügbare Raum ist — sobald er das
+   Padding oben/unten erreicht, gibt es keinen Raum zum Zentrieren mehr, die Sektion
+   wächst einfach mit normalem Fluss weiter. */
+/* Jede Section/CTA-Footer mind. eine Viewport-Hoehe, Padding zaehlt mit (box-sizing:border-box) -
+   hoeher ist erlaubt, niedriger nicht. Nicht mit eigener kleinerer min-height ueberschreiben
+   (das war frueher beim Divider der Fall, siehe dort). */
+section,footer.cta{min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+section{padding-block:var(--space-30)}
+footer.cta{padding-block:var(--space-20)}
+/* .dark schaltet nicht nur Hintergrund/Grundschrift um, sondern die komplette
+   semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche) — dadurch braucht
+   JEDES Modul (Karten, Tabellen, Timeline, Matrix, Team-Grid …) keine eigene
+   Dark-Variante im Code: einfach die Klasse `dark` auf die <section> setzen oder
+   weglassen, der Rest folgt automatisch. Ausnahmen: Hero und CTA-Footer sind bewusst
+   IMMER dunkel (siehe deren Komponenten-Beschreibung in Figma), keine Wahl nötig. */
+.dark{background:var(--color-dark-bg);color:var(--color-dark-text);
+  --color-main-text:var(--color-dark-text);
+  --color-text:var(--color-dark-text-soft);
+  --color-border:var(--color-dark-border);
+  --color-detail:var(--gray-500);
+  --color-muted:var(--color-dark-text-soft)}
+
+/* ==== Kapitelmarker (Eyebrow) ==== */
+/* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */
+.eyebrow{display:flex;flex-direction:column;align-items:flex-start;gap:14px;
+  font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text);margin-bottom:var(--space-6)}
+.eyebrow::after{content:"";width:68px;height:1px;background:currentColor;flex:none}
+/* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
+.eyebrow.is-centered{align-items:center;text-align:center}
+[data-chapter-marker="off"] .eyebrow{display:none}
+
+/* ==== Typo-Rollen ==== */
+/* overflow-wrap: ein einzelnes langes Wort (Produktname, Kompositum) darf
+   nie aus seiner Spalte laufen - passiert sonst bei 76px sofort. */
+.h1,.h2,.h3{overflow-wrap:break-word}
+.h1{font-size:var(--text-display-1);font-weight:600;line-height:1.2;letter-spacing:-.01em}
+.h2{font-size:var(--text-display-2);font-weight:600;line-height:1.2}
+.h3{font-size:var(--text-display-3);font-weight:600;line-height:1.2}
+.lead{font-size:var(--text-body-l);line-height:1.4;color:var(--color-text)}
+.body{font-size:var(--text-body-m);line-height:1.4;color:var(--color-text)}
+.muted{color:var(--color-text)}
+.small{font-size:var(--text-body-s)}
+
+/* ==== Reveal on scroll ==== */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 1.4s var(--ease),transform 1.4s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+}

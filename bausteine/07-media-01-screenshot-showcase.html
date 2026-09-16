@@ -1,0 +1,38 @@
+<style>
+/* ==== Screenshot-Showcase ==== */
+.showcase{display:grid;grid-template-columns:760px minmax(0,1fr);gap:var(--space-16);
+  align-items:center}
+.showcase-bild{aspect-ratio:760/480;border-radius:var(--radius-card);overflow:hidden;
+  background:var(--color-detail);display:flex;align-items:center;justify-content:center;
+  color:var(--color-text);font-size:var(--text-body-s)}
+.showcase-bild img{width:100%;height:100%;object-fit:cover}
+.showcase-version{font-size:var(--text-body-s);line-height:1.2;color:var(--color-text)}
+.showcase-feature{margin-top:var(--space-4);font-size:var(--text-body-l);font-weight:600;
+  line-height:1.2;color:var(--color-main-text)}
+.showcase-punkte{list-style:none;padding:0;margin:var(--space-4) 0 0;
+  display:flex;flex-direction:column;gap:var(--space-4)}
+.showcase-punkt{display:flex;gap:12px;font-size:var(--text-body-s);line-height:1.2;
+  color:var(--color-text)}
+@media(max-width:1200px){.showcase{grid-template-columns:minmax(0,1fr) 320px}}
+@media(max-width:900px){.showcase{grid-template-columns:1fr;gap:var(--space-8)}}
+</style>
+
+<!-- Screenshot in echter Aufloesung. Sensible Daten vorher anonymisieren. -->
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="07 Media/01 screenshot-showcase">
+  <div class="wrap">
+    <p class="eyebrow">[NN] — [Ergebnis]</p>
+    <div class="showcase" style="margin-top:var(--space-12)">
+      <div class="showcase-bild reveal">[Screenshot]</div>
+      <div class="reveal">
+        <p class="showcase-version">[VERSION 1.0]</p>
+        <h3 class="showcase-feature">[Feature-Name]</h3>
+        <ul class="showcase-punkte">
+          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Erste Kernfunktion]</span></li>
+          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Zweite Kernfunktion]</span></li>
+          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Dritte Kernfunktion]</span></li>
+          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Export- oder Filtermöglichkeit]</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
