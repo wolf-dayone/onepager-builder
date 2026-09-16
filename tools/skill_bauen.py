@@ -16,6 +16,7 @@ import argparse
 import hashlib
 import pathlib
 import shutil
+import zipfile
 import sys
 
 WURZEL = pathlib.Path(__file__).resolve().parent.parent
@@ -57,6 +58,18 @@ def bauen():
     for quelle, ziel in INHALT.items():
         groesse = (ZIEL / ziel).stat().st_size
         print(f"  {ziel:<34} {groesse:>7,} B   ← {quelle}")
+
+    # Die Skill-Verwaltung nimmt eine .skill-Datei: ein ZIP mit dem
+    # Skill-Ordner auf oberster Ebene (Format aus der bestehenden
+    # dayone-onepager.skill uebernommen).
+    paket = ZIEL.parent / "dayone-onepager.skill"
+    if paket.exists():
+        paket.unlink()
+    with zipfile.ZipFile(paket, "w", zipfile.ZIP_DEFLATED) as z:
+        for ziel in INHALT.values():
+            z.write(ZIEL / ziel, f"dayone-onepager/{ziel}")
+    print(f"\nZum Hochladen: {paket.relative_to(WURZEL)}  "
+          f"({paket.stat().st_size:,} B)")
 
 
 def drift_pruefen():
