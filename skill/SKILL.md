@@ -138,13 +138,17 @@ Sensible Inhalte in Screenshots vor dem Teilen anonymisieren.
 
 ### 7. Qualitäts-Check laufen lassen
 
-**Vor dem Übergeben.** Der Check ist Teil der Arbeit, nicht optional:
+**Vor dem Übergeben.** Der Check ist Teil der Arbeit, nicht optional. Er liegt diesem
+Skill bei und braucht nichts weiter als `python3` — das bringt macOS mit:
 
 ```
-python3 tools/pruefen.py meine-seite.html
+python3 tools/pruefen.py /pfad/zu/meine-seite.html
 ```
 
-Er prüft gegen dieselben Figma-Regeln, die im Katalog stehen: übrige Platzhalter,
+Aus dem Skill-Verzeichnis heraus aufrufen (dort liegen `tools/` und `data/`), die zu
+prüfende Datei mit vollem Pfad übergeben.
+
+Geprüft wird gegen dieselben Figma-Regeln, die im Katalog stehen: übrige Platzhalter,
 Schriftgrößen und Farben außerhalb der Tokens, vollständige Kapitel-Attribute,
 Stückzahlen je Modul (3–5 Punkte in der Sticky-Liste, 12–24 Logos in der Logo-Wand …),
 `alt`-Texte, `prefers-reduced-motion`, Touch-Größen und mehrspaltige Raster ohne
@@ -153,9 +157,18 @@ Mobil-Regel.
 `FEHLER` müssen weg. `WARNUNG` und `HINWEIS` prüfen und entweder beheben oder beim
 Übergeben begründen, warum sie hier in Ordnung sind.
 
-Liegt das Repo nicht vor, wenigstens von Hand durchgehen: kein `[` mehr im sichtbaren
-Text, keine rohen `px`-Schriftgrößen, jede Kapitel-Sektion mit `id` und
-`data-chapter-title`, jedes Bild mit `alt`.
+**Lässt sich `python3` in dieser Umgebung nicht ausführen**, den Check nicht
+stillschweigend überspringen, sondern von Hand durchgehen und beim Übergeben sagen,
+dass er nicht lief:
+
+- kein `[` mehr im sichtbaren Text (Achtung: in CSS und JavaScript stehen eckige
+  Klammern legitim — nur den Textinhalt prüfen)
+- keine rohen `px`-Schriftgrößen; erlaubt sind 14, 16, 19, 24, 36, 76 als `var(--text-…)`
+- keine Hex-Farben außerhalb des `:root`-Blocks
+- jede Kapitel-Sektion mit `id`, `data-chapter`, `data-chapter-title` und `data-modul`
+- Kapitelnummer und Kapitelmarker tragen dieselbe Zahl
+- jedes Bild mit `alt` und `loading="lazy"`
+- genau ein Hero, genau ein CTA-Footer, 6–10 Module
 
 ### 8. Übergeben
 
@@ -209,6 +222,7 @@ Viewports mitschreiben. Der Qualitäts-Check meldet mehrspaltige Raster ohne sol
 | `assets/starter.html` | Immer — Grundlage jeder neuen Seite (Weekly-Abfolge) |
 | `assets/modul-galerie.html` | Sobald ein Modul gebraucht wird, das nicht im Starter steht — alle 34 zum Herauskopieren |
 | `assets/tokens.css` | Wenn ein Modul von Grund auf neu gebaut wird |
+| `tools/pruefen.py` | Schritt 7 — prüft eine fertige Seite gegen die Figma-Regeln |
 
 Die Figma-Quelle der Module:
 `https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides`

@@ -31,6 +31,14 @@ INHALT = {
     "referenzen/tokens.css": "assets/tokens.css",
     "starter.html": "assets/starter.html",
     "modul-galerie.html": "assets/modul-galerie.html",
+
+    # Der Qualitaets-Check muss mit: SKILL.md Schritt 7 verlangt ihn, und ohne
+    # diese Dateien laeuft er bei niemandem ausserhalb dieses Repos. Die Pfade
+    # bleiben relativ zum Skill-Ordner, damit pruefen.py seine Regeln findet.
+    "tools/pruefen.py": "tools/pruefen.py",
+    "tools/seite.py": "tools/seite.py",
+    "data/regeln.json": "data/regeln.json",
+    "data/modul-zuordnung.json": "data/modul-zuordnung.json",
 }
 
 # Wo der Skill auf diesem Rechner installiert ist (fuer den Drift-Vergleich).
