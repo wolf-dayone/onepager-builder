@@ -81,6 +81,16 @@ FAELLE = [
                          '<img src="a.jpg" loading="lazy"><blockquote>', 1),
      "bilder"),
 
+    # Aus dem ersten Blindtest: eine fertige Seite ging mit zwei toten
+    # CTA-Buttons raus, ohne dass Lint oder Handpruefung es meldeten.
+    ("CTA-Button ohne Ziel",
+     lambda s: s.replace('href="[URL]"', 'href="#"', 1),
+     "links"),
+
+    ("Anker zeigt auf eine id, die es nicht gibt",
+     lambda s: s.replace('href="#hero"', 'href="#gibt-es-nicht"', 1),
+     "links"),
+
     ("Modul mit erfundenem data-modul",
      lambda s: s.replace('data-modul="08 Menschen/03 quote-block"',
                          'data-modul="08 Menschen/09 gibt-es-nicht"'),

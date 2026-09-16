@@ -363,6 +363,39 @@ def pruefe_mobil(s, b):
                      s.zeile_von(m.group(0)[:40]))
 
 
+def pruefe_links(s, b, ist_vorlage):
+    """Kein Link darf ins Leere zeigen.
+
+    Gefunden beim ersten Blindtest: eine fertige Seite ging mit zwei
+    CTA-Buttons auf href="#" raus. Die Seite wird verschickt - ein Knopf, der
+    nichts tut, faellt erst der Empfaengerin auf.
+    """
+    for a in s.alle("a"):
+        ziel = (a.attrs.get("href") or "").strip()
+        text = (a.voller_text().strip() or "?")[:32]
+
+        if not ziel:
+            b.melden(FEHLER, "links",
+                     f"Link „{text}“ ohne href.", a.zeile)
+        elif ziel == "#":
+            b.melden(FEHLER, "links",
+                     f"Link „{text}“ zeigt auf href=\"#\" — also nirgendwohin. "
+                     f"Echtes Ziel eintragen oder den Link entfernen.", a.zeile)
+        elif PLATZHALTER.search(ziel):
+            # In einer Vorlage ist href="[URL]" genau richtig - so wie ein
+            # Platzhalter im Text auch.
+            if ist_vorlage:
+                continue
+            b.melden(FEHLER, "links",
+                     f"Link „{text}“ hat noch einen Platzhalter als Ziel: {ziel}",
+                     a.zeile)
+        elif ziel.startswith("#") and not any(
+                k.attrs.get("id") == ziel[1:] for k in s.alle()):
+            b.melden(WARNUNG, "links",
+                     f"Link „{text}“ springt zu {ziel}, aber es gibt kein "
+                     f"Element mit dieser id.", a.zeile)
+
+
 def pruefe_ueberschriften(s, b):
     h1 = list(s.alle("h1"))
     if len(h1) > 1:
@@ -480,6 +513,7 @@ def pruefe_datei(pfad, regeln, zuordnung, ist_vorlage, ist_galerie=False):
     pruefe_tokens(s, b)
     pruefe_bilder(s, b)
     pruefe_bewegung(s, b)
+    pruefe_links(s, b, ist_vorlage)
     pruefe_mobil(s, b)
     pruefe_touch(s, b)
     if not ist_galerie:
