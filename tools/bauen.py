@@ -127,7 +127,13 @@ def zusammenbauen(titel, teile, stempel):
                 gesehen.add(block)
                 css_bloecke.append(block)
 
+    # Tokens kommen aus referenzen/tokens.css - eine Quelle, kein zweiter
+    # Satz Werte im Template, der stillschweigend auseinanderlaufen kann.
+    tokens = (WURZEL / "referenzen" / "tokens.css").read_text().strip()
     basis_css = (B / "_basis.css").read_text().rstrip()
+    if "/*__TOKENS__*/" not in basis_css:
+        sys.exit("bausteine/_basis.css: Platzhalter /*__TOKENS__*/ fehlt.")
+    basis_css = basis_css.replace("/*__TOKENS__*/", tokens)
     js = (B / "_basis.js").read_text().rstrip()
     symbole = (B / "_symbole.svg").read_text().strip()
 

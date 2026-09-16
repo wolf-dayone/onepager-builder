@@ -1,0 +1,38 @@
+name: Qualität
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Keine Abhängigkeiten: alle Werkzeuge laufen auf der Python-Stdlib.
+
+      - name: Katalog und Regeln sind auf dem Stand der Descriptions
+        run: |
+          python3 tools/katalog_bauen.py
+          git diff --exit-code -- referenzen/module-katalog.md data/regeln.json \
+            || { echo "::error::Katalog/Regeln sind nicht neu gebaut. tools/katalog_bauen.py laufen lassen und committen."; exit 1; }
+
+      - name: HTML ist aus den Bausteinen gebaut
+        run: |
+          python3 tools/bauen.py
+          git diff --exit-code -- starter.html modul-galerie.html \
+            || { echo "::error::starter.html/modul-galerie.html weichen von bausteine/ ab. tools/bauen.py laufen lassen und committen."; exit 1; }
+
+      - name: Der Prüfer findet, was er finden soll
+        run: python3 tools/selbsttest.py
+
+      - name: Seiten gegen die Figma-Regeln prüfen
+        run: python3 tools/pruefen.py --keine-farbe index.html starter.html modul-galerie.html
+
+      - name: Skill-Paket lässt sich bauen
+        run: python3 tools/skill_bauen.py

@@ -140,21 +140,35 @@ class Seite:
         return 0
 
     def css_ohne_tokens(self):
-        """CSS ohne :root-Block und ohne Kommentare.
+        """CSS ohne :root-Bloecke und ohne Kommentare.
 
-        Im :root-Block duerfen Rohwerte stehen - das ist die Token-Definition.
+        In :root duerfen Rohwerte stehen - das ist die Token-Definition selbst.
+        Erkennung ueber Klammerzaehlung statt Zeilenanfang, damit Formatierung
+        egal ist (":root{", ":root {", eingerueckt in einer Media Query).
         Kommentare sind Dokumentation, kein Style: ein Hexwert darin ist keine
         Regelverletzung.
         """
-        out, tiefe, im_root = [], 0, False
-        for zeile in self.css.splitlines():
-            if not im_root and zeile.strip().startswith(":root{"):
-                im_root, tiefe = True, zeile.count("{") - zeile.count("}")
-                continue
-            if im_root:
-                tiefe += zeile.count("{") - zeile.count("}")
-                if tiefe <= 0:
-                    im_root = False
-                continue
-            out.append(zeile)
-        return _ohne_kommentare("\n".join(out))
+        css = self.css
+        ohne = []
+        i = 0
+        while True:
+            treffer = css.find(":root", i)
+            if treffer == -1:
+                ohne.append(css[i:])
+                break
+            klammer = css.find("{", treffer)
+            if klammer == -1:
+                ohne.append(css[i:])
+                break
+            ohne.append(css[i:treffer])
+            # Zeilenumbrueche erhalten, damit Zeilennummern weiter stimmen.
+            tiefe, j = 1, klammer + 1
+            while j < len(css) and tiefe > 0:
+                if css[j] == "{":
+                    tiefe += 1
+                elif css[j] == "}":
+                    tiefe -= 1
+                j += 1
+            ohne.append("\n" * css.count("\n", treffer, j))
+            i = j
+        return _ohne_kommentare("".join(ohne))
