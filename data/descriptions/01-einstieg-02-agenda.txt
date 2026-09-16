@@ -1,0 +1,1 @@
+FARBE — Hell (Sand/100) oder Dunkel (Gray/900), frei wählbar wie bei jedem Modul. Dient der inhaltlichen Abtrennung bzw. Bündelung: ein Farbwechsel markiert einen neuen Sinnabschnitt, gleiche Farbe hält zusammengehörige Slides optisch als Einheit. Keine feste Zuordnung zu einem Kapiteltyp.

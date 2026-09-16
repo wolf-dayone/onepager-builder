@@ -1,0 +1,726 @@
+{
+  "_hinweis": "GENERIERT von tools/katalog_bauen.py. Quelle: Figma-Descriptions.",
+  "fileKey": "1CL62lpdnyiFW98MFs1GPS",
+  "stand": "2026-09-15",
+  "module": {
+    "00 Elemente/01 kapitel-nav": {
+      "kurzname": "kapitel-nav",
+      "kategorie": "00 Elemente",
+      "slug": "00-elemente-01-kapitel-nav",
+      "nodeId": "56:58",
+      "zweck": "Horizontale Kapitel-Navigation am oberen Bildschirmrand. Gibt beim Scrollen jederzeit Orientierung, welches Kapitel gerade läuft.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Kapitelnummern und -titel müssen mit den Kapitelmarkern (Eyebrow) der Module übereinstimmen.",
+        "4–8 Kapitel. Darüber lohnt die Navigation kaum noch.",
+        "Logo-Mark: fertiges DAYONE-Logo (Icon + Schriftzug), kein reiner Textschriftzug.",
+        "Präsentationstitel optional neben dem Logo — nur wenn neben Logo und Kapitel-Liste noch Platz ist, sonst weglassen."
+      ],
+      "grenzen": [
+        {
+          "min": 4,
+          "max": 8,
+          "einheit": "Kapitel",
+          "quelle": "4–8 Kapitel. Darüber lohnt die Navigation kaum noch."
+        }
+      ],
+      "farbe_frei": false,
+      "hat_regeln": true
+    },
+    "00 Elemente/02 karte": {
+      "kurzname": "karte",
+      "kategorie": "00 Elemente",
+      "slug": "00-elemente-02-karte",
+      "nodeId": "64:594",
+      "zweck": "Wiederverwendbare Karte aus Nummer, Titel und Fließtext. Baustein, kein Abschnitt: wird innerhalb von Modulen eingesetzt, nicht allein auf die Seite gestellt.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Nummer zweistellig (01, 02 …), groß in Text-Secondary (Sand/900, #544e47).",
+        "Titel als Merksatz, eine Zeile.",
+        "Text 2–3 Sätze. Alle Karten einer Reihe gleich lang halten, sonst franst die Reihe aus."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "01 Einstieg/01 cover-hero": {
+      "kurzname": "cover-hero",
+      "kategorie": "01 Einstieg",
+      "slug": "01-einstieg-01-cover-hero",
+      "nodeId": "9:2",
+      "zweck": "Erster Bildschirm. Sagt in einem Atemzug, worum es geht, für wen und wann. Vorlage folgt dem DAYONE-Weekly-Hero (dayone-weekly-presentations).",
+      "abgrenzung": "",
+      "fuellen": [
+        "Zeile 1: Projekt-/Produktname, 1–3 Wörter.",
+        "Zeile 2: worum es inhaltlich geht, max. 5 Wörter.",
+        "Subline: 1–2 Zeilen, warum das Thema jetzt relevant ist.",
+        "Meta: genau 3 Angaben (Datum",
+        "Presenter",
+        "Format). Nicht erweitern.",
+        "Logo-Mark: fertiges DAYONE-Logo (Icon + Schriftzug als ein Lockup), kein Platzhalter.",
+        "Badge-Text: Regular, nicht SemiBold — bewusst leichter als der Rest der dunklen Fläche."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "01 Einstieg/02 agenda": {
+      "kurzname": "agenda",
+      "kategorie": "01 Einstieg",
+      "slug": "01-einstieg-02-agenda",
+      "nodeId": "27:3",
+      "zweck": "",
+      "abgrenzung": "",
+      "fuellen": [],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": false
+    },
+    "02 Struktur/01 section-divider": {
+      "kurzname": "section-divider",
+      "kategorie": "02 Struktur",
+      "slug": "02-struktur-01-section-divider",
+      "nodeId": "118:70",
+      "zweck": "Trennt Kapitel voneinander und gibt dem Scrollen Rhythmus. Dient auch als Case-Study-Cover (früher eigenes Modul, zusammengelegt: gleiches Design).",
+      "abgrenzung": "",
+      "fuellen": [
+        "Titel: 2–5 Wörter. Kapitelname (\"Die Entscheidung\") oder Kundenname bei Case Studies.",
+        "Optionale Eyebrow darüber: \"01 — AUSGANGSLAGE\" oder \"CASE STUDY\"."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "02 Struktur/02 big-statement": {
+      "kurzname": "big-statement",
+      "kategorie": "02 Struktur",
+      "slug": "02-struktur-02-big-statement",
+      "nodeId": "9:4",
+      "zweck": "Ein Gedanke, ganze Fläche. Setzt eine Zäsur und lässt eine Aussage wirken.",
+      "abgrenzung": "Mit Namensnennung stattdessen quote-block verwenden.",
+      "fuellen": [
+        "Ein Satz, max. 2 Zeilen. Wenn zwei Gedanken drinstecken: zwei Module.",
+        "Kein Punkt am Ende bei Claims; Punkt bei vollständigen Aussagen.",
+        "Textbreite ist auf 10 von 12 Spalten gesetzt — nicht verbreitern, sonst leidet die Lesbarkeit."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "02 Struktur/03 stepper": {
+      "kurzname": "stepper",
+      "kategorie": "02 Struktur",
+      "slug": "02-struktur-03-stepper",
+      "nodeId": "35:20",
+      "zweck": "Führt durch mehrere Phasen (Lifecycle, Journey, Prozess) und hält die Orientierung, während man scrollt.",
+      "abgrenzung": "",
+      "fuellen": [
+        "3–6 Phasen. Kurze Labels, ein bis zwei Wörter.",
+        "Pro Phase: Titel, Beschreibungssatz, 2–3 Opportunities/Kernpunkte."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 6,
+          "einheit": "Phasen",
+          "quelle": "3–6 Phasen. Kurze Labels, ein bis zwei Wörter."
+        },
+        {
+          "min": 2,
+          "max": 3,
+          "einheit": "Opportunities/Kernpunkte",
+          "quelle": "Pro Phase: Titel, Beschreibungssatz, 2–3 Opportunities/Kernpunkte."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "03 Inhalt/01 headline-text-bild": {
+      "kurzname": "headline-text-bild",
+      "kategorie": "03 Inhalt",
+      "slug": "03-inhalt-01-headline-text-bild",
+      "nodeId": "27:48",
+      "zweck": "Standard-Arbeitspferd: ein Gedanke, erklärt mit Text und gestützt durch ein Bild.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Topline kategorisiert (z. B. \"01 — AUSGANGSLAGE\").",
+        "Fließtext 2–4 Sätze. Längeres gehört in headline-textraster.",
+        "Bild inhaltlich, nicht dekorativ — Screenshot, Foto, Diagramm."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "03 Inhalt/02 headline-textraster": {
+      "kurzname": "headline-textraster",
+      "kategorie": "03 Inhalt",
+      "slug": "03-inhalt-02-headline-textraster",
+      "nodeId": "9:5",
+      "zweck": "Vier gleichrangige Aspekte kompakt nebeneinander, ohne Karten-Optik.",
+      "abgrenzung": "Sollen die Punkte visuell abgesetzt sein, karten-3er nehmen; bei Reihenfolge 00 Elemente/02 karte (als nummerierte Kachel-Reihe).",
+      "fuellen": [
+        "3–4 Spalten. Titel je 1 Zeile, Text je 2–3 Zeilen.",
+        "Spalten etwa gleich lang halten — ungleiche Längen lassen das Raster kippen."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 4,
+          "einheit": "Spalten",
+          "quelle": "3–4 Spalten. Titel je 1 Zeile, Text je 2–3 Zeilen."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "03 Inhalt/03 sticky-nummernliste": {
+      "kurzname": "sticky-nummernliste",
+      "kategorie": "03 Inhalt",
+      "slug": "03-inhalt-03-sticky-nummernliste",
+      "nodeId": "9:6",
+      "zweck": "Mehrere gleichrangige Punkte erklären, ohne dass die Leitfrage aus dem Blick gerät. Nutzt das Browserformat aus: die linke Spalte bleibt stehen, die Liste rechts scrollt daran vorbei.",
+      "abgrenzung": "",
+      "fuellen": [
+        "3–5 Punkte. Darunter lohnt das Sticky-Layout nicht, darüber ermüdet es.",
+        "Titel als Aussage formulieren, nicht als Stichwort.",
+        "Punkte etwa gleich lang halten.",
+        "Eyebrow zweistellig nummerieren, passend zum Section-Divider davor."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 5,
+          "einheit": "Punkte",
+          "quelle": "3–5 Punkte. Darunter lohnt das Sticky-Layout nicht, darüber ermüdet es."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "03 Inhalt/04 karten-3er": {
+      "kurzname": "karten-3er",
+      "kategorie": "03 Inhalt",
+      "slug": "03-inhalt-04-karten-3er",
+      "nodeId": "28:2",
+      "zweck": "Drei gleichrangige Dinge nebeneinander stellen. Zwei erprobte Anwendungsfälle: · Optionen-Vergleich (A/B/C) für Entscheidungs-Slides — eine Option als gewählt markieren. · Zielgruppen-/Persona-Karten — je Segment Rolle, Kurztitel, Alltag. (Ersetzt \"persona-cards\".)",
+      "abgrenzung": "",
+      "fuellen": [
+        "Label oben: Option A/B/C bzw. Segmentname.",
+        "Titel: eine Zeile, die den Kern trifft.",
+        "Text: 2–3 Sätze. Alle drei Karten etwa gleich lang halten, sonst kippt das Raster optisch.",
+        "Tag unten: Status oder Fazit (\"Für Kernfeatures gewählt\", \"Nicht evaluiert\")."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "03 Inhalt/05 prozess-schritte": {
+      "kurzname": "prozess-schritte",
+      "kategorie": "03 Inhalt",
+      "slug": "03-inhalt-05-prozess-schritte",
+      "nodeId": "28:22",
+      "zweck": "Zeigt einen Ablauf und wer worin welche Rolle hat (z. B. Mensch / KI, Kunde / DAYONE).",
+      "abgrenzung": "Ohne Rollenaufteilung reicht 00 Elemente/02 karte (als Reihe); mit Datumsbezug roadmap-timeline.",
+      "fuellen": [
+        "3–5 Schritte, zweistellig nummeriert.",
+        "Pro Schritt zwei Rollen-Spalten mit je 2–4 Stichpunkten.",
+        "Spaltenüberschriften konsistent über alle Schritte halten."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 5,
+          "einheit": "Schritte",
+          "quelle": "3–5 Schritte, zweistellig nummeriert."
+        },
+        {
+          "min": 2,
+          "max": 4,
+          "einheit": "Stichpunkten",
+          "quelle": "Pro Schritt zwei Rollen-Spalten mit je 2–4 Stichpunkten."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "04 Daten/01 kennzahlen-grid": {
+      "kurzname": "kennzahlen-grid",
+      "kategorie": "04 Daten",
+      "slug": "04-daten-01-kennzahlen-grid",
+      "nodeId": "118:76",
+      "zweck": "Harte Zahlen als Beleg. Der Moment, in dem Behauptungen messbar werden.",
+      "abgrenzung": "",
+      "fuellen": [
+        "3–4 Kennzahlen. Mehr verwässert die Wirkung.",
+        "Zahl kurz halten (\"34\", \"+27,7 %\", \"6 Jahre\"), Label darunter erklärt sie in 2–4 Wörtern.",
+        "Nur Zahlen zeigen, die zur Kernaussage gehören — kein Dashboard."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 4,
+          "einheit": "Kennzahlen",
+          "quelle": "3–4 Kennzahlen. Mehr verwässert die Wirkung."
+        },
+        {
+          "min": 2,
+          "max": 4,
+          "einheit": "Wörtern",
+          "quelle": "Zahl kurz halten (\"34\", \"+27,7 %\", \"6 Jahre\"), Label darunter erklärt sie in 2–4 Wörtern."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "04 Daten/02 chart-slide": {
+      "kurzname": "chart-slide",
+      "kategorie": "04 Daten",
+      "slug": "04-daten-02-chart-slide",
+      "nodeId": "36:3",
+      "zweck": "Eine Datenreihe, die eine These stützt.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Titel sagt die Erkenntnis, nicht die Datenart. Also \"Nutzung verdoppelt sich ab März\", nicht \"Nutzung nach Monat\".",
+        "Ein Chart pro Modul. Zwei Charts nebeneinander liest niemand.",
+        "Quelle und Zeitraum immer angeben.",
+        "Nur die Farben aus den Tokens; Blue Highlight für die Serie, die zählt."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "04 Daten/03 matrix-2x2": {
+      "kurzname": "matrix-2x2",
+      "kategorie": "04 Daten",
+      "slug": "04-daten-03-matrix-2x2",
+      "nodeId": "36:10",
+      "zweck": "Vier Felder entlang zweier Achsen. Für Positionierung, Reifegrad, Portfolio.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Beide Achsen benennen — ohne Achsenlabel ist eine Matrix nur ein Kasten mit vier Texten.",
+        "Pro Quadrant Titel + 1–2 Sätze.",
+        "Wenn eine Einordnung gezeigt wird (Punkt/Marker), im Text begründen."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "04 Daten/04 datenfluss-diagramm": {
+      "kurzname": "datenfluss-diagramm",
+      "kategorie": "04 Daten",
+      "slug": "04-daten-04-datenfluss-diagramm",
+      "nodeId": "36:27",
+      "zweck": "Systemlandschaft oder Datenweg: was fließt von wo nach wo.",
+      "abgrenzung": "",
+      "fuellen": [
+        "3–5 Stationen. Mehr wird zur Tapete — dann lieber gruppieren.",
+        "Pro Box: Name + Rolle/Systemtyp.",
+        "Pfeilrichtung konsequent (links → rechts), Rückflüsse gesondert kennzeichnen."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 5,
+          "einheit": "Stationen",
+          "quelle": "3–5 Stationen. Mehr wird zur Tapete — dann lieber gruppieren."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "04 Daten/05 tabelle": {
+      "kurzname": "tabelle",
+      "kategorie": "04 Daten",
+      "slug": "04-daten-05-tabelle",
+      "nodeId": "36:41",
+      "zweck": "Wenn Werte exakt vergleichbar sein müssen und keine Grafik das leistet.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Max. 4–5 Spalten, 5–8 Zeilen. Größere Tabellen gehören in einen Anhang oder Download.",
+        "Zahlen rechtsbündig, Text linksbündig.",
+        "Kopfzeile immer gesetzt lassen."
+      ],
+      "grenzen": [
+        {
+          "min": 4,
+          "max": 5,
+          "einheit": "Spalten",
+          "quelle": "Max. 4–5 Spalten, 5–8 Zeilen. Größere Tabellen gehören in einen Anhang oder Download."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "05 Diagramme/01 way-of-working-kreis": {
+      "kurzname": "way-of-working-kreis",
+      "kategorie": "05 Diagramme",
+      "slug": "05-diagramme-01-way-of-working-kreis",
+      "nodeId": "33:19",
+      "zweck": "DAYONE-Organisationsmodell (Business / Service / Coordination Circles). Fester Bestandteil von Credential-Decks.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Grafik aus dem Keynote-Master übernehmen, nicht neu zeichnen.",
+        "Links Topline + eine Aussage, warum das Modell relevant ist."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "05 Diagramme/02 case-study-diagrammkarte": {
+      "kurzname": "case-study-diagrammkarte",
+      "kategorie": "05 Diagramme",
+      "slug": "05-diagramme-02-case-study-diagrammkarte",
+      "nodeId": "31:20",
+      "zweck": "Abstraktes Schaubild (Flywheel, Loop, Ökosystem) als visueller Einstieg in eine Case Study.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Diagramm reduziert halten — es soll Aufmerksamkeit binden, nicht erklärt werden müssen.",
+        "Darunter Projektname + Leistungsschlagworte (z. B. \"Digitalstrategie und Produktentwicklung\")."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "06 Zeitachse/01 roadmap-timeline": {
+      "kurzname": "roadmap-timeline",
+      "kategorie": "06 Zeitachse",
+      "slug": "06-zeitachse-01-roadmap-timeline",
+      "nodeId": "9:9",
+      "zweck": "Grober Zeitverlauf mit Meilensteinen. Für Überblick, nicht für Planung.",
+      "abgrenzung": "Für Arbeitspakete und Phasenbalken roadmap-zoom-in nehmen.",
+      "fuellen": [
+        "4–6 Meilensteine mit Zeitangabe + Kurzbezeichnung.",
+        "Aktuellen Stand markieren (\"Aktuell\"), sonst weiß niemand, wo man steht.",
+        "Vergangenes und Geplantes visuell unterscheiden."
+      ],
+      "grenzen": [
+        {
+          "min": 4,
+          "max": 6,
+          "einheit": "Meilensteine",
+          "quelle": "4–6 Meilensteine mit Zeitangabe + Kurzbezeichnung."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "06 Zeitachse/02 roadmap-zoom-in": {
+      "kurzname": "roadmap-zoom-in",
+      "kategorie": "06 Zeitachse",
+      "slug": "06-zeitachse-02-roadmap-zoom-in",
+      "nodeId": "33:3",
+      "zweck": "Detailplanung: Phasen als Balken über eine Zeitachse, plus erläuternde Meilensteine.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Zeitraster wählen (Wochen / Quartale / Jahr) — Keynote-Master enthält Varianten von 6 Wochen bis 1 Jahr.",
+        "Sidebar: 2–4 Meilensteine mit je einem Satz, was erreicht ist.",
+        "Nicht mehr als 6 Arbeitspakete pro Ansicht."
+      ],
+      "grenzen": [
+        {
+          "min": 2,
+          "max": 4,
+          "einheit": "Meilensteine",
+          "quelle": "Sidebar: 2–4 Meilensteine mit je einem Satz, was erreicht ist."
+        },
+        {
+          "min": null,
+          "max": 6,
+          "einheit": "Arbeitspakete",
+          "quelle": "Nicht mehr als 6 Arbeitspakete pro Ansicht."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "07 Media/01 screenshot-showcase": {
+      "kurzname": "screenshot-showcase",
+      "kategorie": "07 Media",
+      "slug": "07-media-01-screenshot-showcase",
+      "nodeId": "32:3",
+      "zweck": "Ein Produkt oder Feature zeigen und gleichzeitig benennen, was es kann.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Screenshot in echter Auflösung, keine skalierten Bilder.",
+        "Versions-/Statuslabel (\"Version 1.0\") schafft Einordnung.",
+        "3–5 Feature-Punkte, je eine Zeile, mit Pfeil-Präfix."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 5,
+          "einheit": "Feature-Punkte",
+          "quelle": "3–5 Feature-Punkte, je eine Zeile, mit Pfeil-Präfix."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "07 Media/02 device-mockup": {
+      "kurzname": "device-mockup",
+      "kategorie": "07 Media",
+      "slug": "07-media-02-device-mockup",
+      "nodeId": "32:21",
+      "zweck": "Prototypen im Gerätekontext zeigen, wenn die Plattform Teil der Aussage ist.",
+      "abgrenzung": "Geht es um Funktionen statt um Look & Feel: screenshot-showcase.",
+      "fuellen": [
+        "Enthält echte Geräte aus dem DAYONE Designsystem (iPhone, MacBook; iPad ebenfalls verfügbar).",
+        "Screen einsetzen: Screen-Ebene im Gerät auswählen und den Screenshot als Bild-Fill einsetzen — Gerät selbst nicht verändern.",
+        "Variante pro Gerät wählbar: Color = black / white, beim iPhone zusätzlich Browser-Header = true / false.",
+        "Mobile-Screens paarweise, Desktop einzeln — so bleibt die Komposition ruhig.",
+        "Max. 3 Devices pro Modul."
+      ],
+      "grenzen": [
+        {
+          "min": null,
+          "max": 3,
+          "einheit": "Devices",
+          "quelle": "Max. 3 Devices pro Modul."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "07 Media/03 medien-karten-grid": {
+      "kurzname": "medien-karten-grid",
+      "kategorie": "07 Media",
+      "slug": "07-media-03-medien-karten-grid",
+      "nodeId": "32:30",
+      "zweck": "2–3 Kacheln aus Bild + Titel + Kurztext. Zwei Anwendungsfälle: · CTA-Kacheln, die auf Prototypen oder Unterseiten verlinken. · Publikationen/Whitepaper mit Cover. (Ersetzt \"publikations-karten\".)",
+      "abgrenzung": "",
+      "fuellen": [
+        "Bilder im gleichen Seitenverhältnis, sonst wirkt die Reihe unruhig.",
+        "Titel: Ziel der Kachel, nicht Dateiname.",
+        "Text: ein Satz, der sagt, was den Nutzer hinter dem Klick erwartet.",
+        "Bei CTA-Nutzung: Kachel komplett klickbar machen, nicht nur den Titel."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "07 Media/04 grossbild": {
+      "kurzname": "grossbild",
+      "kategorie": "07 Media",
+      "slug": "07-media-04-grossbild",
+      "nodeId": "72:31",
+      "zweck": "Ein Bild, das für sich steht: Atmosphäre, Ort, Team, Produkt im Einsatz. Setzt einen visuellen Ruhepunkt zwischen textlastigen Abschnitten.",
+      "abgrenzung": "Geht es um ein Interface mit Funktionen: screenshot-showcase. Um ein Gerät: device-mockup. Um mehrere Bilder nebeneinander: medien-karten-grid.",
+      "fuellen": [
+        "Seitenverhältnis 3:2 oder 16:9, mindestens 2880 px breit (randabfallend auf Retina).",
+        "Headline sagt die Aussage des Bildes, nicht seinen Inhalt. Also \"So arbeiten wir wirklich\", nicht \"Büro Berlin\".",
+        "Bildlegende: ein Satz Einordnung. Fotocredit rechts, wenn nötig.",
+        "Motiv inhaltlich, kein Stockfoto — sonst besser weglassen."
+      ],
+      "grenzen": [
+        {
+          "min": 2880.0,
+          "max": null,
+          "einheit": "px",
+          "quelle": "Seitenverhältnis 3:2 oder 16:9, mindestens 2880 px breit (randabfallend auf Retina)."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "08 Menschen/01 team-grid": {
+      "kurzname": "team-grid",
+      "kategorie": "08 Menschen",
+      "slug": "08-menschen-01-team-grid",
+      "nodeId": "35:41",
+      "zweck": "Wer arbeitet am Projekt. Macht das Angebot greifbar.",
+      "abgrenzung": "",
+      "fuellen": [
+        "3–6 Personen. Bei größeren Teams nur die Projektbesetzung zeigen.",
+        "Fotos einheitlich: gleicher Hintergrund, gleicher Bildausschnitt, gleiche Höhe.",
+        "Name + Rolle im Projekt (nicht der interne Jobtitel)."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 6,
+          "einheit": "Personen",
+          "quelle": "3–6 Personen. Bei größeren Teams nur die Projektbesetzung zeigen."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "08 Menschen/02 personen-intro": {
+      "kurzname": "personen-intro",
+      "kategorie": "08 Menschen",
+      "slug": "08-menschen-02-personen-intro",
+      "nodeId": "35:74",
+      "zweck": "Eine einzelne Person vorstellen, meist die präsentierende.",
+      "abgrenzung": "Ab zwei Personen team-grid verwenden.",
+      "fuellen": [
+        "Portraitfoto, aufgelockert (kein Bewerbungsfoto-Look).",
+        "Name, Rolle im Projekt, optional ein Satz Bezug zum Thema."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "08 Menschen/03 quote-block": {
+      "kurzname": "quote-block",
+      "kategorie": "08 Menschen",
+      "slug": "08-menschen-03-quote-block",
+      "nodeId": "9:8",
+      "zweck": "Eine Aussage mit Absender. Wirkt als Beleg, weil jemand dafür geradesteht.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Wörtliches Zitat, 1–2 Sätze. Nicht glattbügeln — Originalton wirkt stärker.",
+        "Deutsche Anführungszeichen „ … “.",
+        "Immer mit Name + Rolle. Ohne Attribution stattdessen big-statement nehmen.",
+        "Freigabe der zitierten Person einholen, bevor der Onepager rausgeht."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "09 Referenzen/01 logo-wand": {
+      "kurzname": "logo-wand",
+      "kategorie": "09 Referenzen",
+      "slug": "09-referenzen-01-logo-wand",
+      "nodeId": "30:2",
+      "zweck": "Vertrauen durch Referenzen. Zeigt auf einen Blick, mit wem DAYONE arbeitet.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Logos einfarbig/schwarz, optisch auf gleiche Höhe bringen (nicht auf gleiche Breite!).",
+        "12–24 Logos. Bekannteste Marken nach oben links.",
+        "Leere Slots am Zeilenende vermeiden — lieber eine Reihe weniger."
+      ],
+      "grenzen": [
+        {
+          "min": 12,
+          "max": 24,
+          "einheit": "Logos",
+          "quelle": "12–24 Logos. Bekannteste Marken nach oben links."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "09 Referenzen/02 facts-figures": {
+      "kurzname": "facts-figures",
+      "kategorie": "09 Referenzen",
+      "slug": "09-referenzen-02-facts-figures",
+      "nodeId": "29:38",
+      "zweck": "Unternehmenskennzahlen für Credential-Teile: Gründung, Standort, Größe.",
+      "abgrenzung": "",
+      "fuellen": [
+        "4–6 Key-Value-Paare, feste Reihenfolge über alle Decks hinweg.",
+        "Werte aktuell halten — Teamgröße und Jahreszahlen veralten unbemerkt.",
+        "Bild: Büro oder Team, kein Stockfoto."
+      ],
+      "grenzen": [
+        {
+          "min": 4,
+          "max": 6,
+          "einheit": "Key-Value-Paare",
+          "quelle": "4–6 Key-Value-Paare, feste Reihenfolge über alle Decks hinweg."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "09 Referenzen/03 case-study-ziele": {
+      "kurzname": "case-study-ziele",
+      "kategorie": "09 Referenzen",
+      "slug": "09-referenzen-03-case-study-ziele",
+      "nodeId": "118:103",
+      "zweck": "Was in einem Kundenprojekt erreicht werden sollte. Folgt meist direkt auf den Case-Study-Divider.",
+      "abgrenzung": "",
+      "fuellen": [
+        "3–4 Ziele, je eine Zeile mit Pfeil.",
+        "Ziele als Ergebnis formulieren (\"Digitale Infrastruktur & Datenmanagement\"), nicht als Tätigkeit.",
+        "Kundenname links wiederholen, damit der Block auch isoliert lesbar bleibt."
+      ],
+      "grenzen": [
+        {
+          "min": 3,
+          "max": 4,
+          "einheit": "Ziele",
+          "quelle": "3–4 Ziele, je eine Zeile mit Pfeil."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "10 Abschluss/01 karten-karussell": {
+      "kurzname": "karten-karussell",
+      "kategorie": "10 Abschluss",
+      "slug": "10-abschluss-01-karten-karussell",
+      "nodeId": "29:3",
+      "zweck": "Horizontal scrollbarer Karten-Track zum Strukturieren numerierter Textinhalte. Ursprünglich als reines Abschluss-Modul (\"Was wir euch mitgeben\") gedacht, inzwischen allgemein einsetzbar überall dort, wo mehrere gleichrangige Aussagen nummeriert nebeneinander stehen sollen (z. B. auch mitten im Content-Teil, nicht nur vor dem CTA).",
+      "abgrenzung": "",
+      "fuellen": [
+        "4–7 Elemente. Nummer in Text-Secondary (Sand/900, #544e47), wie die Basis-Karte — keine Sonderfarbe. Titel als Merksatz, darunter 2–3 Sätze.",
+        "Titel so formulieren, wie man es einem Kollegen im Aufzug sagen würde.",
+        "Bei Verwendung als Abschluss: Erkenntnisse, keine Zusammenfassung. Bei Verwendung im Content-Teil: die jeweiligen Aussagen selbst.",
+        "Alle Karten gleich hoch lassen — Text entsprechend kürzen."
+      ],
+      "grenzen": [
+        {
+          "min": 4,
+          "max": 7,
+          "einheit": "Elemente",
+          "quelle": "4–7 Elemente. Nummer in Text-Secondary (Sand/900, #544e47), wie die Basis-Karte — keine Sonderfarbe. Titel als Merksatz, darunter 2–3 Sätze."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "10 Abschluss/02 qr-tool-verweis": {
+      "kurzname": "qr-tool-verweis",
+      "kategorie": "10 Abschluss",
+      "slug": "10-abschluss-02-qr-tool-verweis",
+      "nodeId": "33:24",
+      "zweck": "Brücke aus der Präsentation in ein Tool, Board oder Formular.",
+      "abgrenzung": "",
+      "fuellen": [
+        "QR-Code mind. 180 px, sonst scannt er im Raum nicht zuverlässig.",
+        "Ziel-URL zusätzlich als Text nennen — QR funktioniert nicht in PDFs am Desktop.",
+        "Screenshot zeigt, was hinter dem Code wartet."
+      ],
+      "grenzen": [],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "10 Abschluss/03 cta-footer": {
+      "kurzname": "cta-footer",
+      "kategorie": "10 Abschluss",
+      "slug": "10-abschluss-03-cta-footer",
+      "nodeId": "118:121",
+      "zweck": "Abschluss und Handlungsaufforderung. Letztes Modul jedes Onepagers.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Claim kurz (\"Check it out.\").",
+        "Max. 2 Buttons: einer primär, einer sekundär. Beide immer mit Pfeil →.",
+        "Buttons auf Mobile full-width, min. 44 px hoch, Schrift min. 16 px (verhindert iOS-Zoom).",
+        "Logo + Copyright nicht vergessen."
+      ],
+      "grenzen": [
+        {
+          "min": null,
+          "max": 2,
+          "einheit": "Buttons",
+          "quelle": "Max. 2 Buttons: einer primär, einer sekundär. Beide immer mit Pfeil →."
+        },
+        {
+          "min": 44.0,
+          "max": null,
+          "einheit": "px",
+          "quelle": "Buttons auf Mobile full-width, min. 44 px hoch, Schrift min. 16 px (verhindert iOS-Zoom)."
+        },
+        {
+          "min": 16.0,
+          "max": null,
+          "einheit": "px",
+          "quelle": "Buttons auf Mobile full-width, min. 44 px hoch, Schrift min. 16 px (verhindert iOS-Zoom)."
+        }
+      ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    }
+  }
+}
