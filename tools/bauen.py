@@ -165,6 +165,48 @@ GALERIE_CSS = """/* ==== Galerie-Rahmen (nur in modul-galerie.html) ==== */
 .galerie-intro{padding:var(--space-24) var(--grid-margin)}
 .galerie-baustein{padding:var(--space-16) var(--grid-margin)}"""
 
+# ---- QA-Leiste: NUR in modul-galerie.html, wird beim Skill-Bauen entfernt ----
+# (siehe tools/skill_bauen.py QA_STRIP) - deshalb zwischen den Sentinel-
+# Kommentaren, an denen der Strip-Schritt den kompletten Block erkennt.
+# Ausschliesslich Design-Tokens (var(--...)), damit tools/pruefen.py
+# pruefe_tokens() (keine rohen Hex-/px-Werte) auch diese Datei sauber
+# durchlaesst wie jeden anderen Baustein.
+QA_CSS = """/* ==== QA-Leiste (nur in modul-galerie.html, siehe QA-ONLY-Marker) ==== */
+body.galerie{padding-bottom:64px}
+.qa-leiste{position:fixed;left:0;right:0;bottom:0;z-index:100;
+  display:flex;flex-wrap:wrap;gap:var(--space-6);align-items:center;justify-content:space-between;
+  padding:10px var(--grid-margin);background:var(--color-main-text);color:var(--color-bg);
+  font-family:var(--font);font-size:var(--text-body-s);border-top:1px solid var(--gray-500)}
+.qa-leiste button{font-family:inherit;font-size:inherit;cursor:pointer;
+  background:var(--gray-500);color:var(--color-bg);border:1px solid var(--gray-400);
+  border-radius:var(--radius-input);padding:6px 12px}
+.qa-leiste button:hover{background:var(--gray-400)}
+.qa-leiste button[aria-pressed="true"]{background:var(--sand-600);border-color:var(--sand-900);color:var(--color-main-text)}
+.qa-info{display:flex;gap:var(--space-6);align-items:baseline;min-width:0}
+.qa-info .qa-modul{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qa-info .qa-viewport{opacity:.6;white-space:nowrap}
+.qa-aktionen{display:flex;flex-wrap:wrap;gap:8px}
+/* "Animations: off" - rein CSS-getriebene Wirkung, siehe setAnimationsEnabled()
+   in bausteine/_basis.js Abschnitt 10. !important, weil sie jede Modul-eigene
+   transition/animation uebersteuern muss, unabhaengig von deren Spezifitaet. */
+.qa-anim-off, .qa-anim-off *{transition:none!important;animation:none!important}"""
+
+
+def _qa_leiste_block():
+    """Baut den QA-ONLY-Block (Style + Skript) fuer modul-galerie.html.
+
+    Zwischen Sentinel-Kommentaren, damit tools/skill_bauen.py ihn beim
+    Verpacken des Skills komplett herausschneiden kann - die QA-Leiste ist
+    ein Werkzeug fuer dieses Repo, kein Bestandteil ausgelieferter Seiten.
+    """
+    qa_js = (B / "_galerie-qa.js").read_text(encoding="utf-8").rstrip()
+    return (
+        "<!-- QA-ONLY:START -->\n"
+        f"<style>\n{QA_CSS}\n</style>\n"
+        f"<script>\n{qa_js}\n</script>\n"
+        "<!-- QA-ONLY:END -->"
+    )
+
 
 def galerie_bauen(daten):
     teile = [([GALERIE_CSS], "")]
@@ -205,6 +247,7 @@ def galerie_bauen(daten):
 
     html = zusammenbauen("Modul-Galerie — DAYONE", teile, stempel(daten))
     html = html.replace("<body>", '<body class="galerie">')
+    html = html.replace("</body>", _qa_leiste_block() + "\n</body>")
     (WURZEL / "modul-galerie.html").write_text(html)
     return kapitel
 

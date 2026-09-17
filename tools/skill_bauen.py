@@ -15,6 +15,7 @@ was sich geaendert hat. Damit faellt Drift auf, statt sich anzusammeln.
 import argparse
 import hashlib
 import pathlib
+import re
 import shutil
 import zipfile
 import sys
@@ -47,6 +48,12 @@ INSTALLIERT = sorted(pathlib.Path.home().glob(
     "Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/"
     "*/*/skills/dayone-onepager"))
 
+# Die QA-Leiste in modul-galerie.html (Replay/Viewport/Reduced-Motion-Steuerung
+# fuer die Modul-Galerie dieses Repos) ist kein Bestandteil ausgelieferter
+# Seiten - siehe tools/bauen.py _qa_leiste_block(). Wird beim Verpacken
+# herausgeschnitten, damit Skill-Nutzer:innen sie nie zu Gesicht bekommen.
+QA_STRIP = re.compile(r"\n?<!-- QA-ONLY:START -->.*?<!-- QA-ONLY:END -->\n?", re.DOTALL)
+
 
 def pruefsumme(pfad):
     return hashlib.sha256(pfad.read_bytes()).hexdigest()[:12]
@@ -62,7 +69,14 @@ def bauen():
                      f"tools/katalog_bauen.py laufen lassen.")
         z = ZIEL / ziel
         z.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(q, z)
+        if quelle == "modul-galerie.html":
+            inhalt, n = QA_STRIP.subn("", q.read_text(encoding="utf-8"))
+            if n != 1:
+                sys.exit(f"modul-galerie.html: erwartet genau einen QA-ONLY-Block, "
+                          f"gefunden {n}. tools/bauen.py pruefen.")
+            z.write_text(inhalt, encoding="utf-8")
+        else:
+            shutil.copy2(q, z)
     print(f"Skill-Paket gebaut: {ZIEL.relative_to(WURZEL)}/")
     for quelle, ziel in INHALT.items():
         groesse = (ZIEL / ziel).stat().st_size

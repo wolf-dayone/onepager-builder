@@ -1615,11 +1615,19 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 
   /* ---- 6) Kennzahlen hochzählen ---- */
   var counters = document.querySelectorAll("[data-count-to]");
+  // WeakMap statt einfachem Flag: haelt pro Element eine "Generation" fest,
+  // damit ein durch Replay neu gestarteter countUp den rAF-Loop eines noch
+  // laufenden alten Aufrufs stilllegt, statt dass beide gleichzeitig ins
+  // textContent schreiben und der aeltere den Zielwert des neueren ueberschreibt.
+  var countUpGen = new WeakMap();
   function countUp(el) {
     var target = parseFloat(el.dataset.countTo);
+    var gen = (countUpGen.get(el) || 0) + 1;
+    countUpGen.set(el, gen);
     if (reduceMotion()) { el.textContent = target; return; }
     var start = performance.now(), dur = 1200;
     function step(now) {
+      if (countUpGen.get(el) !== gen) return; // von neuerem Aufruf ueberholt
       var p = Math.min((now - start) / dur, 1);
       var eased = 1 - Math.pow(1 - p, 3);
       el.textContent = Math.round(target * eased);
@@ -1643,15 +1651,24 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
      jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
      Zielbreite animieren (transition auf .timeline-progress erledigt das optisch),
      damit die Linie sich sichtbar "auffüllt" statt einfach dazustehen. */
-  document.querySelectorAll(".timeline").forEach(function (tl) {
+  // Ausgelagert (statt Inline in der forEach unten), weil Abschnitt 10
+  // (replayTimeline) dieselbe Berechnung fuer den Replay-Control braucht -
+  // eine Kopie der Formel haette bei einer spaeteren Aenderung leicht
+  // auseinanderlaufen koennen.
+  function timelineZielProzent(tl) {
     var items = tl.querySelectorAll(".timeline-item");
-    var progress = tl.querySelector(".timeline-progress");
-    if (!items.length || !progress) return;
+    if (!items.length) return null;
     var currentIndex = Array.prototype.findIndex.call(items, function (it) {
       return it.classList.contains("is-current");
     });
-    if (currentIndex < 0) return; // kein aktueller Punkt markiert -> keine Linie zeichnen
-    var targetPct = (currentIndex / items.length) * 100 + "%";
+    if (currentIndex < 0) return null; // kein aktueller Punkt markiert -> keine Linie zeichnen
+    return (currentIndex / items.length) * 100 + "%";
+  }
+  document.querySelectorAll(".timeline").forEach(function (tl) {
+    var progress = tl.querySelector(".timeline-progress");
+    if (!progress) return;
+    var targetPct = timelineZielProzent(tl);
+    if (targetPct === null) return;
     if (reduceMotion()) { progress.style.width = targetPct; return; }
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries, obs) {
@@ -1683,38 +1700,273 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
      Die Leiste selbst bleibt per position:sticky oben stehen (CSS). Hier nur
      das Umschalten der Panels. Ohne JS bleibt Phase 1 sichtbar - der Inhalt
      geht also nie verloren. */
+  // stepperWechseln() ist die gemeinsame Umschalt-Logik fuer Klick UND Replay
+  // (Abschnitt 10) - frueher stand das nur im Klick-Handler, Replay haette
+  // sonst eine zweite, leicht abweichende Kopie gebraucht.
+  function stepperWechseln(leiste, zielTab) {
+    var tabs = Array.prototype.slice.call(leiste.querySelectorAll(".stepper-tab"));
+    tabs.forEach(function (t) {
+      var aktiv = t === zielTab;
+      t.setAttribute("aria-selected", aktiv ? "true" : "false");
+      var panel = document.getElementById(t.getAttribute("aria-controls"));
+      if (!panel) return;
+      if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
+      panel.hidden = false;
+      if (reduceMotion()) return;
+      /* Panels tragen noch ein transitionDelay als Inline-Style vom
+         gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
+         (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
+         verzoegern - deshalb hier zuruecksetzen, damit der Panel-Wechsel
+         immer sofort losläuft. */
+      panel.style.transitionDelay = "0ms";
+      /* Panel startet unsichtbar/leicht versetzt (CSS: .ist-erscheinend),
+         dann per Klasse-Entfernen in den Endzustand ueberfuehrt - das
+         doppelte rAF stellt sicher, dass der Browser den Startzustand
+         erst gemalt hat, bevor die Transition losläuft (sonst überspringt
+         sie manche Browser komplett). */
+      panel.classList.add("ist-erscheinend");
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { panel.classList.remove("ist-erscheinend"); });
+      });
+    });
+  }
   document.querySelectorAll(".stepper-tabs").forEach(function (leiste) {
     var tabs = Array.prototype.slice.call(leiste.querySelectorAll(".stepper-tab"));
     tabs.forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        tabs.forEach(function (t) {
-          var aktiv = t === tab;
-          t.setAttribute("aria-selected", aktiv ? "true" : "false");
-          var panel = document.getElementById(t.getAttribute("aria-controls"));
-          if (!panel) return;
-          if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
-          panel.hidden = false;
-          if (reduceMotion()) return;
-          /* Panels tragen noch ein transitionDelay als Inline-Style vom
-             gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
-             (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
-             verzoegern - deshalb hier zuruecksetzen, damit der Panel-Wechsel
-             immer sofort losläuft. */
-          panel.style.transitionDelay = "0ms";
-          /* Panel startet unsichtbar/leicht versetzt (CSS: .ist-erscheinend),
-             dann per Klasse-Entfernen in den Endzustand ueberfuehrt - das
-             doppelte rAF stellt sicher, dass der Browser den Startzustand
-             erst gemalt hat, bevor die Transition losläuft (sonst überspringt
-             sie manche Browser komplett). */
-          panel.classList.add("ist-erscheinend");
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () { panel.classList.remove("ist-erscheinend"); });
-          });
-        });
-      });
+      tab.addEventListener("click", function () { stepperWechseln(leiste, tab); });
     });
   });
+
+  /* ---- 10) QA-Testschnittstelle (nur fuer die Modul-Galerie) ----
+     Ziel: Motion-Testing ohne Reload/Hochscrollen/manuelles Triggern (siehe
+     modul-namen-generalisierung/Testkonzept). Bewusst NICHT der Versuch, den
+     Trigger-Mechanismus (IntersectionObserver vs. sofort) zu vereinheitlichen
+     - das wuerde Produktionsverhalten anfassen. Stattdessen: eigene,
+     additive "Replay"-Funktionen, die den DOM-Zustand direkt zuruecksetzen
+     und die Animation erneut anstossen, unabhaengig davon, wie sie beim
+     echten Seitenaufruf ausgeloest wurde.
+
+     root ist i.d.R. die [data-modul]-Sektion in modul-galerie.html. Jede
+     replayX-Funktion ist ein No-Op, wenn ihr Effekt im root nicht vorkommt -
+     replayModule() kann dadurch generisch auf jede Sektion angewendet
+     werden, ohne dass hier pro Modulname unterschieden werden muss.
+
+     Auf echten Onepagern (starter.html, index.html) wird window.DAYONE_QA
+     nie aufgerufen - dieser Abschnitt aendert an deren Verhalten nichts,
+     er haengt nur zusaetzliche Funktionen an ein globales Objekt. */
+
+  function replayReveal(root) {
+    var items = root.querySelectorAll ? root.querySelectorAll(".reveal") : [];
+    var rootIstReveal = root.classList && root.classList.contains("reveal");
+    if (!items.length && !rootIstReveal) return;
+    items.forEach(function (el) { el.classList.remove("in"); el.style.transitionDelay = ""; });
+    if (rootIstReveal) { root.classList.remove("in"); root.style.transitionDelay = ""; }
+    // Reflow erzwingen, damit der Browser den zurueckgesetzten Zustand erst
+    // malt, bevor stageReveal() die .in-Klasse (und damit die Transition)
+    // wieder anstoesst - sonst wird der zweite Durchlauf manchmal ohne
+    // sichtbaren Uebergang direkt in den Endzustand gesprungen.
+    void root.offsetWidth;
+    requestAnimationFrame(function () { stageReveal(root); });
+  }
+
+  function replayCounters(root) {
+    var counters = root.querySelectorAll ? root.querySelectorAll("[data-count-to]") : [];
+    if (!counters.length) return;
+    counters.forEach(function (el) { el.textContent = "0"; countUp(el); });
+  }
+
+  function replayTimeline(root) {
+    var timelines = root.classList && root.classList.contains("timeline")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".timeline") : []);
+    Array.prototype.forEach.call(timelines, function (tl) {
+      var progress = tl.querySelector(".timeline-progress");
+      if (!progress) return;
+      var targetPct = timelineZielProzent(tl);
+      if (targetPct === null) return;
+      // Breite ohne Transition auf 0 zuruecksetzen, Reflow erzwingen, dann
+      // Transition wieder zulassen und den Zielwert setzen - sonst faehrt
+      // die Linie nur von der aktuellen Breite ab statt sichtbar neu von 0.
+      progress.style.transition = "none";
+      progress.style.width = "0%";
+      void progress.offsetWidth;
+      progress.style.transition = "";
+      requestAnimationFrame(function () { progress.style.width = targetPct; });
+    });
+  }
+
+  function replayCarousel(root) {
+    var tracks = root.classList && root.classList.contains("carousel")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".carousel") : []);
+    Array.prototype.forEach.call(tracks, function (track) {
+      track.scrollTo({ left: 0, behavior: reduceMotion() ? "auto" : "smooth" });
+    });
+  }
+
+  function replayStepper(root) {
+    var leisten = root.classList && root.classList.contains("stepper-tabs")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".stepper-tabs") : []);
+    Array.prototype.forEach.call(leisten, function (leiste) {
+      var ersterTab = leiste.querySelector(".stepper-tab");
+      if (ersterTab) stepperWechseln(leiste, ersterTab);
+    });
+  }
+
+  function replayModule(root) {
+    if (!root) return;
+    replayReveal(root);
+    replayCounters(root);
+    replayTimeline(root);
+    replayCarousel(root);
+    replayStepper(root);
+  }
+
+  function replayAll() {
+    document.querySelectorAll("[data-modul]").forEach(function (root) { replayModule(root); });
+  }
+
+  function setAnimationsEnabled(enabled) {
+    // Rein CSS-getriebene Wirkung (siehe .qa-anim-off in bausteine/_basis.css /
+    // tools/bauen.py QA_CSS): transition/animation:none!important auf allem.
+    // reduceMotion() liest dieselbe Klasse zusaetzlich fuer JS-getimte Effekte
+    // (countUp, Timeline-Bar), damit "Animations off" beide Wege abdeckt.
+    document.documentElement.classList.toggle("qa-anim-off", !enabled);
+  }
+
+  function setReducedMotion(on) {
+    qaForceReducedMotion = !!on;
+  }
+
+  window.DAYONE_QA = {
+    replay: replayModule,
+    replayAll: replayAll,
+    setAnimationsEnabled: setAnimationsEnabled,
+    setReducedMotion: setReducedMotion
+  };
 })();
 </script>
+<!-- QA-ONLY:START -->
+<style>
+/* ==== QA-Leiste (nur in modul-galerie.html, siehe QA-ONLY-Marker) ==== */
+body.galerie{padding-bottom:64px}
+.qa-leiste{position:fixed;left:0;right:0;bottom:0;z-index:100;
+  display:flex;flex-wrap:wrap;gap:var(--space-6);align-items:center;justify-content:space-between;
+  padding:10px var(--grid-margin);background:var(--color-main-text);color:var(--color-bg);
+  font-family:var(--font);font-size:var(--text-body-s);border-top:1px solid var(--gray-500)}
+.qa-leiste button{font-family:inherit;font-size:inherit;cursor:pointer;
+  background:var(--gray-500);color:var(--color-bg);border:1px solid var(--gray-400);
+  border-radius:var(--radius-input);padding:6px 12px}
+.qa-leiste button:hover{background:var(--gray-400)}
+.qa-leiste button[aria-pressed="true"]{background:var(--sand-600);border-color:var(--sand-900);color:var(--color-main-text)}
+.qa-info{display:flex;gap:var(--space-6);align-items:baseline;min-width:0}
+.qa-info .qa-modul{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qa-info .qa-viewport{opacity:.6;white-space:nowrap}
+.qa-aktionen{display:flex;flex-wrap:wrap;gap:8px}
+/* "Animations: off" - rein CSS-getriebene Wirkung, siehe setAnimationsEnabled()
+   in bausteine/_basis.js Abschnitt 10. !important, weil sie jede Modul-eigene
+   transition/animation uebersteuern muss, unabhaengig von deren Spezifitaet. */
+.qa-anim-off, .qa-anim-off *{transition:none!important;animation:none!important}
+</style>
+<script>
+(function () {
+  "use strict";
+  // Nur in modul-galerie.html eingebunden (siehe QA-ONLY-Marker in
+  // tools/bauen.py galerie_bauen() und der Strip-Schritt in
+  // tools/skill_bauen.py) - auf echten Onepagern existiert dieses Skript
+  // gar nicht erst. Es nutzt ausschliesslich das oeffentliche
+  // window.DAYONE_QA-Interface aus bausteine/_basis.js, keine internen
+  // Details der einzelnen Module.
+
+  if (!window.DAYONE_QA) return; // Schutz, falls die Datei je isoliert geladen wird
+
+  var module = Array.prototype.slice.call(document.querySelectorAll("[data-modul]"));
+  if (!module.length) return;
+
+  var leiste = document.createElement("div");
+  leiste.className = "qa-leiste";
+  leiste.innerHTML =
+    '<div class="qa-info">' +
+      '<span class="qa-modul">–</span>' +
+      '<span class="qa-viewport"></span>' +
+    '</div>' +
+    '<div class="qa-aktionen">' +
+      '<button type="button" data-qa="replay">Replay current</button>' +
+      '<button type="button" data-qa="replay-all">Replay all</button>' +
+      '<button type="button" data-qa="anim" aria-pressed="false">Animations: on</button>' +
+      '<button type="button" data-qa="reduced" aria-pressed="false">Reduced motion: off</button>' +
+    '</div>';
+  document.body.appendChild(leiste);
+
+  var modulLabel = leiste.querySelector(".qa-modul");
+  var viewportLabel = leiste.querySelector(".qa-viewport");
+  var animBtn = leiste.querySelector('[data-qa="anim"]');
+  var reducedBtn = leiste.querySelector('[data-qa="reduced"]');
+
+  /* ---- aktuelles Modul: die Sektion, deren Mitte der Viewport-Mitte am
+     naechsten liegt. rAF-gedrosselt, damit das Scroll-Event nicht bei jedem
+     Pixel neu rechnet. ---- */
+  var aktuelles = module[0];
+
+  function aktuellesBestimmen() {
+    var mitte = window.innerHeight / 2;
+    var bester = module[0], besterAbstand = Infinity;
+    module.forEach(function (m) {
+      var rect = m.getBoundingClientRect();
+      var modMitte = rect.top + rect.height / 2;
+      var abstand = Math.abs(modMitte - mitte);
+      if (abstand < besterAbstand) { besterAbstand = abstand; bester = m; }
+    });
+    aktuelles = bester;
+    modulLabel.textContent = aktuelles.getAttribute("data-modul") || "–";
+  }
+
+  var scrollGeplant = false;
+  window.addEventListener("scroll", function () {
+    if (scrollGeplant) return;
+    scrollGeplant = true;
+    requestAnimationFrame(function () { aktuellesBestimmen(); scrollGeplant = false; });
+  }, { passive: true });
+
+  function viewportAnzeigen() {
+    viewportLabel.textContent = window.innerWidth + "×" + window.innerHeight;
+  }
+  window.addEventListener("resize", viewportAnzeigen);
+  viewportAnzeigen();
+  aktuellesBestimmen();
+
+  /* ---- Klick-Wiring ---- */
+  var animationenAn = true;
+  var reducedMotionAn = false;
+
+  leiste.addEventListener("click", function (e) {
+    var btn = e.target.closest ? e.target.closest("button[data-qa]") : null;
+    if (!btn) return;
+    switch (btn.dataset.qa) {
+      case "replay":
+        window.DAYONE_QA.replay(aktuelles);
+        break;
+      case "replay-all":
+        window.DAYONE_QA.replayAll();
+        break;
+      case "anim":
+        animationenAn = !animationenAn;
+        window.DAYONE_QA.setAnimationsEnabled(animationenAn);
+        animBtn.textContent = "Animations: " + (animationenAn ? "on" : "off");
+        animBtn.setAttribute("aria-pressed", animationenAn ? "false" : "true");
+        break;
+      case "reduced":
+        reducedMotionAn = !reducedMotionAn;
+        window.DAYONE_QA.setReducedMotion(reducedMotionAn);
+        reducedBtn.textContent = "Reduced motion: " + (reducedMotionAn ? "on" : "off");
+        reducedBtn.setAttribute("aria-pressed", reducedMotionAn ? "true" : "false");
+        break;
+    }
+  });
+
+  /* ---- Alle Animationen einmal direkt beim Laden anstossen, damit man sie
+     sieht, ohne erst scrollen zu muessen (Kernziel aus dem Testkonzept). ---- */
+  requestAnimationFrame(function () { window.DAYONE_QA.replayAll(); });
+})();
+</script>
+<!-- QA-ONLY:END -->
 </body>
 </html>

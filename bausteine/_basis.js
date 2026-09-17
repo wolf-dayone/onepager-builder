@@ -158,11 +158,19 @@
 
   /* ---- 6) Kennzahlen hochzählen ---- */
   var counters = document.querySelectorAll("[data-count-to]");
+  // WeakMap statt einfachem Flag: haelt pro Element eine "Generation" fest,
+  // damit ein durch Replay neu gestarteter countUp den rAF-Loop eines noch
+  // laufenden alten Aufrufs stilllegt, statt dass beide gleichzeitig ins
+  // textContent schreiben und der aeltere den Zielwert des neueren ueberschreibt.
+  var countUpGen = new WeakMap();
   function countUp(el) {
     var target = parseFloat(el.dataset.countTo);
+    var gen = (countUpGen.get(el) || 0) + 1;
+    countUpGen.set(el, gen);
     if (reduceMotion()) { el.textContent = target; return; }
     var start = performance.now(), dur = 1200;
     function step(now) {
+      if (countUpGen.get(el) !== gen) return; // von neuerem Aufruf ueberholt
       var p = Math.min((now - start) / dur, 1);
       var eased = 1 - Math.pow(1 - p, 3);
       el.textContent = Math.round(target * eased);
@@ -186,15 +194,24 @@
      jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
      Zielbreite animieren (transition auf .timeline-progress erledigt das optisch),
      damit die Linie sich sichtbar "auffüllt" statt einfach dazustehen. */
-  document.querySelectorAll(".timeline").forEach(function (tl) {
+  // Ausgelagert (statt Inline in der forEach unten), weil Abschnitt 10
+  // (replayTimeline) dieselbe Berechnung fuer den Replay-Control braucht -
+  // eine Kopie der Formel haette bei einer spaeteren Aenderung leicht
+  // auseinanderlaufen koennen.
+  function timelineZielProzent(tl) {
     var items = tl.querySelectorAll(".timeline-item");
-    var progress = tl.querySelector(".timeline-progress");
-    if (!items.length || !progress) return;
+    if (!items.length) return null;
     var currentIndex = Array.prototype.findIndex.call(items, function (it) {
       return it.classList.contains("is-current");
     });
-    if (currentIndex < 0) return; // kein aktueller Punkt markiert -> keine Linie zeichnen
-    var targetPct = (currentIndex / items.length) * 100 + "%";
+    if (currentIndex < 0) return null; // kein aktueller Punkt markiert -> keine Linie zeichnen
+    return (currentIndex / items.length) * 100 + "%";
+  }
+  document.querySelectorAll(".timeline").forEach(function (tl) {
+    var progress = tl.querySelector(".timeline-progress");
+    if (!progress) return;
+    var targetPct = timelineZielProzent(tl);
+    if (targetPct === null) return;
     if (reduceMotion()) { progress.style.width = targetPct; return; }
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries, obs) {
@@ -226,35 +243,146 @@
      Die Leiste selbst bleibt per position:sticky oben stehen (CSS). Hier nur
      das Umschalten der Panels. Ohne JS bleibt Phase 1 sichtbar - der Inhalt
      geht also nie verloren. */
+  // stepperWechseln() ist die gemeinsame Umschalt-Logik fuer Klick UND Replay
+  // (Abschnitt 10) - frueher stand das nur im Klick-Handler, Replay haette
+  // sonst eine zweite, leicht abweichende Kopie gebraucht.
+  function stepperWechseln(leiste, zielTab) {
+    var tabs = Array.prototype.slice.call(leiste.querySelectorAll(".stepper-tab"));
+    tabs.forEach(function (t) {
+      var aktiv = t === zielTab;
+      t.setAttribute("aria-selected", aktiv ? "true" : "false");
+      var panel = document.getElementById(t.getAttribute("aria-controls"));
+      if (!panel) return;
+      if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
+      panel.hidden = false;
+      if (reduceMotion()) return;
+      /* Panels tragen noch ein transitionDelay als Inline-Style vom
+         gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
+         (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
+         verzoegern - deshalb hier zuruecksetzen, damit der Panel-Wechsel
+         immer sofort losläuft. */
+      panel.style.transitionDelay = "0ms";
+      /* Panel startet unsichtbar/leicht versetzt (CSS: .ist-erscheinend),
+         dann per Klasse-Entfernen in den Endzustand ueberfuehrt - das
+         doppelte rAF stellt sicher, dass der Browser den Startzustand
+         erst gemalt hat, bevor die Transition losläuft (sonst überspringt
+         sie manche Browser komplett). */
+      panel.classList.add("ist-erscheinend");
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { panel.classList.remove("ist-erscheinend"); });
+      });
+    });
+  }
   document.querySelectorAll(".stepper-tabs").forEach(function (leiste) {
     var tabs = Array.prototype.slice.call(leiste.querySelectorAll(".stepper-tab"));
     tabs.forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        tabs.forEach(function (t) {
-          var aktiv = t === tab;
-          t.setAttribute("aria-selected", aktiv ? "true" : "false");
-          var panel = document.getElementById(t.getAttribute("aria-controls"));
-          if (!panel) return;
-          if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
-          panel.hidden = false;
-          if (reduceMotion()) return;
-          /* Panels tragen noch ein transitionDelay als Inline-Style vom
-             gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
-             (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
-             verzoegern - deshalb hier zuruecksetzen, damit der Panel-Wechsel
-             immer sofort losläuft. */
-          panel.style.transitionDelay = "0ms";
-          /* Panel startet unsichtbar/leicht versetzt (CSS: .ist-erscheinend),
-             dann per Klasse-Entfernen in den Endzustand ueberfuehrt - das
-             doppelte rAF stellt sicher, dass der Browser den Startzustand
-             erst gemalt hat, bevor die Transition losläuft (sonst überspringt
-             sie manche Browser komplett). */
-          panel.classList.add("ist-erscheinend");
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () { panel.classList.remove("ist-erscheinend"); });
-          });
-        });
-      });
+      tab.addEventListener("click", function () { stepperWechseln(leiste, tab); });
     });
   });
+
+  /* ---- 10) QA-Testschnittstelle (nur fuer die Modul-Galerie) ----
+     Ziel: Motion-Testing ohne Reload/Hochscrollen/manuelles Triggern (siehe
+     modul-namen-generalisierung/Testkonzept). Bewusst NICHT der Versuch, den
+     Trigger-Mechanismus (IntersectionObserver vs. sofort) zu vereinheitlichen
+     - das wuerde Produktionsverhalten anfassen. Stattdessen: eigene,
+     additive "Replay"-Funktionen, die den DOM-Zustand direkt zuruecksetzen
+     und die Animation erneut anstossen, unabhaengig davon, wie sie beim
+     echten Seitenaufruf ausgeloest wurde.
+
+     root ist i.d.R. die [data-modul]-Sektion in modul-galerie.html. Jede
+     replayX-Funktion ist ein No-Op, wenn ihr Effekt im root nicht vorkommt -
+     replayModule() kann dadurch generisch auf jede Sektion angewendet
+     werden, ohne dass hier pro Modulname unterschieden werden muss.
+
+     Auf echten Onepagern (starter.html, index.html) wird window.DAYONE_QA
+     nie aufgerufen - dieser Abschnitt aendert an deren Verhalten nichts,
+     er haengt nur zusaetzliche Funktionen an ein globales Objekt. */
+
+  function replayReveal(root) {
+    var items = root.querySelectorAll ? root.querySelectorAll(".reveal") : [];
+    var rootIstReveal = root.classList && root.classList.contains("reveal");
+    if (!items.length && !rootIstReveal) return;
+    items.forEach(function (el) { el.classList.remove("in"); el.style.transitionDelay = ""; });
+    if (rootIstReveal) { root.classList.remove("in"); root.style.transitionDelay = ""; }
+    // Reflow erzwingen, damit der Browser den zurueckgesetzten Zustand erst
+    // malt, bevor stageReveal() die .in-Klasse (und damit die Transition)
+    // wieder anstoesst - sonst wird der zweite Durchlauf manchmal ohne
+    // sichtbaren Uebergang direkt in den Endzustand gesprungen.
+    void root.offsetWidth;
+    requestAnimationFrame(function () { stageReveal(root); });
+  }
+
+  function replayCounters(root) {
+    var counters = root.querySelectorAll ? root.querySelectorAll("[data-count-to]") : [];
+    if (!counters.length) return;
+    counters.forEach(function (el) { el.textContent = "0"; countUp(el); });
+  }
+
+  function replayTimeline(root) {
+    var timelines = root.classList && root.classList.contains("timeline")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".timeline") : []);
+    Array.prototype.forEach.call(timelines, function (tl) {
+      var progress = tl.querySelector(".timeline-progress");
+      if (!progress) return;
+      var targetPct = timelineZielProzent(tl);
+      if (targetPct === null) return;
+      // Breite ohne Transition auf 0 zuruecksetzen, Reflow erzwingen, dann
+      // Transition wieder zulassen und den Zielwert setzen - sonst faehrt
+      // die Linie nur von der aktuellen Breite ab statt sichtbar neu von 0.
+      progress.style.transition = "none";
+      progress.style.width = "0%";
+      void progress.offsetWidth;
+      progress.style.transition = "";
+      requestAnimationFrame(function () { progress.style.width = targetPct; });
+    });
+  }
+
+  function replayCarousel(root) {
+    var tracks = root.classList && root.classList.contains("carousel")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".carousel") : []);
+    Array.prototype.forEach.call(tracks, function (track) {
+      track.scrollTo({ left: 0, behavior: reduceMotion() ? "auto" : "smooth" });
+    });
+  }
+
+  function replayStepper(root) {
+    var leisten = root.classList && root.classList.contains("stepper-tabs")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".stepper-tabs") : []);
+    Array.prototype.forEach.call(leisten, function (leiste) {
+      var ersterTab = leiste.querySelector(".stepper-tab");
+      if (ersterTab) stepperWechseln(leiste, ersterTab);
+    });
+  }
+
+  function replayModule(root) {
+    if (!root) return;
+    replayReveal(root);
+    replayCounters(root);
+    replayTimeline(root);
+    replayCarousel(root);
+    replayStepper(root);
+  }
+
+  function replayAll() {
+    document.querySelectorAll("[data-modul]").forEach(function (root) { replayModule(root); });
+  }
+
+  function setAnimationsEnabled(enabled) {
+    // Rein CSS-getriebene Wirkung (siehe .qa-anim-off in bausteine/_basis.css /
+    // tools/bauen.py QA_CSS): transition/animation:none!important auf allem.
+    // reduceMotion() liest dieselbe Klasse zusaetzlich fuer JS-getimte Effekte
+    // (countUp, Timeline-Bar), damit "Animations off" beide Wege abdeckt.
+    document.documentElement.classList.toggle("qa-anim-off", !enabled);
+  }
+
+  function setReducedMotion(on) {
+    qaForceReducedMotion = !!on;
+  }
+
+  window.DAYONE_QA = {
+    replay: replayModule,
+    replayAll: replayAll,
+    setAnimationsEnabled: setAnimationsEnabled,
+    setReducedMotion: setReducedMotion
+  };
 })();
