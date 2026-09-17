@@ -79,25 +79,6 @@ sie nicht (numeriert wird nur, wenn `data-chapter="[NN]"` vorkommt).
 
 <sub>Maschinell geprüft: 4–8 Kapitel</sub>
 
-### `00 Elemente/02 karte`
-
-<sub>Figma-Node `64:594`</sub>
-
-**ZWECK** — Wiederverwendbare Karte aus Nummer, Titel und Fließtext. Baustein, kein Abschnitt: wird innerhalb von Modulen eingesetzt, nicht allein auf die Seite gestellt.
-
-**FÜLLEN**
-
-- Nummer zweistellig (01, 02 …), groß in Text-Secondary (Sand/900, #544e47).
-- Titel als Merksatz, eine Zeile.
-- Text 2–3 Sätze. Alle Karten einer Reihe gleich lang halten, sonst franst die Reihe aus.
-
-**EINGESETZT IN**
-
-- karten-karussell — als horizontal scrollbarer Karten-Track.
-- kartenraster — wenn eine Option Fläche tragen soll.
-
-**HINWEIS** — Trägt als einzige Kartenvariante eine Fläche (Sand/200). Im Hairline-Raster der Module ist das die Auszeichnung für "hervorgehoben" — deshalb sparsam einsetzen.
-
 ---
 
 ## 01 Einstieg
@@ -641,4 +622,27 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 **HINWEIS** — Bewusst invertiert.
 
 <sub>Maschinell geprüft: max. 2 Buttons, min. 44.0 px, min. 16.0 px</sub>
+
+---
+
+## 00 Elemente
+
+### `00 Elemente/02 karte`
+
+<sub>Figma-Node `64:594`</sub>
+
+**ZWECK** — Wiederverwendbare Karte aus Nummer, Titel und Fließtext. Baustein, kein Abschnitt: wird innerhalb von Modulen eingesetzt, nicht allein auf die Seite gestellt.
+
+**FÜLLEN**
+
+- Nummer zweistellig (01, 02 …), groß in Text-Secondary (Sand/900, #544e47).
+- Titel als Merksatz, eine Zeile.
+- Text 2–3 Sätze. Alle Karten einer Reihe gleich lang halten, sonst franst die Reihe aus.
+
+**EINGESETZT IN**
+
+- karten-karussell — als horizontal scrollbarer Karten-Track.
+- kartenraster — wenn eine Option Fläche tragen soll.
+
+**HINWEIS** — Trägt als einzige Kartenvariante eine Fläche (Sand/200). Im Hairline-Raster der Module ist das die Auszeichnung für "hervorgehoben" — deshalb sparsam einsetzen.
 

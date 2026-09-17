@@ -48,8 +48,8 @@ FAELLE = [
      "kapitel"),
 
     ("Kapitelmarker passt nicht zur Kapitelnummer",
-     lambda s: s.replace('<p class="eyebrow is-centered">01 —',
-                         '<p class="eyebrow is-centered">07 —', 1),
+     lambda s: s.replace('<p class="eyebrow is-centered reveal">01 —',
+                         '<p class="eyebrow is-centered reveal">07 —', 1),
      "kapitelmarker"),
 
     ("Zweiter Hero",

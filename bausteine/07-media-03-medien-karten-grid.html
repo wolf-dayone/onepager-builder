@@ -3,10 +3,16 @@
 .medien-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-8);
   margin-top:var(--space-10)}
 .medien-grid.ist-dreispaltig{grid-template-columns:repeat(3,minmax(0,1fr))}
+/* Schneller rein, noch schneller wieder raus (Video-Feedback 2026-09-17:
+   "der Hover-Effekt ist etwas zu langsam ... sollte deutlich knackiger sein
+   und nicht so lange aktiv bleiben, nachdem man weg-gehovert hat"). Vorher
+   ein einzelner .2s-Wert fuer beide Richtungen - jetzt kuerzer und beim
+   Verlassen nochmal kuerzer statt symmetrisch. */
 .medien-karte{display:flex;flex-direction:column;border:1px solid var(--color-border);
   border-radius:var(--radius-card);overflow:hidden;text-decoration:none;color:inherit;
-  transition:border-color .2s var(--ease)}
-a.medien-karte:hover{border-color:var(--color-main-text)}
+  transition:border-color .12s ease-out,transform .12s ease-out}
+a.medien-karte:hover{border-color:var(--color-main-text);transform:translateY(-2px)}
+a.medien-karte:not(:hover){transition-duration:.08s}
 .medien-karte .bild{aspect-ratio:16/9;background:var(--color-detail);display:flex;
   align-items:center;justify-content:center;color:var(--color-text);
   font-size:var(--text-body-s)}
@@ -33,7 +39,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <!-- Bei CTA-Nutzung die ganze Kachel verlinken, nicht nur den Titel. -->
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="07 Media/03 medien-karten-grid">
   <div class="wrap">
-    <p class="eyebrow">[NN] — [Weiterführend]</p>
+    <p class="eyebrow reveal">[NN] — [Weiterführend]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal">[Prototypen entdecken]</h2>
     <div class="medien-grid">
       <a class="medien-karte reveal" href="[URL]">

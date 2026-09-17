@@ -66,10 +66,28 @@ footer.cta{padding-block:var(--space-20)}
 /* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */
 .eyebrow{display:flex;flex-direction:column;align-items:flex-start;gap:14px;
   font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text);margin-bottom:var(--space-6)}
-.eyebrow::after{content:"";width:68px;height:1px;background:currentColor;flex:none}
+/* Linie ist ein echtes Element (nicht mehr ::after), damit sie unabhaengig vom
+   Text einlaufen kann: waechst erst NACH dem Text-Fade (kurze transition-delay),
+   von links (Standard) bzw. von der Mitte aus (is-centered) - Video-Feedback
+   2026-09-17. Aktiviert ueber dieselbe .reveal/.in-Mechanik wie der Rest: die
+   Eyebrow ist jetzt selbst ein eigener .reveal-Schritt (siehe Modul-HTML). */
+.eyebrow-linie{width:68px;height:1px;background:currentColor;flex:none;
+  transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease) .25s}
+.eyebrow.in .eyebrow-linie,.reveal.in.eyebrow .eyebrow-linie{transform:scaleX(1)}
 /* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
 .eyebrow.is-centered{align-items:center;text-align:center}
+.eyebrow.is-centered .eyebrow-linie{transform-origin:center}
 [data-chapter-marker="off"] .eyebrow{display:none}
+
+/* ==== Links (Aktionsfarbe) ==== */
+/* Bislang ungestylt -> Browser-Default-Blau in Fliesstext-Links (z. B.
+   qr-tool-verweis .qr-url a). Video-Feedback 2026-09-17: Aktionsfarbe ist
+   projektweit Rot, nicht Blau - gilt fuer alle inline Textlinks. Buttons/Badges
+   mit eigener main-text/border-Farbe (btn-primary/-secondary, .badge) sind
+   bewusst ausgenommen, die sind keine Textlinks. */
+a{color:var(--color-action);text-decoration-color:currentColor;text-underline-offset:2px}
+a:hover{opacity:.8}
+a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 
 /* ==== Typo-Rollen ==== */
 /* overflow-wrap: ein einzelnes langes Wort (Produktname, Kompositum) darf
@@ -88,6 +106,7 @@ footer.cta{padding-block:var(--space-20)}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
+  .eyebrow-linie{transform:scaleX(1);transition:none}
   /* Erzwungenes Einrasten kann bei vestibulären Empfindlichkeiten unangenehm
      sein - dieselbe Vorsicht wie bei jedem anderen Bewegungseffekt hier. */
   html{scroll-behavior:auto;scroll-snap-type:none}

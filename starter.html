@@ -49,6 +49,11 @@
   --color-surface:    var(--gray-50);
   --color-detail:     var(--sand-200);
   --color-border:     var(--gray-200);
+  /* Aktionsfarbe (Links, aktive States, Hervorhebungen) - projektweit Rot statt
+     Blau (Video-Feedback Ernst, 2026-09-17: "Links should not be highlighted
+     blue, but red ... the action color should be red instead of any other
+     color"). Gilt gleich in Hell und Dunkel, daher kein .dark-Override. */
+  --color-action:     var(--red-500);
   /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
      Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
      Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln
@@ -177,10 +182,28 @@ footer.cta{padding-block:var(--space-20)}
 /* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */
 .eyebrow{display:flex;flex-direction:column;align-items:flex-start;gap:14px;
   font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text);margin-bottom:var(--space-6)}
-.eyebrow::after{content:"";width:68px;height:1px;background:currentColor;flex:none}
+/* Linie ist ein echtes Element (nicht mehr ::after), damit sie unabhaengig vom
+   Text einlaufen kann: waechst erst NACH dem Text-Fade (kurze transition-delay),
+   von links (Standard) bzw. von der Mitte aus (is-centered) - Video-Feedback
+   2026-09-17. Aktiviert ueber dieselbe .reveal/.in-Mechanik wie der Rest: die
+   Eyebrow ist jetzt selbst ein eigener .reveal-Schritt (siehe Modul-HTML). */
+.eyebrow-linie{width:68px;height:1px;background:currentColor;flex:none;
+  transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease) .25s}
+.eyebrow.in .eyebrow-linie,.reveal.in.eyebrow .eyebrow-linie{transform:scaleX(1)}
 /* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
 .eyebrow.is-centered{align-items:center;text-align:center}
+.eyebrow.is-centered .eyebrow-linie{transform-origin:center}
 [data-chapter-marker="off"] .eyebrow{display:none}
+
+/* ==== Links (Aktionsfarbe) ==== */
+/* Bislang ungestylt -> Browser-Default-Blau in Fliesstext-Links (z. B.
+   qr-tool-verweis .qr-url a). Video-Feedback 2026-09-17: Aktionsfarbe ist
+   projektweit Rot, nicht Blau - gilt fuer alle inline Textlinks. Buttons/Badges
+   mit eigener main-text/border-Farbe (btn-primary/-secondary, .badge) sind
+   bewusst ausgenommen, die sind keine Textlinks. */
+a{color:var(--color-action);text-decoration-color:currentColor;text-underline-offset:2px}
+a:hover{opacity:.8}
+a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 
 /* ==== Typo-Rollen ==== */
 /* overflow-wrap: ein einzelnes langes Wort (Produktname, Kompositum) darf
@@ -199,6 +222,7 @@ footer.cta{padding-block:var(--space-20)}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
+  .eyebrow-linie{transform:scaleX(1);transition:none}
   /* Erzwungenes Einrasten kann bei vestibulären Empfindlichkeiten unangenehm
      sein - dieselbe Vorsicht wie bei jedem anderen Bewegungseffekt hier. */
   html{scroll-behavior:auto;scroll-snap-type:none}
@@ -260,15 +284,24 @@ footer.cta{padding-block:var(--space-20)}
 .hero .badges{display:flex;gap:12px}
 .badge{border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:10px 20px;
   font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-main-text);text-decoration:none}
-.badge.accent{border-color:var(--red-500);color:var(--red-500)}
+.badge.accent{border-color:var(--color-action);color:var(--color-action)}
 .hero h1 .line2{display:block;font-weight:400;color:var(--color-text)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
-.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
+.hero .meta-block{display:flex;flex-direction:column}
+.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);order:-1;
   /* Figma nennt diese Graustufe "Gray/400", ihr Wert entspricht aber unserem
      --gray-300 — die Nummerierung zwischen Figma-Variablen und diesen Tokens ist NICHT
      deckungsgleich. Beim Übersetzen von Figma-Werten immer den Hex-Wert vergleichen,
      nicht den Variablennamen übernehmen. */
-  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-bg) 100%)}
+  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-bg) 100%);
+  /* Laeuft erst ein, NACHDEM die drei Meta-Punkte durchgestaffelt sind - steht
+     dafuer bewusst NACH ihnen im DOM (visuell aber wieder oben, ueber order:-1),
+     die reveal/.in-Stagger-Reihenfolge zaehlt nach DOM-Position (_basis.js
+     stageReveal). Video-Feedback 2026-09-17. */
+  transform-origin:left;transition:transform .8s var(--ease)}
+.hero .rule{transform:scaleX(0)}
+.hero .rule.in{transform:scaleX(1)}
+@media(prefers-reduced-motion:reduce){.hero .rule{transform:scaleX(1);transition:none}}
 .hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
 .hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
@@ -342,8 +375,12 @@ footer.cta{padding-block:var(--space-20)}
 .process-role p{font-size:var(--text-body-s);color:var(--color-text);margin-top:4px}
 
 /* ==== Kennzahlen (dunkel) ==== */
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-6)}
-.stat{border-top:1px solid var(--color-border);padding-top:28px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-6);margin-top:var(--space-10)}
+.stat{position:relative;padding-top:28px}
+.stat::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;background:var(--color-border);
+  transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease) .2s}
+.stat.in::before{transform:scaleX(1)}
+@media(prefers-reduced-motion:reduce){.stat::before{transform:scaleX(1);transition:none}}
 .stat .value{font-size:var(--text-display-1);font-weight:600;line-height:1}
 .stat .label{margin-top:var(--space-4);font-size:var(--text-body-ms);font-weight:600}
 .stat .note{margin-top:8px;font-size:var(--text-body-s);color:var(--color-text)}
@@ -481,20 +518,20 @@ footer.cta{padding-block:var(--space-20)}
       <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
       <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
     </div>
-    <div class="reveal">
-      <div class="rule"></div>
+    <div class="meta-block">
       <dl class="meta">
-        <div><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
-        <div><dt>Presenter</dt><dd>[Vorname &amp; Vorname]</dd></div>
-        <div><dt>Format</dt><dd>[DAYONE Weekly]</dd></div>
+        <div class="reveal"><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
+        <div class="reveal"><dt>Presenter</dt><dd>[Vorname &amp; Vorname]</dd></div>
+        <div class="reveal"><dt>Format</dt><dd>[DAYONE Weekly]</dd></div>
       </dl>
+      <div class="rule reveal"></div>
     </div>
   </div>
 </header>
 
 <!-- Kein data-chapter: steht meist direkt nach dem Hero und ist selbst kein Kapitel.
      Die Kapitel-Nav erscheint dann erst nach der Agenda (siehe #agenda im Script). -->
-<section class="agenda" id="agenda" data-modul="01 Einstieg/02 agenda">
+<section class="agenda" id="agenda" data-stagger="120" data-modul="01 Einstieg/02 agenda">
   <div class="wrap">
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">Agenda</h2>
     <div class="agenda-list">
@@ -514,17 +551,17 @@ footer.cta{padding-block:var(--space-20)}
      Vorwarnung braucht. Reicht der direkte Einstieg, weglassen und Eyebrow +
      data-chapter stattdessen auf die nächste Sektion setzen. -->
 <section class="divider dark" data-chapter="01" data-chapter-title="[Kapitelname]" id="kapitel-01" data-modul="02 Struktur/01 section-divider">
-  <div class="wrap reveal">
-    <p class="eyebrow is-centered">01 — [Kapitelname]</p>
-    <h2 class="h2">[Kapitelname]</h2>
+  <div class="wrap">
+    <p class="eyebrow is-centered reveal">01 — [Kapitelname]<span class="eyebrow-linie" aria-hidden="true"></span></p>
+    <h2 class="h2 reveal">[Kapitelname]</h2>
   </div>
 </section>
 
 <section data-chapter="02" data-chapter-title="[Kapitelname]" id="kapitel-02" data-modul="03 Inhalt/03 sticky-nummernliste">
   <div class="wrap sticky-list">
-    <div class="left reveal">
-      <h2 class="h2">[Die Leitfrage dieses Kapitels]</h2>
-      <p class="lead" style="margin-top:var(--space-6)">[Zwei bis vier Sätze Kontext.]</p>
+    <div class="left">
+      <h2 class="h2 reveal">[Die Leitfrage dieses Kapitels]</h2>
+      <p class="lead reveal" style="margin-top:var(--space-6)">[Zwei bis vier Sätze Kontext.]</p>
     </div>
     <div class="right">
       <div class="item reveal"><span class="num">01</span>
@@ -548,11 +585,11 @@ footer.cta{padding-block:var(--space-20)}
 
 <section data-modul="03 Inhalt/04 kartenraster">
   <div class="wrap">
-    <div class="kartenraster-kopf reveal">
+    <div class="kartenraster-kopf">
       <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
-      <p class="eyebrow">[NN] — [Kapitelname]</p>
-      <h2 class="h2">[Wie gehen wir vor?]</h2>
-      <p class="intro">[Ein Satz Einordnung.]</p>
+      <p class="eyebrow reveal">[NN] — [Kapitelname]<span class="eyebrow-linie" aria-hidden="true"></span></p>
+      <h2 class="h2 reveal">[Wie gehen wir vor?]</h2>
+      <p class="intro reveal">[Ein Satz Einordnung.]</p>
     </div>
     <div class="cards">
       <div class="card reveal"><span class="label">[Option A]</span><h3 class="h3">[Titel]</h3>
@@ -568,7 +605,7 @@ footer.cta{padding-block:var(--space-20)}
 
 <section class="dark" data-chapter="03" data-chapter-title="[Kapitelname]" id="kapitel-03" data-modul="03 Inhalt/05 prozess-schritte">
   <div class="wrap">
-    <p class="eyebrow">03 — [Vorgehen]</p>
+    <p class="eyebrow reveal">03 — [Vorgehen]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
     <div class="process-steps">
       <div class="process-step reveal"><span class="num">01</span>
@@ -595,10 +632,10 @@ footer.cta{padding-block:var(--space-20)}
 
 <section data-chapter="04" data-chapter-title="[Kapitelname]" id="kapitel-04" data-modul="04 Daten/01 kennzahlen-grid">
   <div class="wrap">
-    <div class="section-head reveal">
+    <div class="section-head">
       <div>
-        <p class="eyebrow">04 — [Bilanz]</p>
-        <h2 class="h2">[Das Projekt in Zahlen]</h2>
+        <p class="eyebrow reveal">04 — [Bilanz]<span class="eyebrow-linie" aria-hidden="true"></span></p>
+        <h2 class="h2 reveal">[Das Projekt in Zahlen]</h2>
       </div>
     </div>
     <div class="stats">
@@ -624,24 +661,24 @@ footer.cta{padding-block:var(--space-20)}
      linken Grid-Rand startet statt am nackten Viewport-Rand. -->
 <section class="dark" data-chapter="05" data-chapter-title="[Kapitelname]" id="kapitel-05" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
   <div class="wrap">
-    <div class="section-head reveal">
-      <div><p class="eyebrow">05 — [Kapitelname]</p><h2 class="h2">[Was wir euch mitgeben]</h2></div>
+    <div class="section-head">
+      <div><p class="eyebrow reveal">05 — [Kapitelname]<span class="eyebrow-linie" aria-hidden="true"></span></p><h2 class="h2 reveal">[Was wir euch mitgeben]</h2></div>
     </div>
   </div>
   <div class="carousel-shell">
     <div class="carousel" id="karten-karussell">
       <div class="carousel-spacer" aria-hidden="true"></div>
-      <div class="card"><span class="num">01</span>
+      <div class="card reveal"><span class="num">01</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
-      <div class="card"><span class="num">02</span>
+      <div class="card reveal"><span class="num">02</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
-      <div class="card"><span class="num">03</span>
+      <div class="card reveal"><span class="num">03</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
-      <div class="card"><span class="num">04</span>
+      <div class="card reveal"><span class="num">04</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
     </div>
   </div>
-  <div class="wrap carousel-controls">
+  <div class="wrap carousel-controls reveal">
     <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">
       <svg aria-hidden="true"><use href="#icon-pfeil-links"></use></svg>
     </button>
@@ -659,7 +696,7 @@ footer.cta{padding-block:var(--space-20)}
       <a class="btn btn-primary" href="[URL]">[Zum Tool] <span aria-hidden="true">→</span></a>
       <a class="btn btn-secondary" href="[URL]">[Feedback] <span aria-hidden="true">→</span></a>
     </div>
-    <div class="footer-row">
+    <div class="footer-row reveal">
       <svg class="logo-mark" width="92" height="16" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
       <span>© 2026 DAYONE</span>
     </div>
@@ -799,8 +836,17 @@ footer.cta{padding-block:var(--space-20)}
   function stageReveal(container) {
     var items = container.classList && container.classList.contains("reveal")
       ? [container] : container.querySelectorAll(".reveal");
+    // Einzelne Sektionen duerfen ueber data-stagger="<ms>" einen engeren Takt
+    // erzwingen (z. B. Agenda: gleiche Dauer je Punkt, aber schneller
+    // hintereinander - Video-Feedback 2026-09-17). Fehlt das Attribut, gilt
+    // der Standardtakt STAGGER_MS.
+    var takt = STAGGER_MS;
+    if (container.dataset && container.dataset.stagger) {
+      var eigen = parseInt(container.dataset.stagger, 10);
+      if (!isNaN(eigen)) takt = eigen;
+    }
     items.forEach(function (el, i) {
-      el.style.transitionDelay = Math.min(i * STAGGER_MS, STAGGER_MAX_MS) + "ms";
+      el.style.transitionDelay = Math.min(i * takt, STAGGER_MAX_MS) + "ms";
       el.classList.add("in");
     });
   }
@@ -944,21 +990,74 @@ footer.cta{padding-block:var(--space-20)}
     if (currentIndex < 0) return null; // kein aktueller Punkt markiert -> keine Linie zeichnen
     return (currentIndex / items.length) * 100 + "%";
   }
+  var TIMELINE_DAUER = 1100; // deckt sich mit der width-transition auf .timeline-progress
+  // Dots skalieren erst ein, wenn die rote Linie sie "erreicht" hat - zeitlich
+  // proportional zur Laufzeit/Position der width-Transition, nicht mehr Teil
+  // des generischen .reveal-Fades. Der Ring am aktuellen Punkt folgt nochmal
+  // verzoegert danach (Video-Feedback 2026-09-17).
+  function timelineDotsAnimieren(tl) {
+    var items = tl.querySelectorAll(".timeline-item");
+    if (!items.length) return;
+    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
+      return it.classList.contains("is-current");
+    });
+    var nenner = currentIndex >= 0 ? currentIndex : items.length - 1;
+    items.forEach(function (it, i) {
+      var dot = it.querySelector(".timeline-dot");
+      if (!dot) return;
+      dot.classList.remove("ist-sichtbar", "ist-ring-sichtbar");
+      if (reduceMotion()) { dot.classList.add("ist-sichtbar"); if (it.classList.contains("is-current")) dot.classList.add("ist-ring-sichtbar"); return; }
+      var anteil = nenner > 0 ? Math.min(i, nenner) / nenner : 0;
+      var verzoegerung = i <= nenner ? anteil * TIMELINE_DAUER : TIMELINE_DAUER;
+      setTimeout(function () {
+        dot.classList.add("ist-sichtbar");
+        if (it.classList.contains("is-current")) {
+          setTimeout(function () { dot.classList.add("ist-ring-sichtbar"); }, 300);
+        }
+      }, verzoegerung);
+    });
+  }
   document.querySelectorAll(".timeline").forEach(function (tl) {
     var progress = tl.querySelector(".timeline-progress");
     if (!progress) return;
     var targetPct = timelineZielProzent(tl);
     if (targetPct === null) return;
-    if (reduceMotion()) { progress.style.width = targetPct; return; }
+    if (reduceMotion()) { progress.style.width = targetPct; timelineDotsAnimieren(tl); return; }
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries, obs) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { progress.style.width = targetPct; obs.unobserve(e.target); }
+          if (e.isIntersecting) { progress.style.width = targetPct; timelineDotsAnimieren(tl); obs.unobserve(e.target); }
         });
       }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 }).observe(tl);
     } else {
       progress.style.width = targetPct;
+      timelineDotsAnimieren(tl);
     }
+  });
+
+  /* ---- 7b) Roadmap Zoom-In: Balken<->Meilenstein-Kopplung ----
+     Hover/Fokus auf einem .gantt-balken hebt den Meilenstein mit demselben
+     data-verweis rechts hervor - nicht mehr initial fest zugeordnet
+     (.ist-aktuell), sondern ein reiner Hover-Zustand (Video-Feedback
+     2026-09-17). Touch simuliert denselben Zustand kurzzeitig, wie beim
+     Chart-Slide (Abschnitt 6b). */
+  document.querySelectorAll(".roadmap-zoom").forEach(function (zoom) {
+    var balken = zoom.querySelectorAll(".gantt-balken");
+    function setzen(ref, an) {
+      var ziel = zoom.querySelector('.zoom-meilenstein[data-verweis="' + ref + '"]');
+      if (ziel) ziel.classList.toggle("ist-hervorgehoben", an);
+    }
+    balken.forEach(function (b) {
+      var ref = b.dataset.verweis;
+      b.addEventListener("mouseenter", function () { setzen(ref, true); });
+      b.addEventListener("mouseleave", function () { setzen(ref, false); });
+      b.addEventListener("focus", function () { setzen(ref, true); });
+      b.addEventListener("blur", function () { setzen(ref, false); });
+      b.addEventListener("touchstart", function () {
+        b.classList.add("ist-betont"); setzen(ref, true);
+        setTimeout(function () { b.classList.remove("ist-betont"); setzen(ref, false); }, 1200);
+      }, { passive: true });
+    });
   });
 
   /* ---- 8) Karussell ---- */
@@ -1077,7 +1176,7 @@ footer.cta{padding-block:var(--space-20)}
       progress.style.width = "0%";
       void progress.offsetWidth;
       progress.style.transition = "";
-      requestAnimationFrame(function () { progress.style.width = targetPct; });
+      requestAnimationFrame(function () { progress.style.width = targetPct; timelineDotsAnimieren(tl); });
     });
   }
 

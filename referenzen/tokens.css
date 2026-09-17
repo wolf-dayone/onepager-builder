@@ -36,6 +36,11 @@
   --color-surface:    var(--gray-50);
   --color-detail:     var(--sand-200);
   --color-border:     var(--gray-200);
+  /* Aktionsfarbe (Links, aktive States, Hervorhebungen) - projektweit Rot statt
+     Blau (Video-Feedback Ernst, 2026-09-17: "Links should not be highlighted
+     blue, but red ... the action color should be red instead of any other
+     color"). Gilt gleich in Hell und Dunkel, daher kein .dark-Override. */
+  --color-action:     var(--red-500);
   /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
      Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
      Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln

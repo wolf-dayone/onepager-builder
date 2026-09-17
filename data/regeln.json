@@ -27,22 +27,6 @@
       "farbe_frei": false,
       "hat_regeln": true
     },
-    "00 Elemente/02 karte": {
-      "kurzname": "karte",
-      "kategorie": "00 Elemente",
-      "slug": "00-elemente-02-karte",
-      "nodeId": "64:594",
-      "zweck": "Wiederverwendbare Karte aus Nummer, Titel und Fließtext. Baustein, kein Abschnitt: wird innerhalb von Modulen eingesetzt, nicht allein auf die Seite gestellt.",
-      "abgrenzung": "",
-      "fuellen": [
-        "Nummer zweistellig (01, 02 …), groß in Text-Secondary (Sand/900, #544e47).",
-        "Titel als Merksatz, eine Zeile.",
-        "Text 2–3 Sätze. Alle Karten einer Reihe gleich lang halten, sonst franst die Reihe aus."
-      ],
-      "grenzen": [],
-      "farbe_frei": true,
-      "hat_regeln": true
-    },
     "01 Einstieg/01 cover-hero": {
       "kurzname": "cover-hero",
       "kategorie": "01 Einstieg",
@@ -719,6 +703,22 @@
           "quelle": "Buttons auf Mobile full-width, min. 44 px hoch, Schrift min. 16 px (verhindert iOS-Zoom)."
         }
       ],
+      "farbe_frei": true,
+      "hat_regeln": true
+    },
+    "00 Elemente/02 karte": {
+      "kurzname": "karte",
+      "kategorie": "00 Elemente",
+      "slug": "00-elemente-02-karte",
+      "nodeId": "64:594",
+      "zweck": "Wiederverwendbare Karte aus Nummer, Titel und Fließtext. Baustein, kein Abschnitt: wird innerhalb von Modulen eingesetzt, nicht allein auf die Seite gestellt.",
+      "abgrenzung": "",
+      "fuellen": [
+        "Nummer zweistellig (01, 02 …), groß in Text-Secondary (Sand/900, #544e47).",
+        "Titel als Merksatz, eine Zeile.",
+        "Text 2–3 Sätze. Alle Karten einer Reihe gleich lang halten, sonst franst die Reihe aus."
+      ],
+      "grenzen": [],
       "farbe_frei": true,
       "hat_regeln": true
     }

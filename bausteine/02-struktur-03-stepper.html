@@ -12,7 +12,7 @@
   color:var(--color-text);opacity:.45;white-space:nowrap;transition:opacity .2s var(--ease)}
 .stepper-tab:hover{opacity:.75}
 .stepper-tab[aria-selected="true"]{opacity:1;color:var(--color-main-text);
-  border-bottom-color:var(--color-main-text)}
+  border-bottom-width:3px;margin-bottom:-3px;border-bottom-color:var(--color-action)}
 .stepper-panel{padding-top:var(--space-8);transition:opacity .35s var(--ease),transform .35s var(--ease)}
 .stepper-panel[hidden]{display:none}
 /* Uebergangszustand beim Tab-Wechsel: das neu erscheinende Panel startet hier
@@ -37,10 +37,10 @@
      Jedes Panel einheitlich mit 2 Bullet-Punkten befuellen. -->
 <section class="stepper" data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="02 Struktur/03 stepper">
   <div class="wrap">
-    <p class="eyebrow">[NN] — [Lifecycle]</p>
+    <p class="eyebrow reveal">[NN] — [Lifecycle]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Der Ablauf in Phasen]</h2>
 
-    <div class="stepper-tabs" role="tablist" aria-label="[Phasen]">
+    <div class="stepper-tabs reveal" role="tablist" aria-label="[Phasen]">
       <button class="stepper-tab" type="button" role="tab" aria-selected="true"  aria-controls="phase-1" id="tab-1">[Phase 1]</button>
       <button class="stepper-tab" type="button" role="tab" aria-selected="false" aria-controls="phase-2" id="tab-2">[Phase 2]</button>
       <button class="stepper-tab" type="button" role="tab" aria-selected="false" aria-controls="phase-3" id="tab-3">[Phase 3]</button>

@@ -10,10 +10,6 @@
       "name": "00 Elemente/01 kapitel-nav"
     },
     {
-      "nodeId": "64:594",
-      "name": "00 Elemente/02 karte"
-    },
-    {
       "nodeId": "9:2",
       "name": "01 Einstieg/01 cover-hero"
     },
@@ -140,6 +136,10 @@
     {
       "nodeId": "118:121",
       "name": "10 Abschluss/03 cta-footer"
+    },
+    {
+      "nodeId": "64:594",
+      "name": "00 Elemente/02 karte"
     }
   ]
 }

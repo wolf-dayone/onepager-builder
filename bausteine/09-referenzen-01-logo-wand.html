@@ -2,6 +2,13 @@
 /* ==== Logo-Wand ==== */
 /* Figma: Logos optisch auf gleiche HOEHE bringen, nicht auf gleiche Breite -
    deshalb begrenzt der Slot die Hoehe und laesst die Breite laufen. */
+/* Eigener Hintergrund statt des geteilten --color-bg: Figma will hier explizit
+   Schwarz im Dunkelmodus (nicht das warme Dunkel-Sand aller anderen Sektionen)
+   und Sand im Hellmodus - Video-Feedback 2026-09-17 ("Hintergrundfarbe ist
+   falsch, sollte im Dark Mode schwarz und im Light Mode sand sein"). */
+[data-modul="09 Referenzen/01 logo-wand"]{background:var(--color-bg)}
+.dark [data-modul="09 Referenzen/01 logo-wand"],[data-modul="09 Referenzen/01 logo-wand"].dark{
+  background:var(--color-dark-bg)}
 .logo-wand{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-6);
   margin-top:var(--space-12)}
 .logo-slot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
@@ -12,9 +19,9 @@
 </style>
 
 <!-- 12-24 Logos, bekannteste oben links. Leere Slots am Zeilenende vermeiden. -->
-<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="09 Referenzen/01 logo-wand">
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-stagger="70" data-modul="09 Referenzen/01 logo-wand">
   <div class="wrap">
-    <p class="eyebrow">[NN] — [Referenzen]</p>
+    <p class="eyebrow reveal">[NN] — [Referenzen]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal">[Unsere Kunden]</h2>
     <div class="logo-wand">
       <div class="logo-slot reveal">[Logo 01]</div><div class="logo-slot reveal">[Logo 02]</div>

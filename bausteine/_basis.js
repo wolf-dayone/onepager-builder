@@ -130,8 +130,17 @@
   function stageReveal(container) {
     var items = container.classList && container.classList.contains("reveal")
       ? [container] : container.querySelectorAll(".reveal");
+    // Einzelne Sektionen duerfen ueber data-stagger="<ms>" einen engeren Takt
+    // erzwingen (z. B. Agenda: gleiche Dauer je Punkt, aber schneller
+    // hintereinander - Video-Feedback 2026-09-17). Fehlt das Attribut, gilt
+    // der Standardtakt STAGGER_MS.
+    var takt = STAGGER_MS;
+    if (container.dataset && container.dataset.stagger) {
+      var eigen = parseInt(container.dataset.stagger, 10);
+      if (!isNaN(eigen)) takt = eigen;
+    }
     items.forEach(function (el, i) {
-      el.style.transitionDelay = Math.min(i * STAGGER_MS, STAGGER_MAX_MS) + "ms";
+      el.style.transitionDelay = Math.min(i * takt, STAGGER_MAX_MS) + "ms";
       el.classList.add("in");
     });
   }
@@ -275,21 +284,74 @@
     if (currentIndex < 0) return null; // kein aktueller Punkt markiert -> keine Linie zeichnen
     return (currentIndex / items.length) * 100 + "%";
   }
+  var TIMELINE_DAUER = 1100; // deckt sich mit der width-transition auf .timeline-progress
+  // Dots skalieren erst ein, wenn die rote Linie sie "erreicht" hat - zeitlich
+  // proportional zur Laufzeit/Position der width-Transition, nicht mehr Teil
+  // des generischen .reveal-Fades. Der Ring am aktuellen Punkt folgt nochmal
+  // verzoegert danach (Video-Feedback 2026-09-17).
+  function timelineDotsAnimieren(tl) {
+    var items = tl.querySelectorAll(".timeline-item");
+    if (!items.length) return;
+    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
+      return it.classList.contains("is-current");
+    });
+    var nenner = currentIndex >= 0 ? currentIndex : items.length - 1;
+    items.forEach(function (it, i) {
+      var dot = it.querySelector(".timeline-dot");
+      if (!dot) return;
+      dot.classList.remove("ist-sichtbar", "ist-ring-sichtbar");
+      if (reduceMotion()) { dot.classList.add("ist-sichtbar"); if (it.classList.contains("is-current")) dot.classList.add("ist-ring-sichtbar"); return; }
+      var anteil = nenner > 0 ? Math.min(i, nenner) / nenner : 0;
+      var verzoegerung = i <= nenner ? anteil * TIMELINE_DAUER : TIMELINE_DAUER;
+      setTimeout(function () {
+        dot.classList.add("ist-sichtbar");
+        if (it.classList.contains("is-current")) {
+          setTimeout(function () { dot.classList.add("ist-ring-sichtbar"); }, 300);
+        }
+      }, verzoegerung);
+    });
+  }
   document.querySelectorAll(".timeline").forEach(function (tl) {
     var progress = tl.querySelector(".timeline-progress");
     if (!progress) return;
     var targetPct = timelineZielProzent(tl);
     if (targetPct === null) return;
-    if (reduceMotion()) { progress.style.width = targetPct; return; }
+    if (reduceMotion()) { progress.style.width = targetPct; timelineDotsAnimieren(tl); return; }
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries, obs) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { progress.style.width = targetPct; obs.unobserve(e.target); }
+          if (e.isIntersecting) { progress.style.width = targetPct; timelineDotsAnimieren(tl); obs.unobserve(e.target); }
         });
       }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 }).observe(tl);
     } else {
       progress.style.width = targetPct;
+      timelineDotsAnimieren(tl);
     }
+  });
+
+  /* ---- 7b) Roadmap Zoom-In: Balken<->Meilenstein-Kopplung ----
+     Hover/Fokus auf einem .gantt-balken hebt den Meilenstein mit demselben
+     data-verweis rechts hervor - nicht mehr initial fest zugeordnet
+     (.ist-aktuell), sondern ein reiner Hover-Zustand (Video-Feedback
+     2026-09-17). Touch simuliert denselben Zustand kurzzeitig, wie beim
+     Chart-Slide (Abschnitt 6b). */
+  document.querySelectorAll(".roadmap-zoom").forEach(function (zoom) {
+    var balken = zoom.querySelectorAll(".gantt-balken");
+    function setzen(ref, an) {
+      var ziel = zoom.querySelector('.zoom-meilenstein[data-verweis="' + ref + '"]');
+      if (ziel) ziel.classList.toggle("ist-hervorgehoben", an);
+    }
+    balken.forEach(function (b) {
+      var ref = b.dataset.verweis;
+      b.addEventListener("mouseenter", function () { setzen(ref, true); });
+      b.addEventListener("mouseleave", function () { setzen(ref, false); });
+      b.addEventListener("focus", function () { setzen(ref, true); });
+      b.addEventListener("blur", function () { setzen(ref, false); });
+      b.addEventListener("touchstart", function () {
+        b.classList.add("ist-betont"); setzen(ref, true);
+        setTimeout(function () { b.classList.remove("ist-betont"); setzen(ref, false); }, 1200);
+      }, { passive: true });
+    });
   });
 
   /* ---- 8) Karussell ---- */
@@ -408,7 +470,7 @@
       progress.style.width = "0%";
       void progress.offsetWidth;
       progress.style.transition = "";
-      requestAnimationFrame(function () { progress.style.width = targetPct; });
+      requestAnimationFrame(function () { progress.style.width = targetPct; timelineDotsAnimieren(tl); });
     });
   }
 

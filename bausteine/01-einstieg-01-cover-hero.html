@@ -11,15 +11,24 @@
 .hero .badges{display:flex;gap:12px}
 .badge{border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:10px 20px;
   font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-main-text);text-decoration:none}
-.badge.accent{border-color:var(--red-500);color:var(--red-500)}
+.badge.accent{border-color:var(--color-action);color:var(--color-action)}
 .hero h1 .line2{display:block;font-weight:400;color:var(--color-text)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
-.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
+.hero .meta-block{display:flex;flex-direction:column}
+.hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);order:-1;
   /* Figma nennt diese Graustufe "Gray/400", ihr Wert entspricht aber unserem
      --gray-300 — die Nummerierung zwischen Figma-Variablen und diesen Tokens ist NICHT
      deckungsgleich. Beim Übersetzen von Figma-Werten immer den Hex-Wert vergleichen,
      nicht den Variablennamen übernehmen. */
-  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-bg) 100%)}
+  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-bg) 100%);
+  /* Laeuft erst ein, NACHDEM die drei Meta-Punkte durchgestaffelt sind - steht
+     dafuer bewusst NACH ihnen im DOM (visuell aber wieder oben, ueber order:-1),
+     die reveal/.in-Stagger-Reihenfolge zaehlt nach DOM-Position (_basis.js
+     stageReveal). Video-Feedback 2026-09-17. */
+  transform-origin:left;transition:transform .8s var(--ease)}
+.hero .rule{transform:scaleX(0)}
+.hero .rule.in{transform:scaleX(1)}
+@media(prefers-reduced-motion:reduce){.hero .rule{transform:scaleX(1);transition:none}}
 .hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
 .hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
@@ -50,13 +59,13 @@
       <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
       <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
     </div>
-    <div class="reveal">
-      <div class="rule"></div>
+    <div class="meta-block">
       <dl class="meta">
-        <div><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
-        <div><dt>Presenter</dt><dd>[Vorname &amp; Vorname]</dd></div>
-        <div><dt>Format</dt><dd>[DAYONE Weekly]</dd></div>
+        <div class="reveal"><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
+        <div class="reveal"><dt>Presenter</dt><dd>[Vorname &amp; Vorname]</dd></div>
+        <div class="reveal"><dt>Format</dt><dd>[DAYONE Weekly]</dd></div>
       </dl>
+      <div class="rule reveal"></div>
     </div>
   </div>
 </header>

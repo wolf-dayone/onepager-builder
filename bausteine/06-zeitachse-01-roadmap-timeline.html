@@ -1,25 +1,42 @@
 <style>
 /* ==== Roadmap-Timeline ==== */
 .timeline{position:relative;padding-top:20px}
-.timeline::before{content:"";position:absolute;top:6px;left:2px;right:0;height:1px;background:var(--color-border)}
+/* top/left zeigten frueher NICHT auf die Dot-Mitte (top:6px statt
+   padding-top+Radius=26px, left:2px statt Radius=6px) - die Linie lief ueber
+   den Dots statt durch ihre Mitte. Figma-/Video-Abgleich 2026-09-17. */
+.timeline::before{content:"";position:absolute;top:26px;left:6px;right:6px;height:1px;background:var(--color-border)}
 /* Farbige Linie vom Start bis zum aktuellen Punkt — Breite wird per JS anhand der Position
    von .is-current gesetzt (--timeline-progress), die Animation zieht sie beim Reveal auf. */
-.timeline-progress{content:"";position:absolute;top:6px;left:2px;height:1px;background:var(--red-500);
+.timeline-progress{content:"";position:absolute;top:26px;left:6px;height:1px;background:var(--red-500);
   width:0;transition:width 1.1s var(--ease)}
 .timeline-track{display:flex}
 .timeline-item{flex:1;display:flex;flex-direction:column;gap:14px;padding-right:var(--space-8)}
-.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text);position:relative}
-.timeline-item.is-current .timeline-dot{background:var(--red-500);box-shadow:0 0 0 5px rgba(255,84,76,.18)}
+/* Dots skalieren erst ein, NACHDEM die rote Linie sie erreicht hat (per JS
+   zeitlich an die width-Transition der .timeline-progress gekoppelt, Abschnitt
+   7 in _basis.js) - nicht mehr Teil des generischen .reveal-Fades. Der
+   aeussere Ring (zweiter Kreis) beim aktuellen Punkt erscheint nochmal
+   verzoegert danach. Video-Feedback 2026-09-17. */
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text);position:relative;
+  transform:scale(0);transition:transform .35s var(--ease)}
+.timeline-dot.ist-sichtbar{transform:scale(1)}
+.timeline-dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;
+  box-shadow:0 0 0 5px rgba(255,84,76,.18);opacity:0;transition:opacity .3s var(--ease)}
+.timeline-dot.ist-ring-sichtbar::after{opacity:1}
+.timeline-item.is-current .timeline-dot{background:var(--red-500)}
 .timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .timeline-item.is-current .timeline-date{color:var(--red-500)}
 .timeline-title{font-size:var(--text-body-ms);font-weight:600}
 .timeline-tag{font-size:var(--text-body-s);color:var(--red-500)}
-@media(prefers-reduced-motion:reduce){.timeline-progress{transition:none}}
+@media(prefers-reduced-motion:reduce){
+  .timeline-progress{transition:none}
+  .timeline-dot{transform:scale(1);transition:none}
+  .timeline-dot::after{transition:none}
+}
 </style>
 
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="06 Zeitachse/01 roadmap-timeline">
   <div class="wrap">
-    <p class="eyebrow">[NN] — [Timeline]</p>
+    <p class="eyebrow reveal">[NN] — [Timeline]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
     <div class="timeline">
       <div class="timeline-progress"></div>
