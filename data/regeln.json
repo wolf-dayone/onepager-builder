@@ -181,17 +181,17 @@
       "zweck": "Mehrere gleichrangige Punkte erklären, ohne dass die Leitfrage aus dem Blick gerät. Nutzt das Browserformat aus: die linke Spalte bleibt stehen, die Liste rechts scrollt daran vorbei.",
       "abgrenzung": "",
       "fuellen": [
-        "3–5 Punkte. Darunter lohnt das Sticky-Layout nicht, darüber ermüdet es.",
+        "mindestens 5 Punkte. Darunter lohnt das Sticky-Layout nicht.",
         "Titel als Aussage formulieren, nicht als Stichwort.",
         "Punkte etwa gleich lang halten.",
         "Eyebrow zweistellig nummerieren, passend zum Section-Divider davor."
       ],
       "grenzen": [
         {
-          "min": 3,
-          "max": 5,
+          "min": 5,
+          "max": null,
           "einheit": "Punkte",
-          "quelle": "3–5 Punkte. Darunter lohnt das Sticky-Layout nicht, darüber ermüdet es."
+          "quelle": "mindestens 5 Punkte. Darunter lohnt das Sticky-Layout nicht."
         }
       ],
       "farbe_frei": true,

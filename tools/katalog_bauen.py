@@ -57,7 +57,7 @@ OBERGRENZE = re.compile(
     re.IGNORECASE,
 )
 MINDEST = re.compile(
-    r"(?:min\.?|mindestens)\s+(?P<von>[\d.]+)\s*(?P<einheit>px|%)",
+    r"(?:min\.?|mindestens)\s+(?P<von>[\d.]+)\s*(?P<einheit>px|%|[A-Za-zÄÖÜäöüß/-]+)",
     re.IGNORECASE,
 )
 
@@ -91,10 +91,19 @@ def zahlenregeln(fuellen_punkte):
                 "quelle": punkt,
             })
         for m in MINDEST.finditer(punkt):
+            einheit = m.group("einheit").lower().rstrip(".,")
+            # px/% bleiben wie bisher immer erlaubt (Groessen-Angaben, keine
+            # Stueckzahl eines wiederholbaren Elements). Fuer alles andere
+            # (neu: generische Einheiten wie "Punkte") gilt dieselbe
+            # KEINE_ANZAHL-Filterung wie bei SPANNE/OBERGRENZE.
+            if einheit not in ("px", "%"):
+                if einheit in KEINE_ANZAHL or SPANNE.search(punkt):
+                    continue
+            wert = float(m.group("von"))
             gefunden.append({
-                "min": float(m.group("von")),
+                "min": int(wert) if einheit not in ("px", "%") and wert.is_integer() else wert,
                 "max": None,
-                "einheit": m.group("einheit"),
+                "einheit": m.group("einheit").rstrip(".,"),
                 "quelle": punkt,
             })
     return gefunden

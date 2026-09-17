@@ -231,14 +231,14 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 **FÜLLEN**
 
-- 3–5 Punkte. Darunter lohnt das Sticky-Layout nicht, darüber ermüdet es.
+- mindestens 5 Punkte. Darunter lohnt das Sticky-Layout nicht.
 - Titel als Aussage formulieren, nicht als Stichwort.
 - Punkte etwa gleich lang halten.
 - Eyebrow zweistellig nummerieren, passend zum Section-Divider davor.
 
 **SCROLL** — position: sticky auf der linken Spalte, top-Offset ca. 120 px. Sticky erst ab Desktop; auf Mobile untereinander stapeln.
 
-<sub>Maschinell geprüft: 3–5 Punkte</sub>
+<sub>Maschinell geprüft: min. 5 Punkte</sub>
 
 ### `03 Inhalt/04 kartenraster`
 
