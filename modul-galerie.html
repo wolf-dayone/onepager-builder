@@ -172,12 +172,11 @@ footer.cta{padding-block:var(--space-20)}
 }
 
 /* ==== Galerie-Rahmen (nur in modul-galerie.html) ==== */
-.galerie-kopf{position:sticky;top:0;z-index:60;background:var(--color-main-text);
-  color:var(--color-bg);padding:10px var(--grid-margin);font-size:var(--text-body-s);
-  display:flex;gap:var(--space-6);align-items:baseline;justify-content:space-between}
-.galerie-kopf b{font-weight:600}
-.galerie-kopf .kategorie{opacity:.6}
-/* Bewusst KEIN min-height:0-Override mehr (Ernst, 2026-09-17): die Galerie
+/* Kein sticky Modul-Kopf mehr zwischen den Sektionen (Ernst, 2026-09-17): die
+   schwarzen Balken lenkten vom eigentlichen Effekt ab, den die Galerie ja
+   gerade zeigen soll. Die Modulidentitaet liefert jetzt ausschliesslich die
+   QA-Leiste (bausteine/_galerie-qa.js) unten am Bildschirmrand. Bewusst KEIN
+   min-height:0-Override mehr - die Galerie
    ist jetzt die QA-Testflaeche, nicht nur ein Katalog zum Kopieren - jedes
    Modul soll exakt so gross gerendert werden wie in echten Onepagern, sonst
    verdeckt die Galerie selbst genau die Layout-Probleme, die sie aufdecken
@@ -796,7 +795,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   zu jedem Modul: <code>referenzen/module-katalog.md</code></p>
 </div>
 
-<div class="galerie-kopf"><span><b>00 Elemente/01 kapitel-nav</b></span><span class="kategorie">Figma-Node 56:58</span></div>
 <nav id="chapter-nav" aria-label="Kapitel" data-modul="00 Elemente/01 kapitel-nav">
   <div class="wrap inner">
     <a class="brand-group" href="#hero" aria-label="Zum Seitenanfang">
@@ -808,7 +806,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </nav>
 
-<div class="galerie-kopf"><span><b>00 Elemente/02 karte</b></span><span class="kategorie">Figma-Node 64:594</span></div>
 <div class="galerie-baustein" style="max-width:440px"><!-- Nummer zweistellig, gross, in Text-Secondary - keine Sonderfarbe. -->
 <div class="card" data-modul="00 Elemente/02 karte">
   <span class="num">01</span>
@@ -818,7 +815,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </div></div>
 
-<div class="galerie-kopf"><span><b>01 Einstieg/01 cover-hero</b></span><span class="kategorie">Figma-Node 9:2</span></div>
 <!-- .dark auf dem äußeren <header> (volle Breite), Inhalt in .wrap darunter. -->
 <header class="hero dark" id="hero" data-modul="01 Einstieg/01 cover-hero">
   <div class="wrap">
@@ -852,7 +848,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </header>
 
-<div class="galerie-kopf"><span><b>01 Einstieg/02 agenda</b></span><span class="kategorie">Figma-Node 27:3</span></div>
 <!-- Kein data-chapter: steht meist direkt nach dem Hero und ist selbst kein Kapitel.
      Die Kapitel-Nav erscheint dann erst nach der Agenda (siehe #agenda im Script). -->
 <section class="agenda" id="agenda" data-modul="01 Einstieg/02 agenda">
@@ -871,7 +866,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>02 Struktur/01 section-divider</b></span><span class="kategorie">Figma-Node 118:70</span></div>
 <!-- NUR verwenden, wenn im folgenden Kapitel viel Content kommt und es eine kurze
      Vorwarnung braucht. Reicht der direkte Einstieg, weglassen und Eyebrow +
      data-chapter stattdessen auf die nächste Sektion setzen. -->
@@ -882,7 +876,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>02 Struktur/02 big-statement</b></span><span class="kategorie">Figma-Node 9:4</span></div>
 <!-- Ohne Namensnennung. Mit Name + Rolle stattdessen quote-block nehmen. -->
 <section class="big-statement" data-modul="02 Struktur/02 big-statement">
   <div class="wrap reveal">
@@ -892,7 +885,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>02 Struktur/03 stepper</b></span><span class="kategorie">Figma-Node 35:20</span></div>
 <!-- Beliebig viele Phasen ab 3 (2026-09-16, Ernst bestaetigt: keine feste
      Obergrenze). Die Leiste bleibt beim Scrollen stehen, der Inhalt wechselt.
      Jedes Panel einheitlich mit 2 Bullet-Punkten befuellen. -->
@@ -943,7 +935,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>03 Inhalt/01 headline-text-bild</b></span><span class="kategorie">Figma-Node 27:48</span></div>
 <section data-chapter="04" data-chapter-title="[Kapitelname]" id="kapitel-04" data-modul="03 Inhalt/01 headline-text-bild">
   <div class="wrap text-bild">
     <div class="text-bild-text reveal">
@@ -956,7 +947,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>03 Inhalt/02 headline-textraster</b></span><span class="kategorie">Figma-Node 9:5</span></div>
 <section data-chapter="05" data-chapter-title="[Kapitelname]" id="kapitel-05" data-modul="03 Inhalt/02 headline-textraster">
   <div class="wrap">
     <p class="eyebrow">05 — [Kapitelname]</p>
@@ -971,7 +961,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>03 Inhalt/03 sticky-nummernliste</b></span><span class="kategorie">Figma-Node 9:6</span></div>
 <section data-chapter="06" data-chapter-title="[Kapitelname]" id="kapitel-06" data-modul="03 Inhalt/03 sticky-nummernliste">
   <div class="wrap sticky-list">
     <div class="left reveal">
@@ -999,7 +988,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>03 Inhalt/04 kartenraster</b></span><span class="kategorie">Figma-Node 28:2</span></div>
 <section data-modul="03 Inhalt/04 kartenraster">
   <div class="wrap">
     <div class="kartenraster-kopf reveal">
@@ -1020,7 +1008,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>03 Inhalt/05 prozess-schritte</b></span><span class="kategorie">Figma-Node 28:22</span></div>
 <section data-chapter="08" data-chapter-title="[Kapitelname]" id="kapitel-08" data-modul="03 Inhalt/05 prozess-schritte">
   <div class="wrap">
     <p class="eyebrow">08 — [Vorgehen]</p>
@@ -1048,7 +1035,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>04 Daten/01 kennzahlen-grid</b></span><span class="kategorie">Figma-Node 118:76</span></div>
 <section class="dark" data-chapter="09" data-chapter-title="[Kapitelname]" id="kapitel-09" data-modul="04 Daten/01 kennzahlen-grid">
   <div class="wrap">
     <div class="section-head reveal">
@@ -1068,7 +1054,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>04 Daten/02 chart-slide</b></span><span class="kategorie">Figma-Node 36:3</span></div>
 <!-- Ein Chart pro Modul. Titel sagt die Erkenntnis, nicht die Datenart. -->
 <section class="chart-slide" data-chapter="10" data-chapter-title="[Kapitelname]" id="kapitel-10" data-modul="04 Daten/02 chart-slide">
   <div class="wrap">
@@ -1086,7 +1071,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>04 Daten/03 matrix-2x2</b></span><span class="kategorie">Figma-Node 36:10</span></div>
 <section data-chapter="11" data-chapter-title="[Kapitelname]" id="kapitel-11" data-modul="04 Daten/03 matrix-2x2">
   <div class="wrap">
     <p class="eyebrow">11 — [Einordnung]</p>
@@ -1106,7 +1090,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>04 Daten/04 fluss-diagramm</b></span><span class="kategorie">Figma-Node 36:27</span></div>
 <!-- 3-5 Stationen, Pfeilrichtung konsequent links nach rechts. -->
 <section data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-modul="04 Daten/04 fluss-diagramm">
   <div class="wrap">
@@ -1122,7 +1105,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>04 Daten/05 tabelle</b></span><span class="kategorie">Figma-Node 36:41</span></div>
 <section data-chapter="13" data-chapter-title="[Kapitelname]" id="kapitel-13" data-modul="04 Daten/05 tabelle">
   <div class="wrap table-scroll">
     <p class="eyebrow">13 — [Übersicht]</p>
@@ -1138,7 +1120,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>05 Diagramme/01 konzentrische-kreise</b></span><span class="kategorie">Figma-Node 33:19</span></div>
 <section data-chapter="14" data-chapter-title="[Kapitelname]" id="kapitel-14" data-modul="05 Diagramme/01 konzentrische-kreise">
   <div class="wrap kreis-modell">
     <div class="reveal">
@@ -1155,7 +1136,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>05 Diagramme/02 diagrammkarte</b></span><span class="kategorie">Figma-Node 31:20</span></div>
 <!-- Diagramm reduziert halten: es soll Aufmerksamkeit binden, nicht erklaert werden. -->
 <section class="diagrammkarte" data-modul="05 Diagramme/02 diagrammkarte">
   <div class="wrap reveal">
@@ -1167,7 +1147,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>06 Zeitachse/01 roadmap-timeline</b></span><span class="kategorie">Figma-Node 9:9</span></div>
 <section data-chapter="16" data-chapter-title="[Kapitelname]" id="kapitel-16" data-modul="06 Zeitachse/01 roadmap-timeline">
   <div class="wrap">
     <p class="eyebrow">16 — [Timeline]</p>
@@ -1189,7 +1168,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>06 Zeitachse/02 roadmap-zoom-in</b></span><span class="kategorie">Figma-Node 33:3</span></div>
 <section data-chapter="17" data-chapter-title="[Kapitelname]" id="kapitel-17" data-modul="06 Zeitachse/02 roadmap-zoom-in">
   <div class="wrap roadmap-zoom">
     <div class="reveal">
@@ -1213,7 +1191,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>07 Media/01 bild-feature-liste</b></span><span class="kategorie">Figma-Node 32:3</span></div>
 <!-- Screenshot in echter Aufloesung. Sensible Daten vorher anonymisieren. -->
 <section data-chapter="18" data-chapter-title="[Kapitelname]" id="kapitel-18" data-modul="07 Media/01 bild-feature-liste">
   <div class="wrap">
@@ -1234,7 +1211,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>07 Media/02 device-mockup</b></span><span class="kategorie">Figma-Node 32:21</span></div>
 <!-- Situativ (2026-09-16, Ernst bestaetigt): zeigt je nach Kontext einen
      einzelnen Laptop, ein einzelnes Tablet, oder ein/mehrere Telefone -
      keine feste Kombinationspflicht. Nur wenn mehrere Telefone zusammen
@@ -1256,7 +1232,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>07 Media/03 medien-karten-grid</b></span><span class="kategorie">Figma-Node 32:30</span></div>
 <!-- Bei CTA-Nutzung die ganze Kachel verlinken, nicht nur den Titel. -->
 <section data-chapter="20" data-chapter-title="[Kapitelname]" id="kapitel-20" data-modul="07 Media/03 medien-karten-grid">
   <div class="wrap">
@@ -1279,7 +1254,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>07 Media/04 grossbild</b></span><span class="kategorie">Figma-Node 72:31</span></div>
 <section data-modul="07 Media/04 grossbild">
   <div class="wrap">
     <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "21" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
@@ -1296,7 +1270,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>08 Menschen/01 team-grid</b></span><span class="kategorie">Figma-Node 35:41</span></div>
 <section data-chapter="22" data-chapter-title="[Kapitelname]" id="kapitel-22" data-modul="08 Menschen/01 team-grid">
   <div class="wrap">
     <p class="eyebrow">22 — [Team]</p>
@@ -1310,7 +1283,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>08 Menschen/02 bild-intro</b></span><span class="kategorie">Figma-Node 35:74</span></div>
 <!-- Eine Person. Ab zwei Personen team-grid verwenden. -->
 <section data-modul="08 Menschen/02 bild-intro">
   <div class="wrap bild-intro">
@@ -1328,7 +1300,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>08 Menschen/03 quote-block</b></span><span class="kategorie">Figma-Node 9:8</span></div>
 <section class="quote" data-modul="08 Menschen/03 quote-block">
   <div class="wrap reveal">
     <blockquote>„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</blockquote>
@@ -1336,7 +1307,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>09 Referenzen/01 logo-wand</b></span><span class="kategorie">Figma-Node 30:2</span></div>
 <!-- 12-24 Logos, bekannteste oben links. Leere Slots am Zeilenende vermeiden. -->
 <section data-chapter="24" data-chapter-title="[Kapitelname]" id="kapitel-24" data-modul="09 Referenzen/01 logo-wand">
   <div class="wrap">
@@ -1355,7 +1325,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>09 Referenzen/02 bild-kennzahlenliste</b></span><span class="kategorie">Figma-Node 29:38</span></div>
 <section data-modul="09 Referenzen/02 bild-kennzahlenliste">
   <div class="wrap">
     <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "25" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
@@ -1372,7 +1341,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>09 Referenzen/03 headline-liste</b></span><span class="kategorie">Figma-Node 118:103</span></div>
 <!-- Folgt meist direkt auf den Case-Study-Divider. Ziele als Ergebnis formulieren. -->
 <section data-modul="09 Referenzen/03 headline-liste">
   <div class="wrap headline-liste">
@@ -1393,7 +1361,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>10 Abschluss/01 karten-karussell</b></span><span class="kategorie">Figma-Node 29:3</span></div>
 <!-- Generisches Modul für nummerierte Textinhalte, nicht nur für Abschluss-Takeaways.
      .carousel-shell begrenzt den Track auf --grid-max, damit die erste Karte am
      linken Grid-Rand startet statt am nackten Viewport-Rand. -->
@@ -1426,7 +1393,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>10 Abschluss/02 qr-tool-verweis</b></span><span class="kategorie">Figma-Node 33:24</span></div>
 <!-- QR muss auf eine echte URL zeigen. Ziel zusaetzlich als Text nennen:
      am Desktop im PDF laesst sich kein QR-Code scannen. -->
 <section data-modul="10 Abschluss/02 qr-tool-verweis">
@@ -1442,7 +1408,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>10 Abschluss/03 cta-footer</b></span><span class="kategorie">Figma-Node 118:121</span></div>
 <footer class="cta dark" data-modul="10 Abschluss/03 cta-footer">
   <div class="wrap">
     <h2 class="h2 reveal">[Check it out.]</h2>
@@ -1762,14 +1727,21 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   function replayReveal(root) {
     var items = root.querySelectorAll ? root.querySelectorAll(".reveal") : [];
     var rootIstReveal = root.classList && root.classList.contains("reveal");
-    if (!items.length && !rootIstReveal) return;
-    items.forEach(function (el) { el.classList.remove("in"); el.style.transitionDelay = ""; });
-    if (rootIstReveal) { root.classList.remove("in"); root.style.transitionDelay = ""; }
-    // Reflow erzwingen, damit der Browser den zurueckgesetzten Zustand erst
-    // malt, bevor stageReveal() die .in-Klasse (und damit die Transition)
-    // wieder anstoesst - sonst wird der zweite Durchlauf manchmal ohne
-    // sichtbaren Uebergang direkt in den Endzustand gesprungen.
+    var alle = rootIstReveal ? [root].concat(Array.prototype.slice.call(items)) : Array.prototype.slice.call(items);
+    if (!alle.length) return;
+    // .reveal traegt seine transition IMMER (auch ohne .in), nicht nur beim
+    // Reinschalten - ein blosses classList.remove("in") haette also selbst
+    // schon sichtbar rueckwaerts animiert (Ausblenden+Absinken), statt den
+    // Ausgangszustand sauber und unsichtbar wiederherzustellen. Deshalb hier
+    // dasselbe Muster wie bei replayTimeline: Transition kurz hart abschalten,
+    // Reflow erzwingen, erst dann wieder freigeben.
+    alle.forEach(function (el) {
+      el.style.transition = "none";
+      el.classList.remove("in");
+      el.style.transitionDelay = "";
+    });
     void root.offsetWidth;
+    alle.forEach(function (el) { el.style.transition = ""; });
     requestAnimationFrame(function () { stageReveal(root); });
   }
 

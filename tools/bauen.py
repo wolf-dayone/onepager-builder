@@ -154,12 +154,11 @@ def stempel(daten):
 
 # ------------------------------------------------------------------ Galerie
 GALERIE_CSS = """/* ==== Galerie-Rahmen (nur in modul-galerie.html) ==== */
-.galerie-kopf{position:sticky;top:0;z-index:60;background:var(--color-main-text);
-  color:var(--color-bg);padding:10px var(--grid-margin);font-size:var(--text-body-s);
-  display:flex;gap:var(--space-6);align-items:baseline;justify-content:space-between}
-.galerie-kopf b{font-weight:600}
-.galerie-kopf .kategorie{opacity:.6}
-/* Bewusst KEIN min-height:0-Override mehr (Ernst, 2026-09-17): die Galerie
+/* Kein sticky Modul-Kopf mehr zwischen den Sektionen (Ernst, 2026-09-17): die
+   schwarzen Balken lenkten vom eigentlichen Effekt ab, den die Galerie ja
+   gerade zeigen soll. Die Modulidentitaet liefert jetzt ausschliesslich die
+   QA-Leiste (bausteine/_galerie-qa.js) unten am Bildschirmrand. Bewusst KEIN
+   min-height:0-Override mehr - die Galerie
    ist jetzt die QA-Testflaeche, nicht nur ein Katalog zum Kopieren - jedes
    Modul soll exakt so gross gerendert werden wie in echten Onepagern, sonst
    verdeckt die Galerie selbst genau die Layout-Probleme, die sie aufdecken
@@ -238,16 +237,11 @@ def galerie_bauen(daten):
             kapitel += 1
             markup = nummerieren(markup, f"{kapitel:02d}")
 
-        kopf = (f'<div class="galerie-kopf">'
-                f'<span><b>{name}</b></span>'
-                f'<span class="kategorie">Figma-Node {eintrag["nodeId"]}</span>'
-                f'</div>')
-
         if zuordnung.get(name, {}).get("baustein"):
             markup = (f'<div class="galerie-baustein" style="max-width:440px">'
                       f'{markup}</div>')
 
-        teile.append((css, kopf + "\n" + markup))
+        teile.append((css, markup))
 
     html = zusammenbauen("Modul-Galerie — DAYONE", teile, stempel(daten))
     html = html.replace("<body>", '<body class="galerie">')

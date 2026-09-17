@@ -934,14 +934,21 @@ footer.cta{padding-block:var(--space-20)}
   function replayReveal(root) {
     var items = root.querySelectorAll ? root.querySelectorAll(".reveal") : [];
     var rootIstReveal = root.classList && root.classList.contains("reveal");
-    if (!items.length && !rootIstReveal) return;
-    items.forEach(function (el) { el.classList.remove("in"); el.style.transitionDelay = ""; });
-    if (rootIstReveal) { root.classList.remove("in"); root.style.transitionDelay = ""; }
-    // Reflow erzwingen, damit der Browser den zurueckgesetzten Zustand erst
-    // malt, bevor stageReveal() die .in-Klasse (und damit die Transition)
-    // wieder anstoesst - sonst wird der zweite Durchlauf manchmal ohne
-    // sichtbaren Uebergang direkt in den Endzustand gesprungen.
+    var alle = rootIstReveal ? [root].concat(Array.prototype.slice.call(items)) : Array.prototype.slice.call(items);
+    if (!alle.length) return;
+    // .reveal traegt seine transition IMMER (auch ohne .in), nicht nur beim
+    // Reinschalten - ein blosses classList.remove("in") haette also selbst
+    // schon sichtbar rueckwaerts animiert (Ausblenden+Absinken), statt den
+    // Ausgangszustand sauber und unsichtbar wiederherzustellen. Deshalb hier
+    // dasselbe Muster wie bei replayTimeline: Transition kurz hart abschalten,
+    // Reflow erzwingen, erst dann wieder freigeben.
+    alle.forEach(function (el) {
+      el.style.transition = "none";
+      el.classList.remove("in");
+      el.style.transitionDelay = "";
+    });
     void root.offsetWidth;
+    alle.forEach(function (el) { el.style.transition = ""; });
     requestAnimationFrame(function () { stageReveal(root); });
   }
 
