@@ -313,24 +313,44 @@ footer.cta{padding-block:var(--space-20)}
 .quote cite{display:block;margin-top:var(--space-6);font-style:normal;font-size:var(--text-body-s);color:var(--color-text)}
 
 /* ==== Karten-Karussell ==== */
-.carousel{overflow-x:auto;scroll-snap-type:x mandatory;display:flex;gap:var(--space-8);
-  padding-inline:var(--grid-margin);padding-bottom:var(--space-6);scrollbar-width:none}
+.carousel{overflow-x:auto;scroll-snap-type:x mandatory;display:flex;gap:var(--space-6);
+  padding-right:0;padding-bottom:var(--space-6);scrollbar-width:none}
 .carousel::-webkit-scrollbar{display:none}
+/* Linker Einzug ueber ein echtes Flex-Kind statt padding-left auf dem
+   Scroll-Container: Browser setzen bei overflow-x:auto + Flex/Grid den
+   initialen scrollLeft oft genau auf den Wert der Start-Padding, wodurch sie
+   bei Ruheposition unsichtbar bleibt (die erste Karte sass dadurch trotz
+   padding-left an Kante 0 statt eingerueckt). Ein echter Spacer-Block hat
+   dieses Problem nicht. Breite = gewuenschter Einzug minus den ohnehin
+   folgenden .carousel-gap, weil der Flex-gap zwischen Spacer und erster
+   Karte den Rest beisteuert. Rechts bewusst kein Pendant: der Track soll bis
+   an den Viewport-Rand laufen (Figma: "Karten laufen bewusst über den
+   rechten Rand hinaus"). */
+.carousel-spacer{flex:0 0 auto;width:calc(max(var(--grid-margin),
+  calc((100% - var(--grid-max)) / 2 + var(--grid-margin))) - var(--space-6));
+  scroll-snap-align:start}
+/* scroll-snap-align auf dem Spacer, nicht nur auf den Karten: bei
+   scroll-snap-type:x MANDATORY zwingt der Browser die Ruheposition auf den
+   naechsten gueltigen Snap-Punkt - ohne diese Zeile war Position 0 (Spacer)
+   kein gueltiger Punkt, wodurch beim Laden sofort auf die erste Karte
+   vorgesprungen wurde (scrollLeft startete bei 176 statt 0, der Einzug
+   verschwand). Mit dieser Zeile ist die Ruheposition selbst gueltig. */
 .carousel>.card{flex:0 0 400px;scroll-snap-align:start;min-height:500px;justify-content:space-between}
-/* Im Karussell tragen die Karten Flaeche - dort ist Abgrenzung wichtiger als
-   Leichtigkeit. gap:0, weil der Abstand hier ueber justify-content entsteht. */
-.carousel>.card{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-10);gap:0}
-/* Begrenzt den scrollbaren Track auf --grid-max, damit die erste Karte am
-   selben linken Rand startet wie der Kopf darueber (.wrap).
-   width + min-width sind noetig, nicht optional: die Sektion ist ein
-   Flex-Container, und ein Flex-Item bekommt min-width:auto. Ohne min-width:0
-   wird die Shell so breit wie ihr max-width (1440px) statt so breit wie der
-   Viewport - die ganze Seite scrollt dann seitlich, auf jedem Display unter
-   1440px. */
-.carousel-shell{width:100%;min-width:0;max-width:var(--grid-max);margin-inline:auto}
+/* Im Karussell tragen die Karten Flaeche statt Rahmen (Figma: keine border in
+   diesem Kontext, nur die Sand/200-Flaeche) - dort ist Abgrenzung ueber Farbe
+   wichtiger als die Hairline-Kante der freistehenden Karte. Vorher stand hier
+   nur border-top:0, das liess links/rechts/unten einen Rahmenrest stehen, der
+   durch das overflow-x:auto der Scroll-Spalte oben abgeschnitten wirkte. */
+.carousel>.card{background:var(--color-detail);border:0;border-radius:var(--radius-card);padding:var(--space-10);gap:0}
+/* min-width:0 ist noetig, nicht optional: die Sektion ist ein Flex-Container,
+   und ein Flex-Item bekommt sonst min-width:auto - die Shell würde dann so
+   breit wie ihr Inhalt statt wie der Viewport, die ganze Seite scrollt seitlich. */
+.carousel-shell{width:100%;min-width:0}
 .carousel-controls{display:flex;gap:12px;justify-content:flex-end;margin-top:var(--space-6)}
 .carousel-controls button{width:56px;height:56px;border-radius:var(--radius-pill);border:1px solid var(--gray-300);
-  background:none;cursor:pointer;font-size:var(--text-display-3);color:var(--color-main-text);font-family:inherit}
+  background:none;cursor:pointer;color:var(--color-main-text);font-family:inherit;
+  display:flex;align-items:center;justify-content:center}
+.carousel-controls button svg{width:24px;height:24px}
 .carousel-controls button:hover{border-color:var(--color-main-text)}
 .carousel-controls button:disabled{opacity:.3;cursor:default}
 @media(max-width:700px){.carousel>.card{flex-basis:80vw}}
@@ -364,6 +384,17 @@ footer.cta{padding-block:var(--space-20)}
        kaum noch Platz hat (siehe Kommentar bei fitNav() weiter unten). -->
   <symbol id="dayone-mark" viewBox="0 0 34 33">
     <path d="M17.2224 0.766602C16.5194 0.766602 15.8249 0.809357 15.1455 0.894867C14.8733 0.929071 14.6032 0.969688 14.3353 1.01672C12.9979 1.25187 11.7161 1.64522 10.5116 2.17966C10.1515 2.33999 9.7957 2.51314 9.45063 2.69699C9.21914 2.82098 8.99195 2.94925 8.7669 3.08179C8.31894 3.349 7.88384 3.6376 7.46589 3.9433C7.36086 4.02026 7.25798 4.09722 7.1551 4.17632C3.3571 7.10931 0.917969 11.6584 0.917969 16.7677C0.917969 19.5296 1.6317 22.127 2.88556 24.3952C2.94772 24.5085 3.01202 24.6218 3.07846 24.7329C3.86292 26.0733 4.84029 27.2918 5.97412 28.3521C6.06843 28.4398 6.16488 28.5274 6.26133 28.6129C6.55068 28.8716 6.85075 29.1196 7.15725 29.3569C7.26013 29.436 7.36301 29.5151 7.46803 29.5899C7.88598 29.8977 8.32108 30.1842 8.76904 30.4514C8.99409 30.5861 9.22129 30.7144 9.45277 30.8362C9.68425 30.9602 9.91787 31.0778 10.1558 31.1889C12.2948 32.2001 14.6911 32.7666 17.2245 32.7666C26.2287 32.7666 33.529 25.603 33.529 16.7655C33.529 7.92807 26.2266 0.766602 17.2224 0.766602ZM17.2224 14.7069C18.4077 14.7069 19.3722 15.6325 19.3722 16.7698C19.3722 17.9071 18.4077 18.8327 17.2224 18.8327V14.7069ZM17.2224 21.8662C20.0902 21.8662 22.4179 19.5831 22.4179 16.7677C22.4179 13.9523 20.0923 11.6691 17.2224 11.6691V9.18079C21.5134 9.18079 25.0049 12.5841 25.0049 16.7698C25.0049 20.9555 21.5134 24.3588 17.2224 24.3588V21.8662ZM17.2224 29.7353V27.3944C23.2002 27.3944 28.0484 22.6379 28.0484 16.7698C28.0484 10.9017 23.2023 6.14518 17.2224 6.14518V3.80221C24.5333 3.80221 30.4833 9.61903 30.4833 16.7677C30.4833 23.9184 24.5355 29.7353 17.2224 29.7353Z" fill="currentColor"/>
+  </symbol>
+  <!-- Pfeil-Icons fuer Karussell-Steuerung (Figma: icon/arrow-left 71:882, icon/arrow-right 71:872).
+       Einfache Linien-Variante (stroke=currentColor), passend zum reduzierten Icon-Stil
+       der Kapitel-Nav-Marke daneben. -->
+  <symbol id="icon-pfeil-links" viewBox="0 0 24 24">
+    <path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="icon-pfeil-rechts" viewBox="0 0 24 24">
+    <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"
+      stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
 </svg>
 
@@ -442,7 +473,7 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="02" data-chapter-title="[Kapitelname]" id="kapitel-02" data-modul="03 Inhalt/03 sticky-nummernliste">
   <div class="wrap sticky-list">
     <div class="left reveal">
-      <h2 class="h1">[Die Leitfrage dieses Kapitels]</h2>
+      <h2 class="h2">[Die Leitfrage dieses Kapitels]</h2>
       <p class="lead" style="margin-top:var(--space-6)">[Zwei bis vier Sätze Kontext.]</p>
     </div>
     <div class="right">
@@ -464,7 +495,7 @@ footer.cta{padding-block:var(--space-20)}
     <div class="kartenraster-kopf reveal">
       <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
       <p class="eyebrow">[NN] — [Kapitelname]</p>
-      <h2 class="h1">[Wie gehen wir vor?]</h2>
+      <h2 class="h2">[Wie gehen wir vor?]</h2>
       <p class="intro">[Ein Satz Einordnung.]</p>
     </div>
     <div class="cards">
@@ -511,7 +542,7 @@ footer.cta{padding-block:var(--space-20)}
     <div class="section-head reveal">
       <div>
         <p class="eyebrow">04 — [Bilanz]</p>
-        <h2 class="h1">[Das Projekt in Zahlen]</h2>
+        <h2 class="h2">[Das Projekt in Zahlen]</h2>
       </div>
     </div>
     <div class="stats">
@@ -538,11 +569,12 @@ footer.cta{padding-block:var(--space-20)}
 <section data-chapter="05" data-chapter-title="[Kapitelname]" id="kapitel-05" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
   <div class="wrap">
     <div class="section-head reveal">
-      <div><p class="eyebrow">05 — [Kapitelname]</p><h2 class="h1">[Was wir euch mitgeben]</h2></div>
+      <div><p class="eyebrow">05 — [Kapitelname]</p><h2 class="h2">[Was wir euch mitgeben]</h2></div>
     </div>
   </div>
   <div class="carousel-shell">
     <div class="carousel" id="karten-karussell">
+      <div class="carousel-spacer" aria-hidden="true"></div>
       <div class="card"><span class="num">01</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
       <div class="card"><span class="num">02</span>
@@ -554,8 +586,12 @@ footer.cta{padding-block:var(--space-20)}
     </div>
   </div>
   <div class="wrap carousel-controls">
-    <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">‹</button>
-    <button type="button" data-carousel="karten-karussell" data-dir="1" aria-label="Weiter">›</button>
+    <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">
+      <svg aria-hidden="true"><use href="#icon-pfeil-links"></use></svg>
+    </button>
+    <button type="button" data-carousel="karten-karussell" data-dir="1" aria-label="Weiter">
+      <svg aria-hidden="true"><use href="#icon-pfeil-rechts"></use></svg>
+    </button>
   </div>
 </section>
 
@@ -733,7 +769,11 @@ footer.cta{padding-block:var(--space-20)}
       var track = document.getElementById(btn.dataset.carousel);
       if (!track) return;
       var card = track.querySelector(".card");
-      var step = card ? card.getBoundingClientRect().width + 32 : 400;
+      // Card-Breite + tatsaechlicher Grid-Gap (nicht mehr hart 32px codiert -
+      // sonst laeuft der Klick-Sprung wieder auseinander, sobald sich der
+      // gap-Wert im CSS aendert, wie es beim Karussell-Fix passiert ist).
+      var gap = card ? parseFloat(getComputedStyle(track).columnGap) || 0 : 0;
+      var step = card ? card.getBoundingClientRect().width + gap : 400;
       track.scrollBy({ left: step * parseInt(btn.dataset.dir, 10), behavior: reduce ? "auto" : "smooth" });
     });
   });

@@ -156,7 +156,11 @@
       var track = document.getElementById(btn.dataset.carousel);
       if (!track) return;
       var card = track.querySelector(".card");
-      var step = card ? card.getBoundingClientRect().width + 32 : 400;
+      // Card-Breite + tatsaechlicher Grid-Gap (nicht mehr hart 32px codiert -
+      // sonst laeuft der Klick-Sprung wieder auseinander, sobald sich der
+      // gap-Wert im CSS aendert, wie es beim Karussell-Fix passiert ist).
+      var gap = card ? parseFloat(getComputedStyle(track).columnGap) || 0 : 0;
+      var step = card ? card.getBoundingClientRect().width + gap : 400;
       track.scrollBy({ left: step * parseInt(btn.dataset.dir, 10), behavior: reduce ? "auto" : "smooth" });
     });
   });
