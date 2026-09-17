@@ -314,7 +314,7 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Karten-Karussell ==== */
 .carousel{overflow-x:auto;scroll-snap-type:x mandatory;display:flex;gap:var(--space-6);
-  padding-right:0;padding-bottom:var(--space-6);scrollbar-width:none}
+  padding-bottom:var(--space-6);scrollbar-width:none}
 .carousel::-webkit-scrollbar{display:none}
 /* Linker Einzug ueber ein echtes Flex-Kind statt padding-left auf dem
    Scroll-Container: Browser setzen bei overflow-x:auto + Flex/Grid den
@@ -323,9 +323,15 @@ footer.cta{padding-block:var(--space-20)}
    padding-left an Kante 0 statt eingerueckt). Ein echter Spacer-Block hat
    dieses Problem nicht. Breite = gewuenschter Einzug minus den ohnehin
    folgenden .carousel-gap, weil der Flex-gap zwischen Spacer und erster
-   Karte den Rest beisteuert. Rechts bewusst kein Pendant: der Track soll bis
-   an den Viewport-Rand laufen (Figma: "Karten laufen bewusst über den
-   rechten Rand hinaus"). */
+   Karte den Rest beisteuert.
+   Rechts: padding-right in derselben Groesse, damit der Track auf gleicher
+   Kante wie die Button-Gruppe darunter endet (Ernst, Review Gruppe D) - das
+   Modul haelt sich also doch an den regulaeren Modul-Rand statt bis zum
+   nackten Viewport-Rand zu laufen; padding-right ist hier unproblematisch,
+   der Snap-Ruheposition-Bug betrifft nur die START-Seite eines
+   scroll-snap:mandatory-Containers, nicht das Ende. */
+.carousel{padding-right:max(var(--grid-margin),
+  calc((100% - var(--grid-max)) / 2 + var(--grid-margin)))}
 .carousel-spacer{flex:0 0 auto;width:calc(max(var(--grid-margin),
   calc((100% - var(--grid-max)) / 2 + var(--grid-margin))) - var(--space-6));
   scroll-snap-align:start}
