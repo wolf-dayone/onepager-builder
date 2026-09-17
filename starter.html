@@ -858,6 +858,74 @@ footer.cta{padding-block:var(--space-20)}
     counters.forEach(function (el) { el.textContent = el.dataset.countTo; });
   }
 
+  /* ---- 6b) Chart-Slide: Balken wachsen nacheinander von unten, Zaehler laeuft
+     synchron mit (Ernst, 2026-09-xx) - erst NACHDEM das leere Diagramm (Achsen,
+     Gitterlinien, siehe .chart-body.reveal) fertig eingeblendet ist, nicht
+     gleichzeitig damit. Reagiert deshalb auf transitionend von .chart-body
+     statt auf denselben IntersectionObserver wie stageReveal(). */
+  function growChart(chart) {
+    var balken = Array.prototype.slice.call(chart.querySelectorAll(".chart-balken"));
+    if (!balken.length) return;
+    if (reduceMotion()) {
+      balken.forEach(function (b) {
+        b.style.setProperty("--wert", b.dataset.wert);
+        var wert = b.querySelector(".chart-wert");
+        if (wert) wert.textContent = wert.dataset.countTo;
+      });
+      demoBetonen(chart, 0);
+      return;
+    }
+    var STAGGER = 180;
+    balken.forEach(function (b, i) {
+      setTimeout(function () {
+        b.style.setProperty("--wert", b.dataset.wert);
+        var wert = b.querySelector(".chart-wert");
+        if (wert) countUp(wert);
+      }, i * STAGGER);
+    });
+    demoBetonen(chart, balken.length * STAGGER + 900);
+  }
+
+  // Einmalige, kurze Simulation von Hover/Tap auf der dafuer markierten Saeule
+  // (data-demo-hover) - zeigt vor, was echtes Hover/Tap ohnehin ausloest (siehe
+  // .chart-balken:hover in bausteine/04-daten-02-chart-slide.html), fuer alle,
+  // die nie selbst hovern/tippen. KEIN Dauerzustand, deshalb nach kurzer Zeit
+  // wieder entfernt.
+  function demoBetonen(chart, verzoegerung) {
+    var ziel = chart.querySelector('[data-demo-hover="true"]');
+    if (!ziel || reduceMotion()) return;
+    setTimeout(function () {
+      ziel.classList.add("ist-betont");
+      setTimeout(function () { ziel.classList.remove("ist-betont"); }, 1400);
+    }, verzoegerung);
+  }
+
+  // Wartet auf das Ende von .chart-body's EIGENER reveal-Transition (Opacity/
+  // Transform, siehe .reveal in _basis.css), bevor der uebergebene Callback
+  // laeuft - wiederverwendet sowohl beim ersten Laden als auch bei replayChart(),
+  // damit die Balken in beiden Faellen erst NACH dem leeren Diagramm anwachsen.
+  function chartWennSichtbar(chart, dann) {
+    if (reduceMotion() || !("IntersectionObserver" in window)) { dann(); return; }
+    chart.addEventListener("transitionend", function auf_fertig(e) {
+      if (e.target !== chart) return; // nur .chart-body selbst, nicht durchgereichte Kind-Transitions
+      chart.removeEventListener("transitionend", auf_fertig);
+      dann();
+    });
+  }
+
+  document.querySelectorAll(".chart-body").forEach(function (chart) {
+    chartWennSichtbar(chart, function () { growChart(chart); });
+  });
+
+  // Tippen simuliert Hover auf Touch-Geraeten, wo :hover unzuverlaessig ist -
+  // eigener, kurzer "betont"-Zustand statt auf CSS-:hover-Emulation zu hoffen.
+  document.querySelectorAll(".chart-balken").forEach(function (b) {
+    b.addEventListener("touchstart", function () {
+      b.classList.add("ist-betont");
+      setTimeout(function () { b.classList.remove("ist-betont"); }, 1200);
+    }, { passive: true });
+  });
+
   /* ---- 7) Roadmap-Timeline: farbige Linie bis zum aktuellen Punkt ----
      Breite = Position des .is-current-Punkts im Track (Dots sitzen am linken Rand
      jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
@@ -1030,6 +1098,24 @@ footer.cta{padding-block:var(--space-20)}
     });
   }
 
+  function replayChart(root) {
+    var charts = root.classList && root.classList.contains("chart-body")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".chart-body") : []);
+    Array.prototype.forEach.call(charts, function (chart) {
+      chart.querySelectorAll(".chart-balken").forEach(function (b) {
+        b.classList.remove("ist-betont");
+        b.style.setProperty("--wert", 0);
+        var wert = b.querySelector(".chart-wert");
+        if (wert) { wert.textContent = "0"; }
+      });
+      // replayReveal() (weiter oben in replayModule()) stoesst .chart-body's
+      // eigene reveal-Transition gerade erst neu an - erst wenn die
+      // durchgelaufen ist, sollen die Balken wachsen, exakt wie beim ersten
+      // Laden der Seite.
+      chartWennSichtbar(chart, function () { growChart(chart); });
+    });
+  }
+
   function replayModule(root) {
     if (!root) return;
     replayReveal(root);
@@ -1037,6 +1123,7 @@ footer.cta{padding-block:var(--space-20)}
     replayTimeline(root);
     replayCarousel(root);
     replayStepper(root);
+    replayChart(root);
   }
 
   function replayAll() {

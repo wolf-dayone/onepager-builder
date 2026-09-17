@@ -436,32 +436,66 @@ footer.cta{padding-block:var(--space-20)}
 /* ==== Chart-Slide ==== */
 /* Figma: Charts entstehen aus echten Daten, nicht als Bild. Deshalb ein
    einfaches Balkendiagramm aus divs - Hoehe ueber --wert (0..1) gesteuert.
-   Die hervorgehobene Serie traegt .ist-betont (dunkel, wie Figma - KEIN
-   Blue-Highlight; frueher stand hier faelschlich var(--blue-3), gefunden
-   beim Figma-Abgleich 2026-09-17). Bars stehen direkt auf der Seite, ohne
-   Kartenhintergrund - Figma zeigt kein umschliessendes Feld ums Chart. */
-.chart-body{margin-top:var(--space-8);display:flex;gap:var(--space-4);align-items:stretch}
+   Modul nutzt die volle verfuegbare Sektionshoehe (Ernst, 2026-09-xx): .wrap
+   und .chart-body wachsen per flex:1 bis an das Sektions-Padding heran,
+   statt als kurzer, vertikal zentrierter Block auf viel Leerraum zu sitzen. */
+.chart-slide .wrap{flex:1 1 auto;display:flex;flex-direction:column;min-height:0}
+.chart-body{margin-top:var(--space-8);display:flex;gap:var(--space-4);align-items:stretch;
+  flex:1 1 auto;min-height:0}
 .chart-y-achse{display:flex;flex-direction:column;justify-content:space-between;
   padding-bottom:28px;font-size:var(--text-body-s);color:var(--color-text);text-align:right}
-.chart-slide .chart{flex:1;height:300px;display:flex;align-items:flex-end;
-  gap:var(--space-6);padding-bottom:28px;position:relative;
-  /* Gitterlinien alle 25% der Hoehe - ersetzt die frueher fehlenden
-     Hilfslinien, die Figma neben der Achsenskala zeigt. */
-  background-image:repeating-linear-gradient(to top,var(--color-border) 0,
-    var(--color-border) 1px,transparent 1px,transparent 25%)}
+.chart-slide .chart{flex:1;min-height:220px;display:flex;align-items:flex-end;
+  gap:var(--space-6);padding-bottom:28px;position:relative}
+/* Gitterlinien als echte Elemente statt background-image - dadurch koennen sie
+   einzeln von links nach rechts einlaufen (Ernst: "lines can be animated in
+   from left to right"), statt einfach dazustehen. Eigener Wrapper, exakt auf
+   die Balken-Flaeche begrenzt (bottom:28px spart denselben Platz aus, den
+   .chart per padding-bottom fuer die Monats-Labels reserviert) - sonst
+   waeren die Prozent-Positionen der Linien gegen die falsche Box berechnet
+   und liefen der tatsaechlichen Balkenhoehe (die auf der Content-Box von
+   .chart basiert) leicht auseinander. */
+.chart-gitter{position:absolute;left:0;right:0;top:0;bottom:28px;pointer-events:none}
+.chart-gitter span{position:absolute;left:0;right:0;height:1px;background:var(--color-border);
+  transform:scaleX(0);transform-origin:left;transition:transform 1s var(--ease)}
+.chart-gitter span:nth-child(1){bottom:0}
+.chart-gitter span:nth-child(2){bottom:25%}
+.chart-gitter span:nth-child(3){bottom:50%}
+.chart-gitter span:nth-child(4){bottom:75%}
+.chart-gitter span:nth-child(5){bottom:100%}
+.chart-body.in .chart-gitter span{transform:scaleX(1)}
 .chart-balken{flex:1;display:flex;flex-direction:column;justify-content:flex-end;
   align-items:center;height:100%;position:relative}
+/* --wert startet bei 0 (Fallback im calc()) - erst growChart() in _basis.js setzt
+   den echten Wert per style.setProperty, sobald das leere Diagramm fertig
+   eingeblendet ist. Dadurch "waechst" die Saeule wirklich, statt schon fertig
+   dazustehen, wenn die Sektion in den Viewport kommt. */
 .chart-balken .saeule{width:100%;border-radius:4px 4px 0 0;background:var(--color-border);
-  height:calc(var(--wert) * 100%);transition:height .8s var(--ease);position:relative}
-.chart-balken.ist-betont .saeule{background:var(--color-main-text)}
-.chart-wert{position:absolute;top:8px;left:50%;transform:translateX(-50%);
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-inverse-text)}
+  height:calc(var(--wert,0) * 100%);transition:height .8s var(--ease),background .25s var(--ease);
+  position:relative}
+/* .ist-betont simuliert (per JS, einmalig nach dem Einwachsen) genau den
+   Zustand, den echtes Hover/Tap ohnehin ausloest - siehe :hover/:focus-visible
+   unten. KEIN Dauerzustand mehr: Figma zeigt eine Saeule dunkel als Beispiel
+   dafuer, wie Hover/Tap aussehen, nicht als fixen Teil des Rulesets (Ernst,
+   2026-09-xx: "the darker column is supposed to be a simulation of a hovered
+   or tapped state, so not the initial view"). */
+.chart-balken.ist-betont .saeule,.chart-balken:hover .saeule,.chart-balken:focus-visible .saeule{
+  background:var(--color-main-text)}
+.chart-wert{position:absolute;left:50%;transform:translateX(-50%);
+  bottom:calc(var(--wert,0) * 100% + 10px);
+  font-size:var(--text-body-s);color:var(--color-text);transition:bottom .8s var(--ease),color .25s var(--ease)}
+.chart-balken.ist-betont .chart-wert,.chart-balken:hover .chart-wert,.chart-balken:focus-visible .chart-wert{
+  color:var(--color-main-text);font-weight:600}
 .chart-balken .achse{position:absolute;bottom:-28px;left:0;right:0;text-align:center;
-  font-size:var(--text-body-s);color:var(--color-text);line-height:1.2}
+  font-size:var(--text-body-s);color:var(--color-text);line-height:1.2;transition:color .25s var(--ease),font-weight .25s var(--ease)}
+.chart-balken.ist-betont .achse,.chart-balken:hover .achse,.chart-balken:focus-visible .achse{
+  color:var(--color-main-text);font-weight:600}
 .chart-quelle{margin-top:var(--space-4);font-size:var(--text-body-s);color:var(--color-text);
   opacity:.7}
-@media(prefers-reduced-motion:reduce){.chart-balken .saeule{transition:none}}
-@media(max-width:900px){.chart-slide .chart{height:220px;gap:var(--space-4)}}
+@media(prefers-reduced-motion:reduce){
+  .chart-balken .saeule,.chart-wert{transition:none}
+  .chart-gitter span{transition:none}
+}
+@media(max-width:900px){.chart-slide .chart{min-height:180px;gap:var(--space-4)}}
 
 /* ==== Matrix 2x2 ==== */
 /* Figma: beide Achsen tragen an JEDEM Ende ein eigenes Label (z. B. "Attribute A"
@@ -1160,20 +1194,25 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <!-- Ein Chart pro Modul. Titel sagt die Erkenntnis, nicht die Datenart. -->
 <section class="chart-slide dark" data-chapter="10" data-chapter-title="[Kapitelname]" id="kapitel-10" data-modul="04 Daten/02 chart-slide">
   <div class="wrap">
-    <p class="eyebrow">10 — [Daten]</p>
-    <h2 class="h2 reveal">[Nutzung verdoppelt sich ab März]</h2>
-    <p class="small" style="margin-top:6px;color:var(--color-text)">[Kurze Einordnung, was das Chart zeigt.]</p>
+    <p class="eyebrow reveal">10 — [Daten]</p>
+    <div class="reveal">
+      <h2 class="h2">[Nutzung verdoppelt sich ab März]</h2>
+      <p class="small" style="margin-top:6px;color:var(--color-text)">[Kurze Einordnung, was das Chart zeigt.]</p>
+    </div>
     <div class="chart-body reveal" role="img" aria-label="[Beschreibung des Diagramms für Screenreader]">
       <div class="chart-y-achse" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div>
       <div class="chart">
-        <div class="chart-balken" style="--wert:.35"><div class="saeule"></div><span class="achse">[Jan]</span></div>
-        <div class="chart-balken" style="--wert:.42"><div class="saeule"></div><span class="achse">[Feb]</span></div>
-        <div class="chart-balken" style="--wert:.86"><div class="saeule"></div><span class="achse">[Mär]</span></div>
-        <div class="chart-balken" style="--wert:.79"><div class="saeule"></div><span class="achse">[Apr]</span></div>
-        <div class="chart-balken ist-betont" style="--wert:.91"><div class="saeule"><span class="chart-wert">91</span></div><span class="achse">[Mai]</span></div>
+        <div class="chart-gitter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="chart-balken" data-wert=".45"><div class="saeule"><span class="chart-wert" data-count-to="45">0</span></div><span class="achse">[Jan]</span></div>
+        <div class="chart-balken" data-wert=".62"><div class="saeule"><span class="chart-wert" data-count-to="62">0</span></div><span class="achse">[Feb]</span></div>
+        <div class="chart-balken" data-wert=".38"><div class="saeule"><span class="chart-wert" data-count-to="38">0</span></div><span class="achse">[Mär]</span></div>
+        <div class="chart-balken" data-wert=".78"><div class="saeule"><span class="chart-wert" data-count-to="78">0</span></div><span class="achse">[Apr]</span></div>
+        <div class="chart-balken" data-wert=".91" data-demo-hover="true"><div class="saeule"><span class="chart-wert" data-count-to="91">0</span></div><span class="achse">[Mai]</span></div>
+        <div class="chart-balken" data-wert=".85"><div class="saeule"><span class="chart-wert" data-count-to="85">0</span></div><span class="achse">[Jun]</span></div>
+        <div class="chart-balken" data-wert=".56"><div class="saeule"><span class="chart-wert" data-count-to="56">0</span></div><span class="achse">[Jul]</span></div>
       </div>
     </div>
-    <p class="chart-quelle">Quelle: [Datenquelle], [Zeitraum]</p>
+    <p class="chart-quelle reveal">Quelle: [Datenquelle], [Zeitraum]</p>
   </div>
 </section>
 
@@ -1729,6 +1768,74 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     counters.forEach(function (el) { el.textContent = el.dataset.countTo; });
   }
 
+  /* ---- 6b) Chart-Slide: Balken wachsen nacheinander von unten, Zaehler laeuft
+     synchron mit (Ernst, 2026-09-xx) - erst NACHDEM das leere Diagramm (Achsen,
+     Gitterlinien, siehe .chart-body.reveal) fertig eingeblendet ist, nicht
+     gleichzeitig damit. Reagiert deshalb auf transitionend von .chart-body
+     statt auf denselben IntersectionObserver wie stageReveal(). */
+  function growChart(chart) {
+    var balken = Array.prototype.slice.call(chart.querySelectorAll(".chart-balken"));
+    if (!balken.length) return;
+    if (reduceMotion()) {
+      balken.forEach(function (b) {
+        b.style.setProperty("--wert", b.dataset.wert);
+        var wert = b.querySelector(".chart-wert");
+        if (wert) wert.textContent = wert.dataset.countTo;
+      });
+      demoBetonen(chart, 0);
+      return;
+    }
+    var STAGGER = 180;
+    balken.forEach(function (b, i) {
+      setTimeout(function () {
+        b.style.setProperty("--wert", b.dataset.wert);
+        var wert = b.querySelector(".chart-wert");
+        if (wert) countUp(wert);
+      }, i * STAGGER);
+    });
+    demoBetonen(chart, balken.length * STAGGER + 900);
+  }
+
+  // Einmalige, kurze Simulation von Hover/Tap auf der dafuer markierten Saeule
+  // (data-demo-hover) - zeigt vor, was echtes Hover/Tap ohnehin ausloest (siehe
+  // .chart-balken:hover in bausteine/04-daten-02-chart-slide.html), fuer alle,
+  // die nie selbst hovern/tippen. KEIN Dauerzustand, deshalb nach kurzer Zeit
+  // wieder entfernt.
+  function demoBetonen(chart, verzoegerung) {
+    var ziel = chart.querySelector('[data-demo-hover="true"]');
+    if (!ziel || reduceMotion()) return;
+    setTimeout(function () {
+      ziel.classList.add("ist-betont");
+      setTimeout(function () { ziel.classList.remove("ist-betont"); }, 1400);
+    }, verzoegerung);
+  }
+
+  // Wartet auf das Ende von .chart-body's EIGENER reveal-Transition (Opacity/
+  // Transform, siehe .reveal in _basis.css), bevor der uebergebene Callback
+  // laeuft - wiederverwendet sowohl beim ersten Laden als auch bei replayChart(),
+  // damit die Balken in beiden Faellen erst NACH dem leeren Diagramm anwachsen.
+  function chartWennSichtbar(chart, dann) {
+    if (reduceMotion() || !("IntersectionObserver" in window)) { dann(); return; }
+    chart.addEventListener("transitionend", function auf_fertig(e) {
+      if (e.target !== chart) return; // nur .chart-body selbst, nicht durchgereichte Kind-Transitions
+      chart.removeEventListener("transitionend", auf_fertig);
+      dann();
+    });
+  }
+
+  document.querySelectorAll(".chart-body").forEach(function (chart) {
+    chartWennSichtbar(chart, function () { growChart(chart); });
+  });
+
+  // Tippen simuliert Hover auf Touch-Geraeten, wo :hover unzuverlaessig ist -
+  // eigener, kurzer "betont"-Zustand statt auf CSS-:hover-Emulation zu hoffen.
+  document.querySelectorAll(".chart-balken").forEach(function (b) {
+    b.addEventListener("touchstart", function () {
+      b.classList.add("ist-betont");
+      setTimeout(function () { b.classList.remove("ist-betont"); }, 1200);
+    }, { passive: true });
+  });
+
   /* ---- 7) Roadmap-Timeline: farbige Linie bis zum aktuellen Punkt ----
      Breite = Position des .is-current-Punkts im Track (Dots sitzen am linken Rand
      jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
@@ -1901,6 +2008,24 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     });
   }
 
+  function replayChart(root) {
+    var charts = root.classList && root.classList.contains("chart-body")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".chart-body") : []);
+    Array.prototype.forEach.call(charts, function (chart) {
+      chart.querySelectorAll(".chart-balken").forEach(function (b) {
+        b.classList.remove("ist-betont");
+        b.style.setProperty("--wert", 0);
+        var wert = b.querySelector(".chart-wert");
+        if (wert) { wert.textContent = "0"; }
+      });
+      // replayReveal() (weiter oben in replayModule()) stoesst .chart-body's
+      // eigene reveal-Transition gerade erst neu an - erst wenn die
+      // durchgelaufen ist, sollen die Balken wachsen, exakt wie beim ersten
+      // Laden der Seite.
+      chartWennSichtbar(chart, function () { growChart(chart); });
+    });
+  }
+
   function replayModule(root) {
     if (!root) return;
     replayReveal(root);
@@ -1908,6 +2033,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     replayTimeline(root);
     replayCarousel(root);
     replayStepper(root);
+    replayChart(root);
   }
 
   function replayAll() {
