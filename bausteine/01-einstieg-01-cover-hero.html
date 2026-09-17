@@ -3,7 +3,7 @@
 /* Hintergrund (.dark) sitzt auf dem ungebremsten <header>, Inhalt in .wrap darunter —
    sonst entstehen auf sehr breiten Screens helle Ränder links/rechts (wrap+dark auf
    demselben Element begrenzt auch den Hintergrund auf --grid-max). */
-.hero{min-height:100svh}
+.hero{min-height:100svh;scroll-snap-align:start}
 .hero .wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;
   padding-block:var(--space-16) var(--space-20)}
 .hero .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}

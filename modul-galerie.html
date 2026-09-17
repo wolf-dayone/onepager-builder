@@ -106,7 +106,15 @@
 }
 
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;
+  /* Jede Section ist jetzt garantiert >= 1 Viewporthoehe (siehe unten) - damit
+     fuehlt sich freies Scrollen wie "zwischen Folien" an, wenn es sanft an der
+     naechsten Section einrastet, statt irgendwo mittendrin stehenzubleiben.
+     mandatory statt proximity: Ernst wollte ein spuerbares, verlaessliches
+     Einrasten ("gently stops at the next slide"), nicht nur ein Einrasten in
+     der Naehe. Blockiert normales Scrollen INNERHALB einer Section nicht -
+     wirkt nur auf den Ruhepunkt, wenn der Scroll-Schwung auslaeuft. */
+  scroll-snap-type:y mandatory}
 body{margin:0;font-family:var(--font);background:var(--color-bg);color:var(--color-main-text);
      font-size:var(--text-body-m);line-height:1.3;-webkit-font-smoothing:antialiased}
 h1,h2,h3,p{margin:0}
@@ -126,7 +134,7 @@ img{max-width:100%;display:block}
 /* Jede Section/CTA-Footer mind. eine Viewport-Hoehe, Padding zaehlt mit (box-sizing:border-box) -
    hoeher ist erlaubt, niedriger nicht. Nicht mit eigener kleinerer min-height ueberschreiben
    (das war frueher beim Divider der Fall, siehe dort). */
-section,footer.cta{min-height:100svh;display:flex;flex-direction:column;justify-content:center}
+section,footer.cta{min-height:100svh;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:start}
 section{padding-block:var(--space-30)}
 footer.cta{padding-block:var(--space-20)}
 /* .dark schaltet nicht nur Hintergrund/Grundschrift um, sondern die komplette
@@ -168,7 +176,9 @@ footer.cta{padding-block:var(--space-20)}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none}
-  html{scroll-behavior:auto}
+  /* Erzwungenes Einrasten kann bei vestibulären Empfindlichkeiten unangenehm
+     sein - dieselbe Vorsicht wie bei jedem anderen Bewegungseffekt hier. */
+  html{scroll-behavior:auto;scroll-snap-type:none}
 }
 
 /* ==== Galerie-Rahmen (nur in modul-galerie.html) ==== */
@@ -257,7 +267,7 @@ footer.cta{padding-block:var(--space-20)}
 /* Hintergrund (.dark) sitzt auf dem ungebremsten <header>, Inhalt in .wrap darunter —
    sonst entstehen auf sehr breiten Screens helle Ränder links/rechts (wrap+dark auf
    demselben Element begrenzt auch den Hintergrund auf --grid-max). */
-.hero{min-height:100svh}
+.hero{min-height:100svh;scroll-snap-align:start}
 .hero .wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;
   padding-block:var(--space-16) var(--space-20)}
 .hero .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
@@ -621,6 +631,10 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 /* ==== Team-Grid ==== */
 /* Kein echtes Foto nötig: .team-avatar zeigt ersatzweise Initialen auf Sand/200 —
    gleicher Hintergrund/Ausschnitt/Höhe wie von Figma gefordert, ohne Bildmaterial. */
+/* WICHTIG: Platzhaltertext hier NIE "[NN]"/"[nn]" - das ersetzt tools/bauen.py
+   global durch die echte Kapitelnummer (nummerieren()), auch ausserhalb der
+   Eyebrow/id. Frueher stand hier "[NN]" und wurde dadurch zu z.B. "22" statt
+   Initialen - gefunden per Figma-Abgleich, 2026-09-17. */
 .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-6)}
 .team-member{display:flex;flex-direction:column;gap:16px}
 .team-avatar{aspect-ratio:4/5;border-radius:var(--radius-card);background:var(--color-detail);
@@ -1275,10 +1289,10 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     <p class="eyebrow">22 — [Team]</p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
     <div class="team-grid">
-      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[Initialen]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[Initialen]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[Initialen]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">[Initialen]</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
     </div>
   </div>
 </section>
