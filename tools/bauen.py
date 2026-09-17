@@ -75,6 +75,50 @@ def nummerieren(markup, nummer):
     return markup.replace("[NN]", nummer).replace("[nn]", nummer)
 
 
+# Farbmodus ist keine Eigenschaft eines Bausteins mehr (Ernst, 2026-09-17): das
+# Token-System (bausteine/_basis.css .dark{}) macht jedes Modul frei hell/dunkel
+# schaltbar, also entscheidet ausschliesslich der Zusammenbau hier, welchen Modus
+# eine Sektion bekommt - abhaengig davon, wo sie in der Kapitelfolge steht.
+TAG_START = re.compile(r'<[a-z][a-z0-9]*', re.IGNORECASE)
+CLASS_ATTR = re.compile(r'class="([^"]*)"')
+
+
+def markup_dunkel_setzen(markup, dunkel):
+    """Setzt oder entfernt die Klasse 'dark' am Wurzelelement eines Bausteins.
+
+    Greift ausschliesslich auf das allererste ECHTE Tag im Markup zu (Header/
+    Section/Footer/Div, mit dem jeder Baustein beginnt), unabhaengig davon,
+    ob es schon eine class="..." traegt - und ueberspringt dabei fuehrende
+    HTML-Kommentare (z. B. die Hinweiszeile vor section-divider/cover-hero),
+    deren eigenes "-->" sonst faelschlich als Tag-Ende genommen wuerde.
+    """
+    start_m = TAG_START.search(markup)
+    if not start_m:
+        return markup
+    start = start_m.start()
+    ende = markup.find(">", start)
+    if ende == -1:
+        return markup
+    vor, tag, rest = markup[:start], markup[start:ende + 1], markup[ende + 1:]
+
+    treffer = CLASS_ATTR.search(tag)
+    klassen = [k for k in treffer.group(1).split() if k != "dark"] if treffer else []
+    if dunkel:
+        klassen.append("dark")
+    neu = f'class="{" ".join(klassen)}"' if klassen else ""
+
+    if treffer:
+        if neu:
+            tag = tag[:treffer.start()] + neu + tag[treffer.end():]
+        else:
+            # Leere class="" komplett entfernen statt sie stehen zu lassen.
+            tag = tag[:treffer.start()].rstrip() + tag[treffer.end():]
+    elif neu:
+        tag = tag[:start_m.end() - start] + f' {neu}' + tag[start_m.end() - start:]
+
+    return vor + tag + rest
+
+
 EYEBROW = re.compile(r"[ \t]*<p class=\"eyebrow[^\"]*\">.*?</p>\n?", re.DOTALL)
 
 
@@ -228,7 +272,7 @@ def galerie_bauen(daten):
 </div>"""))
 
     kapitel = 0
-    for eintrag in daten["komponenten"]:
+    for i, eintrag in enumerate(daten["komponenten"]):
         name = eintrag["name"]
         css, markup = baustein(name)
         kategorie, _, kurz = name.partition("/")
@@ -236,6 +280,12 @@ def galerie_bauen(daten):
         if "[NN]" in markup:
             kapitel += 1
             markup = nummerieren(markup, f"{kapitel:02d}")
+
+        # Jedes Modul ein anderer Farbmodus als sein Vorgaenger (Ernst,
+        # 2026-09-17) - die Galerie zeigt alle Module direkt hintereinander,
+        # da soll der Kapitelwechsel-Rhythmus schon in der Reihenfolge selbst
+        # sichtbar werden, nicht erst auf einer echten Seite.
+        markup = markup_dunkel_setzen(markup, i % 2 == 1)
 
         if zuordnung.get(name, {}).get("baustein"):
             markup = (f'<div class="galerie-baustein" style="max-width:440px">'
@@ -251,13 +301,18 @@ def galerie_bauen(daten):
 
 
 # ------------------------------------------------------------------ Starter
-def starter_bauen(daten):
+def starter_bauen(daten, start_dunkel=False):
+    """start_dunkel: Farbmodus des allerersten Kapitels (Hero+Agenda, noch vor
+    dem ersten data-chapter) - je nach Thema/Wunsch kann ein Onepager hell
+    oder dunkel eroeffnen (Ernst, 2026-09-17). Ab dem ersten echten Kapitel
+    wechselt der Modus automatisch mit jeder neuen Kapitelgrenze."""
     teile = []
     kapitel = 0
     # Die Navigation steht immer zuerst.
     teile.append(baustein("00 Elemente/01 kapitel-nav"))
 
     vorheriger_war_divider = False
+    dunkel = start_dunkel
     for name in DRAMATURGIE_WEEKLY:
         css, markup = baustein(name)
         if vorheriger_war_divider:
@@ -274,7 +329,8 @@ def starter_bauen(daten):
         # das Modul als Kapitelstart braucht, ergaenzt data-chapter selbst
         # (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow") - wer es
         # nur als Beat braucht, loescht die Eyebrow-Zeile.
-        if 'data-chapter="[NN]"' in markup:
+        neues_kapitel = 'data-chapter="[NN]"' in markup
+        if neues_kapitel:
             kapitel += 1
             markup = nummerieren(markup, f"{kapitel:02d}")
         elif vorheriger_war_divider:
@@ -282,6 +338,15 @@ def starter_bauen(daten):
             # danach gehoert zum selben Kapitel und bekommt keine neue.
             pass
         vorheriger_war_divider = name == "02 Struktur/01 section-divider"
+
+        # Farbmodus wechselt an JEDER echten Kapitelgrenze, auch beim
+        # Uebergang vom Intro (Hero/Agenda) ins erste Kapitel - nicht bei
+        # jedem Modul: ein Modul ohne eigenes data-chapter setzt ein
+        # laufendes Kapitel fort und behaelt dessen Modus (Ernst, 2026-09-17).
+        if neues_kapitel:
+            dunkel = not dunkel
+        markup = markup_dunkel_setzen(markup, dunkel)
+
         teile.append((css, markup))
 
     html = zusammenbauen("[Titel der Präsentation] — DAYONE", teile, stempel(daten))

@@ -34,7 +34,7 @@
   --sand-200: #ede7dd;
   --sand-100: #f7f3eb;
 
-  --blue-1: #1a6423;   /* Accent Color/Blue Highlight 1 */
+  --blue-1: #1a64a3;   /* Accent Color/Blue Highlight 1 */
   --blue-2: #2a7fc7;   /* Accent Color/Blue Highlight 2 */
   --blue-3: #1487dd;   /* Accent Color/Blue Highlight 3 — Standard-Highlight */
 
@@ -49,6 +49,17 @@
   --color-surface:    var(--gray-50);
   --color-detail:     var(--sand-200);
   --color-border:     var(--gray-200);
+  /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
+     Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
+     Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln
+     (das ist eine dezente, keine invertierte Flaeche). */
+  --color-inverse-text: var(--gray-50);
+  /* Figma "button/primary-hover", nur die Hover-Stufe der gefuellten
+     Buttons/Chips, die --color-main-text als Flaeche nutzen. */
+  --color-inverse-hover: var(--gray-500);
+  /* Weicher Hover-Tint auf einer Outline-Flaeche - dunkel auf hell, hell auf
+     dunkel (siehe .dark-Override unten). */
+  --color-hover-tint: rgba(0,0,0,.06);
 
   /* Auf dunklen Sektionen (bewusst invertiert, nicht mode-abhängig) */
   --color-dark-bg:        var(--gray-900);
@@ -138,17 +149,29 @@ section,footer.cta{min-height:100svh;display:flex;flex-direction:column;justify-
 section{padding-block:var(--space-30)}
 footer.cta{padding-block:var(--space-20)}
 /* .dark schaltet nicht nur Hintergrund/Grundschrift um, sondern die komplette
-   semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche) — dadurch braucht
-   JEDES Modul (Karten, Tabellen, Timeline, Matrix, Team-Grid …) keine eigene
-   Dark-Variante im Code: einfach die Klasse `dark` auf die <section> setzen oder
-   weglassen, der Rest folgt automatisch. Ausnahmen: Hero und CTA-Footer sind bewusst
-   IMMER dunkel (siehe deren Komponenten-Beschreibung in Figma), keine Wahl nötig. */
+   semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche, Hintergrund) —
+   dadurch braucht JEDES Modul (Karten, Tabellen, Timeline, Matrix, Team-Grid, auch
+   Hero und CTA-Footer …) keine eigene Dark-Variante im Code: einfach die Klasse
+   `dark` auf die <section>/<header>/<footer> setzen oder weglassen, der Rest folgt
+   automatisch. Farbmodus ist damit KEINE Eigenschaft eines Bausteins mehr, sondern
+   eine Entscheidung von tools/bauen.py beim Zusammenbau einer Seite (Ernst,
+   2026-09-17) — jedes neue Kapitel wechselt den Modus, siehe markup_dunkel_setzen()
+   und tools/pruefen.py pruefe_rhythmus(). */
 .dark{background:var(--color-dark-bg);color:var(--color-dark-text);
   --color-main-text:var(--color-dark-text);
   --color-text:var(--color-dark-text-soft);
   --color-border:var(--color-dark-border);
   --color-detail:var(--gray-500);
-  --color-muted:var(--color-dark-text-soft)}
+  --color-muted:var(--color-dark-text-soft);
+  /* --color-bg war bisher NICHT Teil dieser Umschaltung (nur der Section-Hintergrund
+     selbst, s.o.) - sechs Module lasen aber var(--color-bg) fuer eigene Kind-Elemente
+     (Achsen-Maske, Sticky-Tab-Leiste, Geraete-Notch, Kapitel-Nav) und blieben dadurch
+     hell, wenn ihre Sektion dunkel wurde. Figma "background/subtle", dunkel = Sand/900. */
+  --color-bg:var(--sand-900);
+  /* Figma "text/inverse" - siehe referenzen/tokens.css. */
+  --color-inverse-text:var(--gray-900);
+  --color-inverse-hover:var(--gray-100);
+  --color-hover-tint:rgba(255,255,255,.1)}
 
 /* ==== Kapitelmarker (Eyebrow) ==== */
 /* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */
@@ -264,28 +287,28 @@ footer.cta{padding-block:var(--space-20)}
 .card-copy{display:flex;flex-direction:column;gap:8px}
 
 /* ==== Hero ==== */
-/* Hintergrund (.dark) sitzt auf dem ungebremsten <header>, Inhalt in .wrap darunter —
-   sonst entstehen auf sehr breiten Screens helle Ränder links/rechts (wrap+dark auf
-   demselben Element begrenzt auch den Hintergrund auf --grid-max). */
+/* Hintergrund (.dark, falls gesetzt) sitzt auf dem ungebremsten <header>, Inhalt in
+   .wrap darunter — sonst entstehen auf sehr breiten Screens helle Ränder links/rechts
+   (wrap+dark auf demselben Element begrenzt auch den Hintergrund auf --grid-max). */
 .hero{min-height:100svh;scroll-snap-align:start}
 .hero .wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;
   padding-block:var(--space-16) var(--space-20)}
 .hero .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
-.logo-mark{display:block;color:var(--gray-50)}
+.logo-mark{display:block;color:var(--color-main-text)}
 .hero .badges{display:flex;gap:12px}
-.badge{border:1px solid var(--color-dark-border);border-radius:var(--radius-pill);padding:10px 20px;
-  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
+.badge{border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:10px 20px;
+  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-main-text);text-decoration:none}
 .badge.accent{border-color:var(--red-500);color:var(--red-500)}
-.hero h1 .line2{display:block;font-weight:400;color:var(--color-dark-text-soft)}
+.hero h1 .line2{display:block;font-weight:400;color:var(--color-text)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
 .hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
   /* Figma nennt diese Graustufe "Gray/400", ihr Wert entspricht aber unserem
      --gray-300 — die Nummerierung zwischen Figma-Variablen und diesen Tokens ist NICHT
      deckungsgleich. Beim Übersetzen von Figma-Werten immer den Hex-Wert vergleichen,
      nicht den Variablennamen übernehmen. */
-  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-dark-bg) 100%)}
+  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-bg) 100%)}
 .hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
-.hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-dark-text-soft)}
+.hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
 
 /* ==== Agenda ==== */
@@ -432,7 +455,7 @@ footer.cta{padding-block:var(--space-20)}
   height:calc(var(--wert) * 100%);transition:height .8s var(--ease);position:relative}
 .chart-balken.ist-betont .saeule{background:var(--color-main-text)}
 .chart-wert{position:absolute;top:8px;left:50%;transform:translateX(-50%);
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-bg)}
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-inverse-text)}
 .chart-balken .achse{position:absolute;bottom:-28px;left:0;right:0;text-align:center;
   font-size:var(--text-body-s);color:var(--color-text);line-height:1.2}
 .chart-quelle{margin-top:var(--space-4);font-size:var(--text-body-s);color:var(--color-text);
@@ -570,7 +593,7 @@ footer.cta{padding-block:var(--space-20)}
    Chart-Slide derselbe frueher falsche Griff zu --blue-3). Die Meilenstein-Liste
    rechts bekam ausserdem Nummernspalte + Karten-Hervorhebung fuer den aktuellen
    Meilenstein - fehlte komplett, stand nur als reiner Fliesstext da. */
-.gantt-balken.ist-aktuell{background:var(--color-main-text);color:var(--color-bg)}
+.gantt-balken.ist-aktuell{background:var(--color-main-text);color:var(--color-inverse-text)}
 .zoom-meilenstein{display:flex;gap:var(--space-4);padding:var(--space-4);
   border-top:1px solid var(--color-border)}
 .zoom-nummer{flex:none;width:24px;font-size:var(--text-body-s);font-weight:600;
@@ -822,12 +845,12 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 .cta .actions{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-8)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
   font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;font-family:inherit}
-.btn-primary{background:var(--gray-50);color:var(--gray-900)}
-.btn-primary:hover{background:var(--gray-200)}
-.btn-secondary{border:1px solid var(--gray-50);color:var(--gray-50)}
-.btn-secondary:hover{background:rgba(255,255,255,.1)}
+.btn-primary{background:var(--color-main-text);color:var(--color-inverse-text)}
+.btn-primary:hover{background:var(--color-inverse-hover)}
+.btn-secondary{border:1px solid var(--color-main-text);color:var(--color-main-text)}
+.btn-secondary:hover{background:var(--color-hover-tint)}
 .cta .footer-row{display:flex;gap:var(--space-4);align-items:center;margin-top:var(--space-20);
-  font-size:var(--text-body-s);color:var(--color-dark-text-soft)}
+  font-size:var(--text-body-s);color:var(--color-text)}
 @media(max-width:700px){.btn{width:100%;justify-content:center}}
 </style>
 </head>
@@ -884,7 +907,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </nav>
 
 <div class="galerie-baustein" style="max-width:440px"><!-- Nummer zweistellig, gross, in Text-Secondary - keine Sonderfarbe. -->
-<div class="card" data-modul="00 Elemente/02 karte">
+<div class="card dark" data-modul="00 Elemente/02 karte">
   <span class="num">01</span>
   <div class="card-copy">
     <h3 class="h3">[Merksatz, eine Zeile]</h3>
@@ -892,8 +915,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </div></div>
 
-<!-- .dark auf dem äußeren <header> (volle Breite), Inhalt in .wrap darunter. -->
-<header class="hero dark" id="hero" data-modul="01 Einstieg/01 cover-hero">
+<!-- Farbmodus (dark oder nicht) wird von tools/bauen.py beim Zusammenbau der
+     Seite je nach Kapitel-Position gesetzt, nicht hier fest einprogrammiert. -->
+<header class="hero" id="hero" data-modul="01 Einstieg/01 cover-hero">
   <div class="wrap">
     <div class="top reveal">
       <svg class="logo-mark" width="150" height="27" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
@@ -929,7 +953,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 
 <!-- Kein data-chapter: steht meist direkt nach dem Hero und ist selbst kein Kapitel.
      Die Kapitel-Nav erscheint dann erst nach der Agenda (siehe #agenda im Script). -->
-<section class="agenda" id="agenda" data-modul="01 Einstieg/02 agenda">
+<section class="agenda dark" id="agenda" data-modul="01 Einstieg/02 agenda">
   <div class="wrap">
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">Agenda</h2>
     <div class="agenda-list">
@@ -948,7 +972,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <!-- NUR verwenden, wenn im folgenden Kapitel viel Content kommt und es eine kurze
      Vorwarnung braucht. Reicht der direkte Einstieg, weglassen und Eyebrow +
      data-chapter stattdessen auf die nächste Sektion setzen. -->
-<section class="divider dark" data-chapter="01" data-chapter-title="[Kapitelname]" id="kapitel-01" data-modul="02 Struktur/01 section-divider">
+<section class="divider" data-chapter="01" data-chapter-title="[Kapitelname]" id="kapitel-01" data-modul="02 Struktur/01 section-divider">
   <div class="wrap reveal">
     <p class="eyebrow is-centered">01 — [Kapitelname]</p>
     <h2 class="h2">[Kapitelname]</h2>
@@ -956,7 +980,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <!-- Ohne Namensnennung. Mit Name + Rolle stattdessen quote-block nehmen. -->
-<section class="big-statement" data-modul="02 Struktur/02 big-statement">
+<section class="big-statement dark" data-modul="02 Struktur/02 big-statement">
   <div class="wrap reveal">
     <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "02" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
     <p class="eyebrow is-centered">02 — [Kapitelname]</p>
@@ -1014,7 +1038,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-chapter="04" data-chapter-title="[Kapitelname]" id="kapitel-04" data-modul="03 Inhalt/01 headline-text-bild">
+<section class="dark" data-chapter="04" data-chapter-title="[Kapitelname]" id="kapitel-04" data-modul="03 Inhalt/01 headline-text-bild">
   <div class="wrap text-bild">
     <div class="text-bild-text reveal">
       <p class="eyebrow">04 — [Kapitelname]</p>
@@ -1040,7 +1064,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-chapter="06" data-chapter-title="[Kapitelname]" id="kapitel-06" data-modul="03 Inhalt/03 sticky-nummernliste">
+<section class="dark" data-chapter="06" data-chapter-title="[Kapitelname]" id="kapitel-06" data-modul="03 Inhalt/03 sticky-nummernliste">
   <div class="wrap sticky-list">
     <div class="left reveal">
       <p class="eyebrow">06 — [Kapitelname]</p>
@@ -1087,7 +1111,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-chapter="08" data-chapter-title="[Kapitelname]" id="kapitel-08" data-modul="03 Inhalt/05 prozess-schritte">
+<section class="dark" data-chapter="08" data-chapter-title="[Kapitelname]" id="kapitel-08" data-modul="03 Inhalt/05 prozess-schritte">
   <div class="wrap">
     <p class="eyebrow">08 — [Vorgehen]</p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
@@ -1114,7 +1138,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section class="dark" data-chapter="09" data-chapter-title="[Kapitelname]" id="kapitel-09" data-modul="04 Daten/01 kennzahlen-grid">
+<section data-chapter="09" data-chapter-title="[Kapitelname]" id="kapitel-09" data-modul="04 Daten/01 kennzahlen-grid">
   <div class="wrap">
     <div class="section-head reveal">
       <div>
@@ -1134,7 +1158,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <!-- Ein Chart pro Modul. Titel sagt die Erkenntnis, nicht die Datenart. -->
-<section class="chart-slide" data-chapter="10" data-chapter-title="[Kapitelname]" id="kapitel-10" data-modul="04 Daten/02 chart-slide">
+<section class="chart-slide dark" data-chapter="10" data-chapter-title="[Kapitelname]" id="kapitel-10" data-modul="04 Daten/02 chart-slide">
   <div class="wrap">
     <p class="eyebrow">10 — [Daten]</p>
     <h2 class="h2 reveal">[Nutzung verdoppelt sich ab März]</h2>
@@ -1181,7 +1205,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <!-- 3-5 Stationen, Pfeilrichtung konsequent links nach rechts. -->
-<section data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-modul="04 Daten/04 fluss-diagramm">
+<section class="dark" data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-modul="04 Daten/04 fluss-diagramm">
   <div class="wrap">
     <p class="eyebrow">12 — [Architektur]</p>
     <h2 class="h2 reveal">[Was fließt von wo nach wo]</h2>
@@ -1210,7 +1234,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-chapter="14" data-chapter-title="[Kapitelname]" id="kapitel-14" data-modul="05 Diagramme/01 text-graphic">
+<section class="dark" data-chapter="14" data-chapter-title="[Kapitelname]" id="kapitel-14" data-modul="05 Diagramme/01 text-graphic">
   <div class="wrap text-graphic">
     <div class="reveal">
       <p class="eyebrow">14 — [Way of Working]</p>
@@ -1234,7 +1258,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-chapter="16" data-chapter-title="[Kapitelname]" id="kapitel-16" data-modul="06 Zeitachse/01 roadmap-timeline">
+<section class="dark" data-chapter="16" data-chapter-title="[Kapitelname]" id="kapitel-16" data-modul="06 Zeitachse/01 roadmap-timeline">
   <div class="wrap">
     <p class="eyebrow">16 — [Timeline]</p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
@@ -1282,7 +1306,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <!-- Screenshot in echter Aufloesung. Sensible Daten vorher anonymisieren. -->
-<section data-chapter="18" data-chapter-title="[Kapitelname]" id="kapitel-18" data-modul="07 Media/01 bild-feature-liste">
+<section class="dark" data-chapter="18" data-chapter-title="[Kapitelname]" id="kapitel-18" data-modul="07 Media/01 bild-feature-liste">
   <div class="wrap">
     <p class="eyebrow">18 — [Ergebnis]</p>
     <div class="bild-feature" style="margin-top:var(--space-12)">
@@ -1323,7 +1347,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <!-- Bei CTA-Nutzung die ganze Kachel verlinken, nicht nur den Titel. -->
-<section data-chapter="20" data-chapter-title="[Kapitelname]" id="kapitel-20" data-modul="07 Media/03 medien-karten-grid">
+<section class="dark" data-chapter="20" data-chapter-title="[Kapitelname]" id="kapitel-20" data-modul="07 Media/03 medien-karten-grid">
   <div class="wrap">
     <p class="eyebrow">20 — [Weiterführend]</p>
     <h2 class="h2 reveal">[Prototypen entdecken]</h2>
@@ -1360,7 +1384,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-chapter="22" data-chapter-title="[Kapitelname]" id="kapitel-22" data-modul="08 Menschen/01 team-grid">
+<section class="dark" data-chapter="22" data-chapter-title="[Kapitelname]" id="kapitel-22" data-modul="08 Menschen/01 team-grid">
   <div class="wrap">
     <p class="eyebrow">22 — [Team]</p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
@@ -1390,7 +1414,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section class="quote" data-modul="08 Menschen/03 quote-block">
+<section class="quote dark" data-modul="08 Menschen/03 quote-block">
   <div class="wrap reveal">
     <blockquote>„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</blockquote>
     <cite>[Name Nachname, Rolle]</cite>
@@ -1415,7 +1439,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-modul="09 Referenzen/02 bild-kennzahlenliste">
+<section class="dark" data-modul="09 Referenzen/02 bild-kennzahlenliste">
   <div class="wrap">
     <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "25" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
     <p class="eyebrow">25 — [Über uns]</p>
@@ -1454,7 +1478,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <!-- Generisches Modul für nummerierte Textinhalte, nicht nur für Abschluss-Takeaways.
      .carousel-shell begrenzt den Track auf --grid-max, damit die erste Karte am
      linken Grid-Rand startet statt am nackten Viewport-Rand. -->
-<section data-chapter="27" data-chapter-title="[Kapitelname]" id="kapitel-27" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
+<section class="dark" data-chapter="27" data-chapter-title="[Kapitelname]" id="kapitel-27" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
   <div class="wrap">
     <div class="section-head reveal">
       <div><p class="eyebrow">27 — [Kapitelname]</p><h2 class="h2">[Was wir euch mitgeben]</h2></div>

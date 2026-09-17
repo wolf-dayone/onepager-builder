@@ -3,16 +3,16 @@
 .cta .actions{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-8)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
   font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;font-family:inherit}
-.btn-primary{background:var(--gray-50);color:var(--gray-900)}
-.btn-primary:hover{background:var(--gray-200)}
-.btn-secondary{border:1px solid var(--gray-50);color:var(--gray-50)}
-.btn-secondary:hover{background:rgba(255,255,255,.1)}
+.btn-primary{background:var(--color-main-text);color:var(--color-inverse-text)}
+.btn-primary:hover{background:var(--color-inverse-hover)}
+.btn-secondary{border:1px solid var(--color-main-text);color:var(--color-main-text)}
+.btn-secondary:hover{background:var(--color-hover-tint)}
 .cta .footer-row{display:flex;gap:var(--space-4);align-items:center;margin-top:var(--space-20);
-  font-size:var(--text-body-s);color:var(--color-dark-text-soft)}
+  font-size:var(--text-body-s);color:var(--color-text)}
 @media(max-width:700px){.btn{width:100%;justify-content:center}}
 </style>
 
-<footer class="cta dark" data-modul="10 Abschluss/03 cta-footer">
+<footer class="cta" data-modul="10 Abschluss/03 cta-footer">
   <div class="wrap">
     <h2 class="h2 reveal">[Check it out.]</h2>
     <p class="lead reveal" style="margin-top:var(--space-4)">[Ein Satz Aufforderung.]</p>

@@ -34,7 +34,7 @@
   --sand-200: #ede7dd;
   --sand-100: #f7f3eb;
 
-  --blue-1: #1a6423;   /* Accent Color/Blue Highlight 1 */
+  --blue-1: #1a64a3;   /* Accent Color/Blue Highlight 1 */
   --blue-2: #2a7fc7;   /* Accent Color/Blue Highlight 2 */
   --blue-3: #1487dd;   /* Accent Color/Blue Highlight 3 — Standard-Highlight */
 
@@ -49,6 +49,17 @@
   --color-surface:    var(--gray-50);
   --color-detail:     var(--sand-200);
   --color-border:     var(--gray-200);
+  /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
+     Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
+     Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln
+     (das ist eine dezente, keine invertierte Flaeche). */
+  --color-inverse-text: var(--gray-50);
+  /* Figma "button/primary-hover", nur die Hover-Stufe der gefuellten
+     Buttons/Chips, die --color-main-text als Flaeche nutzen. */
+  --color-inverse-hover: var(--gray-500);
+  /* Weicher Hover-Tint auf einer Outline-Flaeche - dunkel auf hell, hell auf
+     dunkel (siehe .dark-Override unten). */
+  --color-hover-tint: rgba(0,0,0,.06);
 
   /* Auf dunklen Sektionen (bewusst invertiert, nicht mode-abhängig) */
   --color-dark-bg:        var(--gray-900);
@@ -138,17 +149,29 @@ section,footer.cta{min-height:100svh;display:flex;flex-direction:column;justify-
 section{padding-block:var(--space-30)}
 footer.cta{padding-block:var(--space-20)}
 /* .dark schaltet nicht nur Hintergrund/Grundschrift um, sondern die komplette
-   semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche) — dadurch braucht
-   JEDES Modul (Karten, Tabellen, Timeline, Matrix, Team-Grid …) keine eigene
-   Dark-Variante im Code: einfach die Klasse `dark` auf die <section> setzen oder
-   weglassen, der Rest folgt automatisch. Ausnahmen: Hero und CTA-Footer sind bewusst
-   IMMER dunkel (siehe deren Komponenten-Beschreibung in Figma), keine Wahl nötig. */
+   semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche, Hintergrund) —
+   dadurch braucht JEDES Modul (Karten, Tabellen, Timeline, Matrix, Team-Grid, auch
+   Hero und CTA-Footer …) keine eigene Dark-Variante im Code: einfach die Klasse
+   `dark` auf die <section>/<header>/<footer> setzen oder weglassen, der Rest folgt
+   automatisch. Farbmodus ist damit KEINE Eigenschaft eines Bausteins mehr, sondern
+   eine Entscheidung von tools/bauen.py beim Zusammenbau einer Seite (Ernst,
+   2026-09-17) — jedes neue Kapitel wechselt den Modus, siehe markup_dunkel_setzen()
+   und tools/pruefen.py pruefe_rhythmus(). */
 .dark{background:var(--color-dark-bg);color:var(--color-dark-text);
   --color-main-text:var(--color-dark-text);
   --color-text:var(--color-dark-text-soft);
   --color-border:var(--color-dark-border);
   --color-detail:var(--gray-500);
-  --color-muted:var(--color-dark-text-soft)}
+  --color-muted:var(--color-dark-text-soft);
+  /* --color-bg war bisher NICHT Teil dieser Umschaltung (nur der Section-Hintergrund
+     selbst, s.o.) - sechs Module lasen aber var(--color-bg) fuer eigene Kind-Elemente
+     (Achsen-Maske, Sticky-Tab-Leiste, Geraete-Notch, Kapitel-Nav) und blieben dadurch
+     hell, wenn ihre Sektion dunkel wurde. Figma "background/subtle", dunkel = Sand/900. */
+  --color-bg:var(--sand-900);
+  /* Figma "text/inverse" - siehe referenzen/tokens.css. */
+  --color-inverse-text:var(--gray-900);
+  --color-inverse-hover:var(--gray-100);
+  --color-hover-tint:rgba(255,255,255,.1)}
 
 /* ==== Kapitelmarker (Eyebrow) ==== */
 /* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */
@@ -226,28 +249,28 @@ footer.cta{padding-block:var(--space-20)}
    auch auf dem Handy. Ein hartes display:none hier würde diesen Fallback übersteuern. */
 
 /* ==== Hero ==== */
-/* Hintergrund (.dark) sitzt auf dem ungebremsten <header>, Inhalt in .wrap darunter —
-   sonst entstehen auf sehr breiten Screens helle Ränder links/rechts (wrap+dark auf
-   demselben Element begrenzt auch den Hintergrund auf --grid-max). */
+/* Hintergrund (.dark, falls gesetzt) sitzt auf dem ungebremsten <header>, Inhalt in
+   .wrap darunter — sonst entstehen auf sehr breiten Screens helle Ränder links/rechts
+   (wrap+dark auf demselben Element begrenzt auch den Hintergrund auf --grid-max). */
 .hero{min-height:100svh;scroll-snap-align:start}
 .hero .wrap{min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;
   padding-block:var(--space-16) var(--space-20)}
 .hero .top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4)}
-.logo-mark{display:block;color:var(--gray-50)}
+.logo-mark{display:block;color:var(--color-main-text)}
 .hero .badges{display:flex;gap:12px}
-.badge{border:1px solid var(--color-dark-border);border-radius:var(--radius-pill);padding:10px 20px;
-  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-dark-text);text-decoration:none}
+.badge{border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:10px 20px;
+  font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-main-text);text-decoration:none}
 .badge.accent{border-color:var(--red-500);color:var(--red-500)}
-.hero h1 .line2{display:block;font-weight:400;color:var(--color-dark-text-soft)}
+.hero h1 .line2{display:block;font-weight:400;color:var(--color-text)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
 .hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);
   /* Figma nennt diese Graustufe "Gray/400", ihr Wert entspricht aber unserem
      --gray-300 — die Nummerierung zwischen Figma-Variablen und diesen Tokens ist NICHT
      deckungsgleich. Beim Übersetzen von Figma-Werten immer den Hex-Wert vergleichen,
      nicht den Variablennamen übernehmen. */
-  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-dark-bg) 100%)}
+  background:linear-gradient(90deg,var(--gray-300) 0%,var(--color-bg) 100%)}
 .hero .meta{display:flex;flex-wrap:wrap;gap:var(--space-16)}
-.hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-dark-text-soft)}
+.hero .meta dt{font-size:var(--text-body-s);letter-spacing:.08em;text-transform:uppercase;color:var(--color-text)}
 .hero .meta dd{margin:8px 0 0;font-weight:600}
 
 /* ==== Agenda ==== */
@@ -383,12 +406,12 @@ footer.cta{padding-block:var(--space-20)}
 .cta .actions{display:flex;flex-wrap:wrap;gap:var(--space-4);margin-top:var(--space-8)}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
   font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;font-family:inherit}
-.btn-primary{background:var(--gray-50);color:var(--gray-900)}
-.btn-primary:hover{background:var(--gray-200)}
-.btn-secondary{border:1px solid var(--gray-50);color:var(--gray-50)}
-.btn-secondary:hover{background:rgba(255,255,255,.1)}
+.btn-primary{background:var(--color-main-text);color:var(--color-inverse-text)}
+.btn-primary:hover{background:var(--color-inverse-hover)}
+.btn-secondary{border:1px solid var(--color-main-text);color:var(--color-main-text)}
+.btn-secondary:hover{background:var(--color-hover-tint)}
 .cta .footer-row{display:flex;gap:var(--space-4);align-items:center;margin-top:var(--space-20);
-  font-size:var(--text-body-s);color:var(--color-dark-text-soft)}
+  font-size:var(--text-body-s);color:var(--color-text)}
 @media(max-width:700px){.btn{width:100%;justify-content:center}}
 </style>
 </head>
@@ -433,8 +456,9 @@ footer.cta{padding-block:var(--space-20)}
   </div>
 </nav>
 
-<!-- .dark auf dem äußeren <header> (volle Breite), Inhalt in .wrap darunter. -->
-<header class="hero dark" id="hero" data-modul="01 Einstieg/01 cover-hero">
+<!-- Farbmodus (dark oder nicht) wird von tools/bauen.py beim Zusammenbau der
+     Seite je nach Kapitel-Position gesetzt, nicht hier fest einprogrammiert. -->
+<header class="hero" id="hero" data-modul="01 Einstieg/01 cover-hero">
   <div class="wrap">
     <div class="top reveal">
       <svg class="logo-mark" width="150" height="27" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
@@ -542,7 +566,7 @@ footer.cta{padding-block:var(--space-20)}
   </div>
 </section>
 
-<section data-chapter="03" data-chapter-title="[Kapitelname]" id="kapitel-03" data-modul="03 Inhalt/05 prozess-schritte">
+<section class="dark" data-chapter="03" data-chapter-title="[Kapitelname]" id="kapitel-03" data-modul="03 Inhalt/05 prozess-schritte">
   <div class="wrap">
     <p class="eyebrow">03 — [Vorgehen]</p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
@@ -569,7 +593,7 @@ footer.cta{padding-block:var(--space-20)}
   </div>
 </section>
 
-<section class="dark" data-chapter="04" data-chapter-title="[Kapitelname]" id="kapitel-04" data-modul="04 Daten/01 kennzahlen-grid">
+<section data-chapter="04" data-chapter-title="[Kapitelname]" id="kapitel-04" data-modul="04 Daten/01 kennzahlen-grid">
   <div class="wrap">
     <div class="section-head reveal">
       <div>
@@ -598,7 +622,7 @@ footer.cta{padding-block:var(--space-20)}
 <!-- Generisches Modul für nummerierte Textinhalte, nicht nur für Abschluss-Takeaways.
      .carousel-shell begrenzt den Track auf --grid-max, damit die erste Karte am
      linken Grid-Rand startet statt am nackten Viewport-Rand. -->
-<section data-chapter="05" data-chapter-title="[Kapitelname]" id="kapitel-05" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
+<section class="dark" data-chapter="05" data-chapter-title="[Kapitelname]" id="kapitel-05" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
   <div class="wrap">
     <div class="section-head reveal">
       <div><p class="eyebrow">05 — [Kapitelname]</p><h2 class="h2">[Was wir euch mitgeben]</h2></div>

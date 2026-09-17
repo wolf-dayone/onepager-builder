@@ -141,15 +141,25 @@ def pruefe_rhythmus(s, b, zuordnung):
                      f"{art_c}), beide hell. Ein dunkles Modul dazwischen "
                      f"setzt eine Zäsur.", c.zeile)
 
-    # Alle 3-4 Sektionen eine dunkle als Zaesur.
-    seit_dunkel = 0
-    for sek in sektionen:
-        seit_dunkel = 0 if sek.hat_klasse("dark") else seit_dunkel + 1
-        if seit_dunkel == 5:
-            b.melden(HINWEIS, "rhythmus",
-                     "Fünf helle Module am Stück. Figma empfiehlt alle 3–4 "
-                     "Sektionen ein dunkles Modul als Zäsur.", sek.zeile)
-            seit_dunkel = 0
+    # Jede echte Kapitelgrenze wechselt den Farbmodus (Ernst, 2026-09-17):
+    # das Token-System macht JEDES Modul frei hell/dunkel schaltbar (siehe
+    # bausteine/_basis.css .dark{}), es gibt also keinen Grund mehr, zwei
+    # Kapitel in Folge im selben Modus zu zeigen. Ersetzt die fruehere weiche
+    # "5 helle Module am Stueck"-Heuristik durch eine echte Regel je
+    # Kapitelgrenze. Module OHNE eigenes data-chapter setzen ein laufendes
+    # Kapitel fort (siehe tools/bauen.py marker_entfernen) und werden hier
+    # nicht erneut geprueft - nur der Uebergang selbst zaehlt.
+    for i in range(1, len(sektionen)):
+        sek = sektionen[i]
+        if not sek.attrs.get("data-chapter"):
+            continue
+        vorherige = sektionen[i - 1]
+        if sek.hat_klasse("dark") == vorherige.hat_klasse("dark"):
+            modus = "dunkel" if sek.hat_klasse("dark") else "hell"
+            b.melden(WARNUNG, "rhythmus",
+                     f"Kapitel {sek.attrs.get('data-chapter')!r} startet "
+                     f"{modus}, das Modul davor war es auch. Jedes neue "
+                     f"Kapitel sollte den Farbmodus wechseln.", sek.zeile)
 
 
 # ------------------------------------------------------------------ Tokens

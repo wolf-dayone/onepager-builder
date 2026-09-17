@@ -38,17 +38,29 @@ section,footer.cta{min-height:100svh;display:flex;flex-direction:column;justify-
 section{padding-block:var(--space-30)}
 footer.cta{padding-block:var(--space-20)}
 /* .dark schaltet nicht nur Hintergrund/Grundschrift um, sondern die komplette
-   semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche) — dadurch braucht
-   JEDES Modul (Karten, Tabellen, Timeline, Matrix, Team-Grid …) keine eigene
-   Dark-Variante im Code: einfach die Klasse `dark` auf die <section> setzen oder
-   weglassen, der Rest folgt automatisch. Ausnahmen: Hero und CTA-Footer sind bewusst
-   IMMER dunkel (siehe deren Komponenten-Beschreibung in Figma), keine Wahl nötig. */
+   semantische Token-Ebene (Text, Rand, Flächen-Detail, Kartenfläche, Hintergrund) —
+   dadurch braucht JEDES Modul (Karten, Tabellen, Timeline, Matrix, Team-Grid, auch
+   Hero und CTA-Footer …) keine eigene Dark-Variante im Code: einfach die Klasse
+   `dark` auf die <section>/<header>/<footer> setzen oder weglassen, der Rest folgt
+   automatisch. Farbmodus ist damit KEINE Eigenschaft eines Bausteins mehr, sondern
+   eine Entscheidung von tools/bauen.py beim Zusammenbau einer Seite (Ernst,
+   2026-09-17) — jedes neue Kapitel wechselt den Modus, siehe markup_dunkel_setzen()
+   und tools/pruefen.py pruefe_rhythmus(). */
 .dark{background:var(--color-dark-bg);color:var(--color-dark-text);
   --color-main-text:var(--color-dark-text);
   --color-text:var(--color-dark-text-soft);
   --color-border:var(--color-dark-border);
   --color-detail:var(--gray-500);
-  --color-muted:var(--color-dark-text-soft)}
+  --color-muted:var(--color-dark-text-soft);
+  /* --color-bg war bisher NICHT Teil dieser Umschaltung (nur der Section-Hintergrund
+     selbst, s.o.) - sechs Module lasen aber var(--color-bg) fuer eigene Kind-Elemente
+     (Achsen-Maske, Sticky-Tab-Leiste, Geraete-Notch, Kapitel-Nav) und blieben dadurch
+     hell, wenn ihre Sektion dunkel wurde. Figma "background/subtle", dunkel = Sand/900. */
+  --color-bg:var(--sand-900);
+  /* Figma "text/inverse" - siehe referenzen/tokens.css. */
+  --color-inverse-text:var(--gray-900);
+  --color-inverse-hover:var(--gray-100);
+  --color-hover-tint:rgba(255,255,255,.1)}
 
 /* ==== Kapitelmarker (Eyebrow) ==== */
 /* Kapitelmarker: Text oben, Linie darunter. Linksbündig by default. */

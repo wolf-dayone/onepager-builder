@@ -21,7 +21,7 @@
   --sand-200: #ede7dd;
   --sand-100: #f7f3eb;
 
-  --blue-1: #1a6423;   /* Accent Color/Blue Highlight 1 */
+  --blue-1: #1a64a3;   /* Accent Color/Blue Highlight 1 */
   --blue-2: #2a7fc7;   /* Accent Color/Blue Highlight 2 */
   --blue-3: #1487dd;   /* Accent Color/Blue Highlight 3 — Standard-Highlight */
 
@@ -36,6 +36,17 @@
   --color-surface:    var(--gray-50);
   --color-detail:     var(--sand-200);
   --color-border:     var(--gray-200);
+  /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
+     Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
+     Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln
+     (das ist eine dezente, keine invertierte Flaeche). */
+  --color-inverse-text: var(--gray-50);
+  /* Figma "button/primary-hover", nur die Hover-Stufe der gefuellten
+     Buttons/Chips, die --color-main-text als Flaeche nutzen. */
+  --color-inverse-hover: var(--gray-500);
+  /* Weicher Hover-Tint auf einer Outline-Flaeche - dunkel auf hell, hell auf
+     dunkel (siehe .dark-Override unten). */
+  --color-hover-tint: rgba(0,0,0,.06);
 
   /* Auf dunklen Sektionen (bewusst invertiert, nicht mode-abhängig) */
   --color-dark-bg:        var(--gray-900);
