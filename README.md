@@ -5,8 +5,9 @@ Quelle für den Skill `dayone-onepager`. Hier liegen die 34 Module aus der Figma
 die Werkzeuge, die daraus Vorlagen bauen, und der Prüfer, der fertige Seiten gegen die
 Figma-Regeln hält.
 
-**Alle Werkzeuge laufen auf der Python-Stdlib.** Kein `npm install`, kein Node —
-macOS bringt `python3` mit.
+**Fast alle Werkzeuge laufen auf der Python-Stdlib.** Kein `npm install`, kein Node —
+macOS bringt `python3` mit. Einzige Ausnahme: `tools/qa_pruefen.py` braucht Playwright
+für echte Browser-Checks (Screenshots, Overflow, Konsole) — siehe dort.
 
 ---
 
@@ -39,7 +40,26 @@ python3 tools/bauen.py              # bausteine/ → starter.html, modul-galerie
 python3 tools/pruefen.py seite.html # eine Seite gegen die Figma-Regeln prüfen
 python3 tools/selbsttest.py         # prüft den Prüfer
 python3 tools/skill_bauen.py --pruefen   # Skill-Paket bauen und Drift melden
+python3 tools/qa_pruefen.py         # Browser-Checks: Screenshots, Overflow, Konsole (Playwright)
 ```
+
+### `qa_pruefen.py` — was ein echter Browser sieht, den Regex nicht sieht
+
+Lädt `modul-galerie.html` einmal je Viewport (375/768/1440 px — mobil/tablet/desktop)
+und prüft jedes `[data-modul]`-Element einzeln: horizontaler Overflow, Console-/
+Netzwerkfehler, kaputte Bilder (Platzhalter wie `[bild.jpg]` ausgenommen — die meldet
+`pruefen.py` bereits), Links ohne Ziel. Schreibt einen Screenshot je Modul und Viewport
+sowie `qa-ausgabe/qa-bericht.md` und `qa-ausgabe/befunde.json`.
+
+Einmalig einrichten:
+```bash
+pip install playwright
+python3 -m playwright install chromium
+```
+Lässt sich `chromium` wegen einer Netzwerk-Allowlist nicht herunterladen (blockiert z.B.
+`cdn.playwright.dev`), läuft der Check trotzdem in der CI (Ubuntu-Runner, siehe
+`.github/workflows/qualitaet.yml`) — dort non-blocking, mit Screenshots/Bericht als
+Artefakt, solange die Modul-Bibliothek noch nicht durchtriagiert ist.
 
 ### `pruefen.py` — was geprüft wird
 

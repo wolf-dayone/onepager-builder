@@ -14,7 +14,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      # Keine Abhängigkeiten: alle Werkzeuge laufen auf der Python-Stdlib.
+      # tools/pruefen.py, tools/selbsttest.py, tools/katalog_bauen.py,
+      # tools/bauen.py und tools/skill_bauen.py laufen auf der Python-Stdlib,
+      # keine Abhaengigkeiten. Einzige Ausnahme: tools/qa_pruefen.py weiter
+      # unten (Playwright, fuer echte Browser-Checks) - bewusster Tradeoff,
+      # siehe README.md.
 
       - name: Katalog und Regeln sind auf dem Stand der Descriptions
         run: |
@@ -36,3 +40,31 @@ jobs:
 
       - name: Skill-Paket lässt sich bauen
         run: python3 tools/skill_bauen.py
+
+      # Browserbasierte Checks (Screenshots, Overflow, Console-/Netzwerkfehler) -
+      # einzige externe Abhaengigkeit im Repo, siehe tools/qa_pruefen.py. Laeuft
+      # non-blocking: die Modul-Bibliothek hat bekannte, noch nicht triagierte
+      # Befunde (Schritt 3/4 des Testkonzepts) - bis die abgearbeitet sind, soll
+      # ein bestehender Befund nicht jeden Push rot faerben. Ergebnis liegt als
+      # Artefakt bei, damit man es ohne lokales Playwright einsehen kann.
+      - name: Playwright installieren
+        run: |
+          pip install playwright
+          python3 -m playwright install --with-deps chromium
+
+      - name: Browser-Checks auf modul-galerie.html (Screenshots, Overflow, Konsole)
+        id: qa_pruefen
+        continue-on-error: true
+        run: python3 tools/qa_pruefen.py
+
+      - name: QA-Ausgabe als Artefakt sichern
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-ausgabe
+          path: qa-ausgabe/
+          if-no-files-found: ignore
+
+      - name: Browser-Check-Ergebnis vermerken
+        if: steps.qa_pruefen.outcome == 'failure'
+        run: echo "::warning::tools/qa_pruefen.py hat Befunde gemeldet - Artefakt 'qa-ausgabe' pruefen. Blockiert den Build bewusst nicht (Schritt 3/4 des Testkonzepts steht noch aus)."
