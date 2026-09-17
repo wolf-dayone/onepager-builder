@@ -53,7 +53,18 @@
   function fitNav() {
     nav.classList.remove("no-title", "compact", "icon-only");
     var inner = nav.querySelector(".inner");
-    var fits = function () { return list.scrollWidth <= inner.clientWidth - brand.offsetWidth - 32; };
+    // inner.clientWidth zaehlt das eigene Padding-Inline von .wrap mit (96px
+    // Desktop / 24px Mobile je Seite) - ohne den Abzug hielt fits() die Nav
+    // fuer 192px (bzw. 48px) breiter als sie in Wirklichkeit ist und
+    // ueberspringt dadurch die Kaskade (.no-title/.compact/.icon-only). Der
+    // Ueberlauf verschwand dann unbemerkt im internen overflow-x:auto der
+    // Kapitelliste (Sicherheitsnetz) statt sich sichtbar ueber die Kaskade
+    // abzubauen - gefunden per Playwright, nicht durch Code-Lesen sichtbar.
+    var innerStyle = getComputedStyle(inner);
+    var innerPadding = parseFloat(innerStyle.paddingLeft) + parseFloat(innerStyle.paddingRight);
+    var fits = function () {
+      return list.scrollWidth <= inner.clientWidth - innerPadding - brand.offsetWidth - 32;
+    };
     if (fits()) return;
     nav.classList.add("no-title");
     if (fits()) return;
