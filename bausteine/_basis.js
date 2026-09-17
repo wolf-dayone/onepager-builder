@@ -1,6 +1,15 @@
 (function () {
   "use strict";
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // qaForceReducedMotion/qa-anim-off werden ausschliesslich von der QA-Leiste
+  // in modul-galerie.html gesetzt (siehe Abschnitt 10 unten und
+  // bausteine/_galerie-qa.js) - auf echten Onepagern bleiben beide immer aus,
+  // reduceMotion() verhaelt sich dort exakt wie das fruehere "var reduce".
+  var qaForceReducedMotion = false;
+  function reduceMotion() {
+    return qaForceReducedMotion ||
+      document.documentElement.classList.contains("qa-anim-off") ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
 
   /* ---- 1) Kapitel-Nav aus den Sektionen aufbauen ---- */
   var nav = document.getElementById("chapter-nav");
@@ -128,12 +137,12 @@
   }
   var heroEl = document.getElementById("hero");
   if (heroEl) {
-    if (reduce) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
+    if (reduceMotion()) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
     else { stageReveal(heroEl); }
   }
   var revealSections = Array.prototype.slice.call(document.querySelectorAll("section, footer"))
     .filter(function (s) { return s !== heroEl && s.querySelector(".reveal"); });
-  if (reduce || !("IntersectionObserver" in window)) {
+  if (reduceMotion() || !("IntersectionObserver" in window)) {
     revealSections.forEach(function (s) { stageReveal(s); });
   } else {
     /* Feuert, sobald die Sektion die vertikale Mitte des Viewports erreicht — nicht
@@ -151,7 +160,7 @@
   var counters = document.querySelectorAll("[data-count-to]");
   function countUp(el) {
     var target = parseFloat(el.dataset.countTo);
-    if (reduce) { el.textContent = target; return; }
+    if (reduceMotion()) { el.textContent = target; return; }
     var start = performance.now(), dur = 1200;
     function step(now) {
       var p = Math.min((now - start) / dur, 1);
@@ -186,7 +195,7 @@
     });
     if (currentIndex < 0) return; // kein aktueller Punkt markiert -> keine Linie zeichnen
     var targetPct = (currentIndex / items.length) * 100 + "%";
-    if (reduce) { progress.style.width = targetPct; return; }
+    if (reduceMotion()) { progress.style.width = targetPct; return; }
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (entries, obs) {
         entries.forEach(function (e) {
@@ -209,7 +218,7 @@
       // gap-Wert im CSS aendert, wie es beim Karussell-Fix passiert ist).
       var gap = card ? parseFloat(getComputedStyle(track).columnGap) || 0 : 0;
       var step = card ? card.getBoundingClientRect().width + gap : 400;
-      track.scrollBy({ left: step * parseInt(btn.dataset.dir, 10), behavior: reduce ? "auto" : "smooth" });
+      track.scrollBy({ left: step * parseInt(btn.dataset.dir, 10), behavior: reduceMotion() ? "auto" : "smooth" });
     });
   });
 
@@ -228,7 +237,7 @@
           if (!panel) return;
           if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
           panel.hidden = false;
-          if (reduce) return;
+          if (reduceMotion()) return;
           /* Panels tragen noch ein transitionDelay als Inline-Style vom
              gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
              (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
