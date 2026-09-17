@@ -20,12 +20,20 @@
 #chapter-nav a:hover,#chapter-nav a.active{opacity:1;color:var(--color-main-text)}
 #chapter-nav.compact ol{gap:var(--space-4)}
 #chapter-nav.compact .ch-title{display:none}
-#chapter-nav.compact a{position:relative}
-/* Tooltip im Nummern-Fallback */
-#chapter-nav.compact a::after{content:attr(data-title);position:absolute;top:calc(100% + 10px);left:50%;
-  transform:translateX(-50%);background:var(--color-main-text);color:var(--gray-50);font-size:var(--text-body-s);font-weight:400;
-  padding:6px 10px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s var(--ease)}
-#chapter-nav.compact a:hover::after{opacity:1}
+/* Tooltip im Nummern-Fallback: EIN gemeinsames Element statt ::after pro Link.
+   Grund: die Kapitelliste (ol) traegt overflow-x:auto als Sicherheitsnetz fuer
+   den Fall, dass selbst .icon-only noch nicht reicht (siehe unten). Damit
+   berechnet der Browser overflow-y automatisch mit ("auto" statt "visible"),
+   sobald eine Achse ungleich visible ist - ein ::after-Tooltip als Kind eines
+   Links INNERHALB der ol wurde dadurch immer lautlos abgeschnitten, sichtbar
+   war nur die dunkle Sektion dahinter, nie der Text. Ein Tooltip-Element als
+   Geschwister der ol (direktes Kind von #chapter-nav) liegt ausserhalb dieses
+   Clip-Bereichs und wird per JS (Abschnitt 4a) positioniert/befuellt. */
+#chapter-nav .nav-tooltip{position:absolute;top:0;left:0;transform:translate(-50%,0);
+  background:var(--color-main-text);color:var(--gray-50);font-size:var(--text-body-s);font-weight:400;
+  padding:6px 10px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .15s var(--ease)}
+#chapter-nav .nav-tooltip.ist-sichtbar{opacity:1}
 /* Präsentationstitel, Kapitel-Anzeige und Logo-Form sind keine festen Breakpoints,
    sondern eine Prioritäts-Kaskade nach verfügbarem Platz: fitNav() unten misst den
    tatsächlichen Überlauf und setzt .no-title / .compact / .icon-only in dieser

@@ -19,6 +19,42 @@
     list.appendChild(li);
   });
 
+  /* ---- 1a) Tooltip fuer den Nummern-Fallback (.compact) ----
+     Ein einzelnes Element statt ::after pro Link, als direktes Kind von
+     #chapter-nav (nicht der ol) - siehe Begruendung im CSS-Kommentar bei
+     .nav-tooltip: die ol clippt vertikal mit, sobald sie ihr eigenes
+     overflow-x:auto-Sicherheitsnetz braucht. #chapter-nav selbst (position:
+     fixed) ist der naechste positionierte Vorfahr, also reicht position:
+     absolute hier ohne eigenes position:relative auf #chapter-nav. */
+  var tooltip = document.createElement("div");
+  tooltip.className = "nav-tooltip";
+  nav.appendChild(tooltip);
+
+  function tooltipZeigen(a) {
+    if (!nav.classList.contains("compact") || !a || !a.dataset.title) return;
+    var navRect = nav.getBoundingClientRect();
+    var aRect = a.getBoundingClientRect();
+    tooltip.textContent = a.dataset.title;
+    tooltip.style.left = (aRect.left - navRect.left + aRect.width / 2) + "px";
+    tooltip.style.top = (aRect.bottom - navRect.top + 10) + "px";
+    tooltip.classList.add("ist-sichtbar");
+  }
+  function tooltipVerstecken() { tooltip.classList.remove("ist-sichtbar"); }
+
+  list.addEventListener("mouseover", function (e) {
+    var a = e.target.closest ? e.target.closest("a") : null;
+    if (a) tooltipZeigen(a);
+  });
+  list.addEventListener("mouseout", function (e) {
+    if (!e.relatedTarget || !list.contains(e.relatedTarget)) tooltipVerstecken();
+  });
+  // Tastatur-/Screenreader-Nutzung: Tooltip auch bei Fokus zeigen, nicht nur bei Hover.
+  list.addEventListener("focusin", function (e) {
+    var a = e.target.closest ? e.target.closest("a") : null;
+    if (a) tooltipZeigen(a);
+  });
+  list.addEventListener("focusout", tooltipVerstecken);
+
   /* ---- 2) Nav einblenden, sobald Hero (bzw. Agenda) durchgescrollt ist ---- */
   var trigger = document.getElementById("agenda") || document.getElementById("hero");
   if (trigger && "IntersectionObserver" in window) {
@@ -51,6 +87,7 @@
      anzunehmen — bei vielen/langen Kapiteltiteln oder einem langen Präsentationstitel
      kann das schon bei 1200px greifen, bei kurzen Titeln erst deutlich später. */
   function fitNav() {
+    tooltipVerstecken();
     nav.classList.remove("no-title", "compact", "icon-only");
     var inner = nav.querySelector(".inner");
     // inner.clientWidth zaehlt das eigene Padding-Inline von .wrap mit (96px
