@@ -177,9 +177,13 @@ footer.cta{padding-block:var(--space-20)}
   display:flex;gap:var(--space-6);align-items:baseline;justify-content:space-between}
 .galerie-kopf b{font-weight:600}
 .galerie-kopf .kategorie{opacity:.6}
-/* In der Galerie soll jedes Modul in seiner echten Hoehe stehen, nicht auf
-   volle Viewporthoehe gestreckt - sonst sieht man die Proportionen nicht. */
-.galerie section,.galerie header,.galerie footer.cta{min-height:0}
+/* Bewusst KEIN min-height:0-Override mehr (Ernst, 2026-09-17): die Galerie
+   ist jetzt die QA-Testflaeche, nicht nur ein Katalog zum Kopieren - jedes
+   Modul soll exakt so gross gerendert werden wie in echten Onepagern, sonst
+   verdeckt die Galerie selbst genau die Layout-Probleme, die sie aufdecken
+   soll (z. B. vertikale Zentrierung, Whitespace bei kurzem Inhalt). Macht
+   die Galerie deutlich laenger (34 Module x mind. 1 Viewporthoehe) - das ist
+   der akzeptierte Tradeoff. */
 .galerie-intro{padding:var(--space-24) var(--grid-margin)}
 .galerie-baustein{padding:var(--space-16) var(--grid-margin)}
 
@@ -895,7 +899,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section class="stepper" data-chapter="03" data-chapter-title="[Kapitelname]" id="kapitel-03" data-modul="02 Struktur/03 stepper">
   <div class="wrap">
     <p class="eyebrow">03 — [Lifecycle]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Der Ablauf in Phasen]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Der Ablauf in Phasen]</h2>
 
     <div class="stepper-tabs" role="tablist" aria-label="[Phasen]">
       <button class="stepper-tab" type="button" role="tab" aria-selected="true"  aria-controls="phase-1" id="tab-1">[Phase 1]</button>
@@ -956,7 +960,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="05" data-chapter-title="[Kapitelname]" id="kapitel-05" data-modul="03 Inhalt/02 headline-textraster">
   <div class="wrap">
     <p class="eyebrow">05 — [Kapitelname]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">[Headline]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-16)">[Headline]</h2>
     <!-- 3-4 Spalten, etwa gleich lang halten - sonst kippt das Raster optisch. -->
     <div class="textraster">
       <div class="raster-col reveal"><h3>[Spalten-Titel 1]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
@@ -1020,7 +1024,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="08" data-chapter-title="[Kapitelname]" id="kapitel-08" data-modul="03 Inhalt/05 prozess-schritte">
   <div class="wrap">
     <p class="eyebrow">08 — [Vorgehen]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
     <div class="process-steps">
       <div class="process-step reveal"><span class="num">01</span>
         <div class="process-step-body"><h3>[Erster Schritt]</h3>
@@ -1069,7 +1073,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section class="chart-slide" data-chapter="10" data-chapter-title="[Kapitelname]" id="kapitel-10" data-modul="04 Daten/02 chart-slide">
   <div class="wrap">
     <p class="eyebrow">10 — [Daten]</p>
-    <h2 class="h1 reveal">[Nutzung verdoppelt sich ab März]</h2>
+    <h2 class="h2 reveal">[Nutzung verdoppelt sich ab März]</h2>
     <p class="small" style="margin-top:6px;color:var(--color-text)">[Kurze Einordnung, was das Chart zeigt.]</p>
     <div class="chart reveal" role="img" aria-label="[Beschreibung des Diagramms für Screenreader]">
       <div class="chart-balken" style="--wert:.35"><div class="saeule"></div><span class="achse">[Jan]</span></div>
@@ -1086,7 +1090,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="11" data-chapter-title="[Kapitelname]" id="kapitel-11" data-modul="04 Daten/03 matrix-2x2">
   <div class="wrap">
     <p class="eyebrow">11 — [Einordnung]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
     <div class="matrix-wrap">
       <div class="matrix-axis-y">[ACHSE Y]</div>
       <div class="matrix-main">
@@ -1107,7 +1111,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-modul="04 Daten/04 fluss-diagramm">
   <div class="wrap">
     <p class="eyebrow">12 — [Architektur]</p>
-    <h2 class="h1 reveal">[Was fließt von wo nach wo]</h2>
+    <h2 class="h2 reveal">[Was fließt von wo nach wo]</h2>
     <div class="fluss-diagramm reveal">
       <div class="fluss-station"><span class="name">[Quelle]</span><span class="art">[System / Dienst]</span></div>
       <span class="fluss-pfeil" aria-hidden="true">→</span>
@@ -1122,7 +1126,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="13" data-chapter-title="[Kapitelname]" id="kapitel-13" data-modul="04 Daten/05 tabelle">
   <div class="wrap table-scroll">
     <p class="eyebrow">13 — [Übersicht]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">[Tabellentitel]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-16)">[Tabellentitel]</h2>
     <table class="table reveal">
       <thead><tr><th>[Spalte A]</th><th>[Spalte B]</th><th>[Spalte C]</th><th>[Spalte D]</th></tr></thead>
       <tbody>
@@ -1167,7 +1171,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="16" data-chapter-title="[Kapitelname]" id="kapitel-16" data-modul="06 Zeitachse/01 roadmap-timeline">
   <div class="wrap">
     <p class="eyebrow">16 — [Timeline]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
     <div class="timeline">
       <div class="timeline-progress"></div>
       <div class="timeline-track">
@@ -1257,7 +1261,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="20" data-chapter-title="[Kapitelname]" id="kapitel-20" data-modul="07 Media/03 medien-karten-grid">
   <div class="wrap">
     <p class="eyebrow">20 — [Weiterführend]</p>
-    <h2 class="h1 reveal">[Prototypen entdecken]</h2>
+    <h2 class="h2 reveal">[Prototypen entdecken]</h2>
     <div class="medien-grid">
       <a class="medien-karte reveal" href="[URL]">
         <div class="bild">[Bild]</div>
@@ -1280,7 +1284,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   <div class="wrap">
     <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "21" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
     <p class="eyebrow">21 — [Eindruck]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Was das Bild sagt — nicht was es zeigt]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Was das Bild sagt — nicht was es zeigt]</h2>
   </div>
   <!-- Randabfallend: bricht bewusst aus dem Raster aus. Mind. 2880px breit. -->
   <img class="fullbleed reveal" src="[bild.jpg]" alt="[Was auf dem Bild zu sehen ist]" loading="lazy">
@@ -1296,7 +1300,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="22" data-chapter-title="[Kapitelname]" id="kapitel-22" data-modul="08 Menschen/01 team-grid">
   <div class="wrap">
     <p class="eyebrow">22 — [Team]</p>
-    <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
     <div class="team-grid">
       <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
       <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
@@ -1337,7 +1341,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-chapter="24" data-chapter-title="[Kapitelname]" id="kapitel-24" data-modul="09 Referenzen/01 logo-wand">
   <div class="wrap">
     <p class="eyebrow">24 — [Referenzen]</p>
-    <h2 class="h1 reveal">[Unsere Kunden]</h2>
+    <h2 class="h2 reveal">[Unsere Kunden]</h2>
     <div class="logo-wand">
       <div class="logo-slot reveal">[Logo 01]</div><div class="logo-slot reveal">[Logo 02]</div>
       <div class="logo-slot reveal">[Logo 03]</div><div class="logo-slot reveal">[Logo 04]</div>

@@ -159,9 +159,13 @@ GALERIE_CSS = """/* ==== Galerie-Rahmen (nur in modul-galerie.html) ==== */
   display:flex;gap:var(--space-6);align-items:baseline;justify-content:space-between}
 .galerie-kopf b{font-weight:600}
 .galerie-kopf .kategorie{opacity:.6}
-/* In der Galerie soll jedes Modul in seiner echten Hoehe stehen, nicht auf
-   volle Viewporthoehe gestreckt - sonst sieht man die Proportionen nicht. */
-.galerie section,.galerie header,.galerie footer.cta{min-height:0}
+/* Bewusst KEIN min-height:0-Override mehr (Ernst, 2026-09-17): die Galerie
+   ist jetzt die QA-Testflaeche, nicht nur ein Katalog zum Kopieren - jedes
+   Modul soll exakt so gross gerendert werden wie in echten Onepagern, sonst
+   verdeckt die Galerie selbst genau die Layout-Probleme, die sie aufdecken
+   soll (z. B. vertikale Zentrierung, Whitespace bei kurzem Inhalt). Macht
+   die Galerie deutlich laenger (34 Module x mind. 1 Viewporthoehe) - das ist
+   der akzeptierte Tradeoff. */
 .galerie-intro{padding:var(--space-24) var(--grid-margin)}
 .galerie-baustein{padding:var(--space-16) var(--grid-margin)}"""
 
