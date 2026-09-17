@@ -351,16 +351,16 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "05 Diagramme/01 konzentrische-kreise": {
-      "kurzname": "konzentrische-kreise",
+    "05 Diagramme/01 text-graphic": {
+      "kurzname": "text-graphic",
       "kategorie": "05 Diagramme",
-      "slug": "05-diagramme-01-konzentrische-kreise",
+      "slug": "05-diagramme-01-text-graphic",
       "nodeId": "33:19",
-      "zweck": "DAYONE-Organisationsmodell (Business / Service / Coordination Circles). Fester Bestandteil von Credential-Decks.",
+      "zweck": "Text links, freie Grafik rechts (Diagramm, Illustration, Icon-Komposition o. ä.). Generalisiert aus dem frueheren \"Konzentrische Kreise\"-Modul; die runde Flaeche ist nur der Platzhalter-Vorschlag, kein Zwang zu Kreisen.",
       "abgrenzung": "",
       "fuellen": [
-        "Grafik aus dem Keynote-Master übernehmen, nicht neu zeichnen.",
-        "Links Topline + eine Aussage, warum das Modell relevant ist."
+        "Grafik aus dem Keynote-Master oder einer anderen Quelle uebernehmen, nicht neu zeichnen.",
+        "Links Topline + eine Aussage, warum die Grafik hier relevant ist."
       ],
       "grenzen": [],
       "farbe_frei": true,

@@ -413,35 +413,71 @@ footer.cta{padding-block:var(--space-20)}
 /* ==== Chart-Slide ==== */
 /* Figma: Charts entstehen aus echten Daten, nicht als Bild. Deshalb ein
    einfaches Balkendiagramm aus divs - Hoehe ueber --wert (0..1) gesteuert.
-   Die hervorgehobene Serie traegt .ist-betont (Blue Highlight). */
-.chart-slide .chart{margin-top:var(--space-8);height:300px;display:flex;align-items:flex-end;
-  gap:var(--space-6);padding:var(--space-6);border-radius:var(--radius-card);
-  background:var(--color-detail)}
+   Die hervorgehobene Serie traegt .ist-betont (dunkel, wie Figma - KEIN
+   Blue-Highlight; frueher stand hier faelschlich var(--blue-3), gefunden
+   beim Figma-Abgleich 2026-09-17). Bars stehen direkt auf der Seite, ohne
+   Kartenhintergrund - Figma zeigt kein umschliessendes Feld ums Chart. */
+.chart-body{margin-top:var(--space-8);display:flex;gap:var(--space-4);align-items:stretch}
+.chart-y-achse{display:flex;flex-direction:column;justify-content:space-between;
+  padding-bottom:28px;font-size:var(--text-body-s);color:var(--color-text);text-align:right}
+.chart-slide .chart{flex:1;height:300px;display:flex;align-items:flex-end;
+  gap:var(--space-6);padding-bottom:28px;position:relative;
+  /* Gitterlinien alle 25% der Hoehe - ersetzt die frueher fehlenden
+     Hilfslinien, die Figma neben der Achsenskala zeigt. */
+  background-image:repeating-linear-gradient(to top,var(--color-border) 0,
+    var(--color-border) 1px,transparent 1px,transparent 25%)}
 .chart-balken{flex:1;display:flex;flex-direction:column;justify-content:flex-end;
-  align-items:center;gap:8px;height:100%}
+  align-items:center;height:100%;position:relative}
 .chart-balken .saeule{width:100%;border-radius:4px 4px 0 0;background:var(--color-border);
-  height:calc(var(--wert) * 100%);transition:height .8s var(--ease)}
-.chart-balken.ist-betont .saeule{background:var(--blue-3)}
-.chart-balken .achse{font-size:var(--text-body-s);color:var(--color-text);line-height:1.2}
+  height:calc(var(--wert) * 100%);transition:height .8s var(--ease);position:relative}
+.chart-balken.ist-betont .saeule{background:var(--color-main-text)}
+.chart-wert{position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-bg)}
+.chart-balken .achse{position:absolute;bottom:-28px;left:0;right:0;text-align:center;
+  font-size:var(--text-body-s);color:var(--color-text);line-height:1.2}
 .chart-quelle{margin-top:var(--space-4);font-size:var(--text-body-s);color:var(--color-text);
   opacity:.7}
 @media(prefers-reduced-motion:reduce){.chart-balken .saeule{transition:none}}
 @media(max-width:900px){.chart-slide .chart{height:220px;gap:var(--space-4)}}
 
 /* ==== Matrix 2x2 ==== */
+/* Figma: beide Achsen tragen an JEDEM Ende ein eigenes Label (z. B. "Attribute A"
+   links / "Attribute B" rechts), nicht nur einen Achsennamen in der Mitte - dazu
+   eine durchgezogene Linie mit Pfeilspitze. Frueher stand hier nur je ein
+   zentrierter Achsenname ohne Linie/Pfeile; beim Figma-Abgleich aufgefallen,
+   2026-09-17. */
 .matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
-.matrix-axis-y{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);letter-spacing:.08em;
-  text-transform:uppercase;display:flex;align-items:center;justify-content:center}
+.matrix-achse-y{position:relative;display:flex;flex-direction:column;
+  align-items:center;justify-content:space-between}
+.matrix-achse-y::before{content:"";position:absolute;top:6px;bottom:0;left:50%;
+  width:1px;background:var(--color-border)}
+.matrix-achse-y-pfeil{position:relative;z-index:1;width:0;height:0;
+  border-left:4px solid transparent;border-right:4px solid transparent;
+  border-bottom:6px solid var(--color-border)}
+.matrix-achse-y span{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
+  letter-spacing:.08em;text-transform:uppercase;background:var(--color-bg);
+  position:relative;z-index:1;padding-block:6px}
 .matrix-main{display:flex;flex-direction:column;gap:var(--space-8)}
 .matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
 .matrix-quadrant{background:var(--color-detail);padding:var(--space-8);border-radius:var(--radius-card);
   display:flex;flex-direction:column;gap:12px;min-height:130px}
 .matrix-quadrant h3{font-size:var(--text-display-3);font-weight:600}
-.matrix-axis-x{text-align:center;font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
+.matrix-achse-x{display:flex;align-items:center;gap:var(--space-4);
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
   letter-spacing:.08em;text-transform:uppercase}
+.matrix-achse-x-linie{flex:1;position:relative;height:1px;background:var(--color-border)}
+.matrix-achse-x-linie::before,.matrix-achse-x-linie::after{content:"";position:absolute;
+  top:50%;transform:translateY(-50%);width:0;height:0;
+  border-top:4px solid transparent;border-bottom:4px solid transparent}
+.matrix-achse-x-linie::before{left:0;border-right:6px solid var(--color-border)}
+.matrix-achse-x-linie::after{right:0;border-left:6px solid var(--color-border)}
 @media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
-  .matrix-axis-y{writing-mode:horizontal-tb;transform:none}}
+  .matrix-achse-y{flex-direction:row;justify-content:space-between}
+  .matrix-achse-y::before{top:50%;left:6px;right:0;bottom:auto;width:auto;height:1px}
+  .matrix-achse-y-pfeil{border-left:6px solid transparent;border-bottom:4px solid transparent;
+    border-top:4px solid transparent;border-right:6px solid var(--color-border)}
+  .matrix-achse-y span{writing-mode:horizontal-tb;transform:none}}
 
 /* ==== Fluss-Diagramm ==== */
 .fluss-diagramm{display:flex;align-items:center;gap:var(--space-6);margin-top:var(--space-8)}
@@ -466,25 +502,25 @@ footer.cta{padding-block:var(--space-20)}
 .table td.num{text-align:right;font-variant-numeric:tabular-nums}
 /* Figma: alternierende Zeilenfaerbung (Zebra-Streifen) - 2026-09-16 von
    Ernst bestaetigt, Code hatte bisher nur die Hairline-Trennung. */
-.table tbody tr:nth-child(even) td{background:var(--color-detail)}
+.table tbody tr:nth-child(odd) td{background:var(--color-detail)}
 @media(max-width:700px){.table-scroll{overflow-x:auto}.table{min-width:560px}}
 
-/* ==== Konzentrische Kreise ==== */
-/* Figma: Grafik aus dem Keynote-Master uebernehmen, nicht neu zeichnen.
-   Hier drei konzentrische Ringe als Platzhalter mit der richtigen Groesse. */
-.kreis-modell{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-16);
+/* ==== Text + Grafik (frueher "Konzentrische Kreise") ==== */
+/* Umbenannt 2026-09-17 (Ernst) auf "05 Diagramme/01 text-graphic" - in Figma
+   selbst per get_metadata verifiziert: die Grafik ist dort inzwischen EIN
+   einzelnes rundes Platzhalter-Element ("Kreisdiagramm-Platzhalter"), keine
+   fest verdrahtete Ringe-Grafik mehr. Das macht das Modul generisch: links
+   Text, rechts eine runde Flaeche fuer IRGENDEINE Grafik (Diagramm, Icon,
+   Illustration - nicht mehr zwingend Kreise), analog zu anderen
+   Bild-Platzhalter-Modulen wie bild-intro. Figma: Grafik aus dem
+   Keynote-Master (oder woanders) uebernehmen, nicht neu zeichnen. */
+.text-graphic{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-16);
   align-items:center;max-width:1036px;margin-inline:auto}
-.kreis-modell-ringe{position:relative;width:400px;height:400px;max-width:100%;aspect-ratio:1}
-.kreis-modell-ring{position:absolute;inset:0;border-radius:var(--radius-pill);
-  border:1px solid var(--color-border);display:flex;align-items:flex-start;
-  justify-content:center;padding-top:var(--space-4);font-size:var(--text-body-s);
-  color:var(--color-text)}
-.kreis-modell-ring.ist-mitte{inset:22%}
-.kreis-modell-ring.ist-kern{inset:40%;background:var(--color-detail);align-items:center;padding-top:0}
-@media(max-width:900px){
-  .kreis-modell{grid-template-columns:1fr;gap:var(--space-10)}
-  .kreis-modell-ringe{width:100%;margin-inline:auto}
-}
+.text-graphic-flaeche{width:400px;height:400px;max-width:100%;aspect-ratio:1;
+  border-radius:var(--radius-pill);background:var(--color-detail);
+  display:flex;align-items:center;justify-content:center;color:var(--color-text);
+  font-size:var(--text-body-s);margin-inline:auto}
+@media(max-width:900px){.text-graphic{grid-template-columns:1fr;gap:var(--space-10)}}
 
 /* ==== Case-Study-Diagrammkarte ==== */
 .diagrammkarte{text-align:center}
@@ -530,11 +566,21 @@ footer.cta{padding-block:var(--space-20)}
   background:var(--color-border);display:flex;align-items:center;padding-inline:10px;
   font-size:var(--text-body-s);color:var(--color-main-text);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis}
-.gantt-balken.ist-aktuell{background:var(--blue-3);color:var(--gray-50)}
-.zoom-meilenstein{padding-block:var(--space-4);border-top:1px solid var(--color-border)}
+/* ist-aktuell dunkel statt Blue-Highlight (Figma-Abgleich 2026-09-17, wie beim
+   Chart-Slide derselbe frueher falsche Griff zu --blue-3). Die Meilenstein-Liste
+   rechts bekam ausserdem Nummernspalte + Karten-Hervorhebung fuer den aktuellen
+   Meilenstein - fehlte komplett, stand nur als reiner Fliesstext da. */
+.gantt-balken.ist-aktuell{background:var(--color-main-text);color:var(--color-bg)}
+.zoom-meilenstein{display:flex;gap:var(--space-4);padding:var(--space-4);
+  border-top:1px solid var(--color-border)}
+.zoom-nummer{flex:none;width:24px;font-size:var(--text-body-s);font-weight:600;
+  color:var(--color-border)}
 .zoom-meilenstein dt{font-size:var(--text-body-s);color:var(--color-main-text)}
 .zoom-meilenstein dd{margin:4px 0 0;font-size:var(--text-body-s);color:var(--color-text);
   line-height:1.2}
+.zoom-meilenstein.ist-aktuell{background:var(--color-detail);border-radius:var(--radius-card);
+  border-top-color:transparent;padding:var(--space-6)}
+.zoom-meilenstein.ist-aktuell .zoom-nummer{color:var(--color-main-text)}
 /* Figma: bricht auf Mobile schnell - dort als vertikale Liste. */
 @media(max-width:900px){
   .roadmap-zoom{grid-template-columns:1fr;gap:var(--space-10)}
@@ -571,10 +617,18 @@ footer.cta{padding-block:var(--space-20)}
   font-size:var(--text-body-s)}
 .device .schirm img{width:100%;height:100%;object-fit:cover}
 .device.ist-laptop{width:min(720px,100%)}
-.device.ist-laptop .schirm{aspect-ratio:16/10;border:10px solid var(--color-main-text);
-  border-radius:12px}
-.device.ist-laptop .fuss{height:10px;border-radius:0 0 8px 8px;
-  background:var(--color-main-text);width:112%;margin-left:-6%}
+/* Einheitlicher Rahmen (statt Border direkt auf dem Screen) wie ein echtes
+   Unibody-Geraet: oben/seitlich duenner Steg, unten dickerer Sockel mit
+   Scharnier-Kerbe - frueher wirkte der Screen-Border + freistehender Fuss
+   wie zwei separate Teile statt einem Geraet (Figma-Abgleich 2026-09-17). */
+.device.ist-laptop .rahmen{background:var(--color-main-text);
+  border-radius:14px 14px 4px 4px;padding:12px 12px 6px}
+.device.ist-laptop .schirm{aspect-ratio:16/10;border-radius:3px}
+.device.ist-laptop .fuss{height:12px;background:var(--color-main-text);
+  border-radius:0 0 7px 7px;position:relative}
+.device.ist-laptop .fuss::after{content:"";position:absolute;left:50%;top:0;
+  transform:translateX(-50%);width:14%;height:4px;background:var(--color-bg);
+  border-radius:0 0 4px 4px}
 .device.ist-phone{width:min(220px,100%)}
 .device.ist-phone .schirm{aspect-ratio:9/19.5;border:8px solid var(--color-main-text);
   border-radius:28px}
@@ -619,8 +673,17 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 }
 
 /* ==== Großbild (randabfallend) ==== */
+/* .fullbleed muss ein Container-DIV mit einem <img>-Kind sein, nicht die
+   Klasse direkt auf einem <img> (frueher hier der Fall): ein <img> mit einem
+   Platzhalter-Pfad wie "[bild.jpg]" zeigt das Browser-eigene Broken-Image-
+   Icon + Alt-Text oben links, ignoriert dabei "display:grid;place-items:
+   center" komplett - das gilt nur fuer Kind-Elemente, nicht fuer den
+   Ersatzinhalt eines kaputten <img> selbst. Dadurch sah dieses Modul anders
+   aus als jeder andere Bild-Platzhalter im System (Figma-Abgleich,
+   2026-09-17). */
 .fullbleed{width:100%;aspect-ratio:16/9;background:var(--color-detail);
-  display:grid;place-items:center;color:var(--color-muted);font-size:var(--text-body-s)}
+  display:grid;place-items:center;color:var(--color-muted);font-size:var(--text-body-s);
+  overflow:hidden}
 .fullbleed img{width:100%;height:100%;object-fit:cover;display:block}
 .caption{display:flex;gap:var(--space-12);justify-content:space-between;align-items:start;
   margin-top:var(--space-12)}
@@ -834,17 +897,19 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   <div class="wrap">
     <div class="top reveal">
       <svg class="logo-mark" width="150" height="27" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
-      <!-- Beide Badges sind unabhaengig voneinander optional (Figma-Description:
+      <!-- Figma zeigt im Standardzustand genau EIN Badge (Component-Description:
            "Badges sind optional - bei Kundenpitches meist nur einer oder
-           keiner."). Die accent-Badge ist speziell fuer den DAYONE-Weekly-
-           Live-Q&A-Link gedacht - bei allem, was kein Weekly ist (Kundenpitch,
-           Case Study, Review-Seite wie dieser Testbau), eher loeschen statt
-           mit anderem Text zu ueberschreiben. Genauso die zweite Badge
-           (Anlass/KW): nur behalten, wenn es wirklich etwas zu zeigen gibt,
-           sonst den ganzen <div class="badges"> entfernen. -->
+           keiner."), frueher standen hier faelschlich zwei gleichzeitig
+           (Figma-Abgleich, 2026-09-17). Zweites Badge-Beispiel (die
+           DAYONE-Weekly-Live-Q&A-Variante) bleibt als auskommentierte
+           Alternative erhalten - nur einsetzen, wenn es wirklich ein Weekly
+           mit Live-Q&A-Link ist, sonst bei diesem einen Badge bleiben oder
+           den ganzen <div class="badges"> entfernen. -->
       <div class="badges">
+        <span class="badge">[Badge Title]</span>
+        <!-- Alternative fuer DAYONE Weeklies mit Live-Q&A:
         <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
-        <span class="badge">[ANLASS – KW 00]</span>
+        -->
       </div>
     </div>
     <div class="reveal">
@@ -1074,12 +1139,15 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     <p class="eyebrow">10 — [Daten]</p>
     <h2 class="h2 reveal">[Nutzung verdoppelt sich ab März]</h2>
     <p class="small" style="margin-top:6px;color:var(--color-text)">[Kurze Einordnung, was das Chart zeigt.]</p>
-    <div class="chart reveal" role="img" aria-label="[Beschreibung des Diagramms für Screenreader]">
-      <div class="chart-balken" style="--wert:.35"><div class="saeule"></div><span class="achse">[Jan]</span></div>
-      <div class="chart-balken" style="--wert:.42"><div class="saeule"></div><span class="achse">[Feb]</span></div>
-      <div class="chart-balken ist-betont" style="--wert:.86"><div class="saeule"></div><span class="achse">[Mär]</span></div>
-      <div class="chart-balken" style="--wert:.79"><div class="saeule"></div><span class="achse">[Apr]</span></div>
-      <div class="chart-balken" style="--wert:.91"><div class="saeule"></div><span class="achse">[Mai]</span></div>
+    <div class="chart-body reveal" role="img" aria-label="[Beschreibung des Diagramms für Screenreader]">
+      <div class="chart-y-achse" aria-hidden="true"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div>
+      <div class="chart">
+        <div class="chart-balken" style="--wert:.35"><div class="saeule"></div><span class="achse">[Jan]</span></div>
+        <div class="chart-balken" style="--wert:.42"><div class="saeule"></div><span class="achse">[Feb]</span></div>
+        <div class="chart-balken" style="--wert:.86"><div class="saeule"></div><span class="achse">[Mär]</span></div>
+        <div class="chart-balken" style="--wert:.79"><div class="saeule"></div><span class="achse">[Apr]</span></div>
+        <div class="chart-balken ist-betont" style="--wert:.91"><div class="saeule"><span class="chart-wert">91</span></div><span class="achse">[Mai]</span></div>
+      </div>
     </div>
     <p class="chart-quelle">Quelle: [Datenquelle], [Zeitraum]</p>
   </div>
@@ -1090,7 +1158,11 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     <p class="eyebrow">11 — [Einordnung]</p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
     <div class="matrix-wrap">
-      <div class="matrix-axis-y">[ACHSE Y]</div>
+      <div class="matrix-achse-y">
+        <span>[Achse Y oben]</span>
+        <span class="matrix-achse-y-pfeil"></span>
+        <span>[Achse Y unten]</span>
+      </div>
       <div class="matrix-main">
         <div class="matrix-grid">
           <div class="matrix-quadrant reveal"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
@@ -1098,7 +1170,11 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
           <div class="matrix-quadrant reveal"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
           <div class="matrix-quadrant reveal"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
         </div>
-        <div class="matrix-axis-x">[ACHSE X]</div>
+        <div class="matrix-achse-x">
+          <span>[Achse X links]</span>
+          <span class="matrix-achse-x-linie"></span>
+          <span>[Achse X rechts]</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1134,19 +1210,16 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<section data-chapter="14" data-chapter-title="[Kapitelname]" id="kapitel-14" data-modul="05 Diagramme/01 konzentrische-kreise">
-  <div class="wrap kreis-modell">
+<section data-chapter="14" data-chapter-title="[Kapitelname]" id="kapitel-14" data-modul="05 Diagramme/01 text-graphic">
+  <div class="wrap text-graphic">
     <div class="reveal">
       <p class="eyebrow">14 — [Way of Working]</p>
       <h2 class="h2">[Unser Organisationsmodell]</h2>
       <p class="lead" style="margin-top:var(--space-6)">[Ein Satz, warum das Modell hier relevant ist.]</p>
     </div>
-    <!-- Ersetzen durch die Grafik aus dem Keynote-Master. -->
-    <div class="kreis-modell-ringe reveal" role="img" aria-label="[Business-, Service- und Coordination-Circles]">
-      <div class="kreis-modell-ring">[Business Circles]</div>
-      <div class="kreis-modell-ring ist-mitte">[Service Circles]</div>
-      <div class="kreis-modell-ring ist-kern">[Coordination]</div>
-    </div>
+    <!-- Ersetzen durch die Grafik aus dem Keynote-Master oder eine andere passende
+         Grafik - die runde Form ist der Figma-Platzhalter, kein Zwang zu Kreisen. -->
+    <div class="text-graphic-flaeche reveal">[Grafik-Platzhalter]</div>
   </div>
 </section>
 
@@ -1198,9 +1271,12 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     </div>
     <dl class="reveal" style="margin:0">
       <p class="lead" style="margin-bottom:var(--space-4)">[Meilensteine]</p>
-      <div class="zoom-meilenstein"><dt>[Meilenstein 1]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
-      <div class="zoom-meilenstein"><dt>[Meilenstein 2]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
-      <div class="zoom-meilenstein"><dt>[Meilenstein 3]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
+      <div class="zoom-meilenstein ist-aktuell"><span class="zoom-nummer">01</span>
+        <div><dt>[Meilenstein 1]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div></div>
+      <div class="zoom-meilenstein"><span class="zoom-nummer">02</span>
+        <div><dt>[Meilenstein 2]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div></div>
+      <div class="zoom-meilenstein"><span class="zoom-nummer">03</span>
+        <div><dt>[Meilenstein 3]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div></div>
     </dl>
   </div>
 </section>
@@ -1237,7 +1313,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
          oder ein/mehrere <div class="device ist-phone"> - je nach Kontext waehlen,
          nicht zwingend kombinieren. -->
     <div class="device-buehne reveal">
-      <div class="device ist-laptop"><div class="schirm">[Screen]</div><div class="fuss"></div></div>
+      <div class="device ist-laptop"><div class="rahmen"><div class="schirm">[Screen]</div></div><div class="fuss"></div></div>
     </div>
     <div class="device-legende reveal">
       <h3>[Prototyp im Device]</h3>
@@ -1275,7 +1351,7 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Was das Bild sagt — nicht was es zeigt]</h2>
   </div>
   <!-- Randabfallend: bricht bewusst aus dem Raster aus. Mind. 2880px breit. -->
-  <img class="fullbleed reveal" src="[bild.jpg]" alt="[Was auf dem Bild zu sehen ist]" loading="lazy">
+  <div class="fullbleed reveal"><img src="[bild.jpg]" alt="[Was auf dem Bild zu sehen ist]" loading="lazy"></div>
   <div class="wrap">
     <div class="caption">
       <p class="lead">[Ein Satz Einordnung, was hier zu sehen ist und warum es hier steht.]</p>

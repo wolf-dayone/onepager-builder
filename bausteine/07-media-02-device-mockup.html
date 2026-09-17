@@ -10,10 +10,18 @@
   font-size:var(--text-body-s)}
 .device .schirm img{width:100%;height:100%;object-fit:cover}
 .device.ist-laptop{width:min(720px,100%)}
-.device.ist-laptop .schirm{aspect-ratio:16/10;border:10px solid var(--color-main-text);
-  border-radius:12px}
-.device.ist-laptop .fuss{height:10px;border-radius:0 0 8px 8px;
-  background:var(--color-main-text);width:112%;margin-left:-6%}
+/* Einheitlicher Rahmen (statt Border direkt auf dem Screen) wie ein echtes
+   Unibody-Geraet: oben/seitlich duenner Steg, unten dickerer Sockel mit
+   Scharnier-Kerbe - frueher wirkte der Screen-Border + freistehender Fuss
+   wie zwei separate Teile statt einem Geraet (Figma-Abgleich 2026-09-17). */
+.device.ist-laptop .rahmen{background:var(--color-main-text);
+  border-radius:14px 14px 4px 4px;padding:12px 12px 6px}
+.device.ist-laptop .schirm{aspect-ratio:16/10;border-radius:3px}
+.device.ist-laptop .fuss{height:12px;background:var(--color-main-text);
+  border-radius:0 0 7px 7px;position:relative}
+.device.ist-laptop .fuss::after{content:"";position:absolute;left:50%;top:0;
+  transform:translateX(-50%);width:14%;height:4px;background:var(--color-bg);
+  border-radius:0 0 4px 4px}
 .device.ist-phone{width:min(220px,100%)}
 .device.ist-phone .schirm{aspect-ratio:9/19.5;border:8px solid var(--color-main-text);
   border-radius:28px}
@@ -40,7 +48,7 @@
          oder ein/mehrere <div class="device ist-phone"> - je nach Kontext waehlen,
          nicht zwingend kombinieren. -->
     <div class="device-buehne reveal">
-      <div class="device ist-laptop"><div class="schirm">[Screen]</div><div class="fuss"></div></div>
+      <div class="device ist-laptop"><div class="rahmen"><div class="schirm">[Screen]</div></div><div class="fuss"></div></div>
     </div>
     <div class="device-legende reveal">
       <h3>[Prototyp im Device]</h3>

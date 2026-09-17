@@ -36,7 +36,7 @@
     "04 Daten/04 fluss-diagramm":          { "klasse": "fluss-diagramm", "zaehlt": "fluss-station", "einheit": "Stationen" },
     "04 Daten/05 tabelle":                      { "klasse": "table", "textlastig": true },
 
-    "05 Diagramme/01 konzentrische-kreise":     { "klasse": "kreis-modell" },
+    "05 Diagramme/01 text-graphic":            { "klasse": "text-graphic" },
     "05 Diagramme/02 diagrammkarte": { "klasse": "diagrammkarte" },
 
     "06 Zeitachse/01 roadmap-timeline":         { "klasse": "timeline", "zaehlt": "timeline-item", "einheit": "Meilensteine" },

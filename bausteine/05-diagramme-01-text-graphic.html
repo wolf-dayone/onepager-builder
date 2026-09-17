@@ -1,0 +1,31 @@
+<style>
+/* ==== Text + Grafik (frueher "Konzentrische Kreise") ==== */
+/* Umbenannt 2026-09-17 (Ernst) auf "05 Diagramme/01 text-graphic" - in Figma
+   selbst per get_metadata verifiziert: die Grafik ist dort inzwischen EIN
+   einzelnes rundes Platzhalter-Element ("Kreisdiagramm-Platzhalter"), keine
+   fest verdrahtete Ringe-Grafik mehr. Das macht das Modul generisch: links
+   Text, rechts eine runde Flaeche fuer IRGENDEINE Grafik (Diagramm, Icon,
+   Illustration - nicht mehr zwingend Kreise), analog zu anderen
+   Bild-Platzhalter-Modulen wie bild-intro. Figma: Grafik aus dem
+   Keynote-Master (oder woanders) uebernehmen, nicht neu zeichnen. */
+.text-graphic{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-16);
+  align-items:center;max-width:1036px;margin-inline:auto}
+.text-graphic-flaeche{width:400px;height:400px;max-width:100%;aspect-ratio:1;
+  border-radius:var(--radius-pill);background:var(--color-detail);
+  display:flex;align-items:center;justify-content:center;color:var(--color-text);
+  font-size:var(--text-body-s);margin-inline:auto}
+@media(max-width:900px){.text-graphic{grid-template-columns:1fr;gap:var(--space-10)}}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="05 Diagramme/01 text-graphic">
+  <div class="wrap text-graphic">
+    <div class="reveal">
+      <p class="eyebrow">[NN] — [Way of Working]</p>
+      <h2 class="h2">[Unser Organisationsmodell]</h2>
+      <p class="lead" style="margin-top:var(--space-6)">[Ein Satz, warum das Modell hier relevant ist.]</p>
+    </div>
+    <!-- Ersetzen durch die Grafik aus dem Keynote-Master oder eine andere passende
+         Grafik - die runde Form ist der Figma-Platzhalter, kein Zwang zu Kreisen. -->
+    <div class="text-graphic-flaeche reveal">[Grafik-Platzhalter]</div>
+  </div>
+</section>

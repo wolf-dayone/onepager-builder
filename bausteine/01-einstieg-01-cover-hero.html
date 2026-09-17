@@ -30,17 +30,19 @@
   <div class="wrap">
     <div class="top reveal">
       <svg class="logo-mark" width="150" height="27" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
-      <!-- Beide Badges sind unabhaengig voneinander optional (Figma-Description:
+      <!-- Figma zeigt im Standardzustand genau EIN Badge (Component-Description:
            "Badges sind optional - bei Kundenpitches meist nur einer oder
-           keiner."). Die accent-Badge ist speziell fuer den DAYONE-Weekly-
-           Live-Q&A-Link gedacht - bei allem, was kein Weekly ist (Kundenpitch,
-           Case Study, Review-Seite wie dieser Testbau), eher loeschen statt
-           mit anderem Text zu ueberschreiben. Genauso die zweite Badge
-           (Anlass/KW): nur behalten, wenn es wirklich etwas zu zeigen gibt,
-           sonst den ganzen <div class="badges"> entfernen. -->
+           keiner."), frueher standen hier faelschlich zwei gleichzeitig
+           (Figma-Abgleich, 2026-09-17). Zweites Badge-Beispiel (die
+           DAYONE-Weekly-Live-Q&A-Variante) bleibt als auskommentierte
+           Alternative erhalten - nur einsetzen, wenn es wirklich ein Weekly
+           mit Live-Q&A-Link ist, sonst bei diesem einen Badge bleiben oder
+           den ganzen <div class="badges"> entfernen. -->
       <div class="badges">
+        <span class="badge">[Badge Title]</span>
+        <!-- Alternative fuer DAYONE Weeklies mit Live-Q&A:
         <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
-        <span class="badge">[ANLASS – KW 00]</span>
+        -->
       </div>
     </div>
     <div class="reveal">

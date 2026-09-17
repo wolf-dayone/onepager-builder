@@ -1,7 +1,16 @@
 <style>
 /* ==== Großbild (randabfallend) ==== */
+/* .fullbleed muss ein Container-DIV mit einem <img>-Kind sein, nicht die
+   Klasse direkt auf einem <img> (frueher hier der Fall): ein <img> mit einem
+   Platzhalter-Pfad wie "[bild.jpg]" zeigt das Browser-eigene Broken-Image-
+   Icon + Alt-Text oben links, ignoriert dabei "display:grid;place-items:
+   center" komplett - das gilt nur fuer Kind-Elemente, nicht fuer den
+   Ersatzinhalt eines kaputten <img> selbst. Dadurch sah dieses Modul anders
+   aus als jeder andere Bild-Platzhalter im System (Figma-Abgleich,
+   2026-09-17). */
 .fullbleed{width:100%;aspect-ratio:16/9;background:var(--color-detail);
-  display:grid;place-items:center;color:var(--color-muted);font-size:var(--text-body-s)}
+  display:grid;place-items:center;color:var(--color-muted);font-size:var(--text-body-s);
+  overflow:hidden}
 .fullbleed img{width:100%;height:100%;object-fit:cover;display:block}
 .caption{display:flex;gap:var(--space-12);justify-content:space-between;align-items:start;
   margin-top:var(--space-12)}
@@ -17,7 +26,7 @@
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Was das Bild sagt — nicht was es zeigt]</h2>
   </div>
   <!-- Randabfallend: bricht bewusst aus dem Raster aus. Mind. 2880px breit. -->
-  <img class="fullbleed reveal" src="[bild.jpg]" alt="[Was auf dem Bild zu sehen ist]" loading="lazy">
+  <div class="fullbleed reveal"><img src="[bild.jpg]" alt="[Was auf dem Bild zu sehen ist]" loading="lazy"></div>
   <div class="wrap">
     <div class="caption">
       <p class="lead">[Ein Satz Einordnung, was hier zu sehen ist und warum es hier steht.]</p>

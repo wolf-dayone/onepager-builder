@@ -14,11 +14,21 @@
   background:var(--color-border);display:flex;align-items:center;padding-inline:10px;
   font-size:var(--text-body-s);color:var(--color-main-text);white-space:nowrap;
   overflow:hidden;text-overflow:ellipsis}
-.gantt-balken.ist-aktuell{background:var(--blue-3);color:var(--gray-50)}
-.zoom-meilenstein{padding-block:var(--space-4);border-top:1px solid var(--color-border)}
+/* ist-aktuell dunkel statt Blue-Highlight (Figma-Abgleich 2026-09-17, wie beim
+   Chart-Slide derselbe frueher falsche Griff zu --blue-3). Die Meilenstein-Liste
+   rechts bekam ausserdem Nummernspalte + Karten-Hervorhebung fuer den aktuellen
+   Meilenstein - fehlte komplett, stand nur als reiner Fliesstext da. */
+.gantt-balken.ist-aktuell{background:var(--color-main-text);color:var(--color-bg)}
+.zoom-meilenstein{display:flex;gap:var(--space-4);padding:var(--space-4);
+  border-top:1px solid var(--color-border)}
+.zoom-nummer{flex:none;width:24px;font-size:var(--text-body-s);font-weight:600;
+  color:var(--color-border)}
 .zoom-meilenstein dt{font-size:var(--text-body-s);color:var(--color-main-text)}
 .zoom-meilenstein dd{margin:4px 0 0;font-size:var(--text-body-s);color:var(--color-text);
   line-height:1.2}
+.zoom-meilenstein.ist-aktuell{background:var(--color-detail);border-radius:var(--radius-card);
+  border-top-color:transparent;padding:var(--space-6)}
+.zoom-meilenstein.ist-aktuell .zoom-nummer{color:var(--color-main-text)}
 /* Figma: bricht auf Mobile schnell - dort als vertikale Liste. */
 @media(max-width:900px){
   .roadmap-zoom{grid-template-columns:1fr;gap:var(--space-10)}
@@ -44,9 +54,12 @@
     </div>
     <dl class="reveal" style="margin:0">
       <p class="lead" style="margin-bottom:var(--space-4)">[Meilensteine]</p>
-      <div class="zoom-meilenstein"><dt>[Meilenstein 1]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
-      <div class="zoom-meilenstein"><dt>[Meilenstein 2]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
-      <div class="zoom-meilenstein"><dt>[Meilenstein 3]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div>
+      <div class="zoom-meilenstein ist-aktuell"><span class="zoom-nummer">01</span>
+        <div><dt>[Meilenstein 1]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div></div>
+      <div class="zoom-meilenstein"><span class="zoom-nummer">02</span>
+        <div><dt>[Meilenstein 2]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div></div>
+      <div class="zoom-meilenstein"><span class="zoom-nummer">03</span>
+        <div><dt>[Meilenstein 3]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div></div>
     </dl>
   </div>
 </section>

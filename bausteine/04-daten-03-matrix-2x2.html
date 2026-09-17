@@ -1,18 +1,42 @@
 <style>
 /* ==== Matrix 2x2 ==== */
+/* Figma: beide Achsen tragen an JEDEM Ende ein eigenes Label (z. B. "Attribute A"
+   links / "Attribute B" rechts), nicht nur einen Achsennamen in der Mitte - dazu
+   eine durchgezogene Linie mit Pfeilspitze. Frueher stand hier nur je ein
+   zentrierter Achsenname ohne Linie/Pfeile; beim Figma-Abgleich aufgefallen,
+   2026-09-17. */
 .matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
-.matrix-axis-y{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);letter-spacing:.08em;
-  text-transform:uppercase;display:flex;align-items:center;justify-content:center}
+.matrix-achse-y{position:relative;display:flex;flex-direction:column;
+  align-items:center;justify-content:space-between}
+.matrix-achse-y::before{content:"";position:absolute;top:6px;bottom:0;left:50%;
+  width:1px;background:var(--color-border)}
+.matrix-achse-y-pfeil{position:relative;z-index:1;width:0;height:0;
+  border-left:4px solid transparent;border-right:4px solid transparent;
+  border-bottom:6px solid var(--color-border)}
+.matrix-achse-y span{writing-mode:vertical-rl;transform:rotate(180deg);
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
+  letter-spacing:.08em;text-transform:uppercase;background:var(--color-bg);
+  position:relative;z-index:1;padding-block:6px}
 .matrix-main{display:flex;flex-direction:column;gap:var(--space-8)}
 .matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
 .matrix-quadrant{background:var(--color-detail);padding:var(--space-8);border-radius:var(--radius-card);
   display:flex;flex-direction:column;gap:12px;min-height:130px}
 .matrix-quadrant h3{font-size:var(--text-display-3);font-weight:600}
-.matrix-axis-x{text-align:center;font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
+.matrix-achse-x{display:flex;align-items:center;gap:var(--space-4);
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
   letter-spacing:.08em;text-transform:uppercase}
+.matrix-achse-x-linie{flex:1;position:relative;height:1px;background:var(--color-border)}
+.matrix-achse-x-linie::before,.matrix-achse-x-linie::after{content:"";position:absolute;
+  top:50%;transform:translateY(-50%);width:0;height:0;
+  border-top:4px solid transparent;border-bottom:4px solid transparent}
+.matrix-achse-x-linie::before{left:0;border-right:6px solid var(--color-border)}
+.matrix-achse-x-linie::after{right:0;border-left:6px solid var(--color-border)}
 @media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
-  .matrix-axis-y{writing-mode:horizontal-tb;transform:none}}
+  .matrix-achse-y{flex-direction:row;justify-content:space-between}
+  .matrix-achse-y::before{top:50%;left:6px;right:0;bottom:auto;width:auto;height:1px}
+  .matrix-achse-y-pfeil{border-left:6px solid transparent;border-bottom:4px solid transparent;
+    border-top:4px solid transparent;border-right:6px solid var(--color-border)}
+  .matrix-achse-y span{writing-mode:horizontal-tb;transform:none}}
 </style>
 
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="04 Daten/03 matrix-2x2">
@@ -20,7 +44,11 @@
     <p class="eyebrow">[NN] — [Einordnung]</p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
     <div class="matrix-wrap">
-      <div class="matrix-axis-y">[ACHSE Y]</div>
+      <div class="matrix-achse-y">
+        <span>[Achse Y oben]</span>
+        <span class="matrix-achse-y-pfeil"></span>
+        <span>[Achse Y unten]</span>
+      </div>
       <div class="matrix-main">
         <div class="matrix-grid">
           <div class="matrix-quadrant reveal"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
@@ -28,7 +56,11 @@
           <div class="matrix-quadrant reveal"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
           <div class="matrix-quadrant reveal"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
         </div>
-        <div class="matrix-axis-x">[ACHSE X]</div>
+        <div class="matrix-achse-x">
+          <span>[Achse X links]</span>
+          <span class="matrix-achse-x-linie"></span>
+          <span>[Achse X rechts]</span>
+        </div>
       </div>
     </div>
   </div>

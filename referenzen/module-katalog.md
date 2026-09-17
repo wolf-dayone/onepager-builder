@@ -358,18 +358,18 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 ## 05 Diagramme
 
-### `05 Diagramme/01 konzentrische-kreise`
+### `05 Diagramme/01 text-graphic`
 
 <sub>Figma-Node `33:19`</sub>
 
-**ZWECK** — DAYONE-Organisationsmodell (Business / Service / Coordination Circles). Fester Bestandteil von Credential-Decks.
+**ZWECK** — Text links, freie Grafik rechts (Diagramm, Illustration, Icon-Komposition o. ä.). Generalisiert aus dem frueheren "Konzentrische Kreise"-Modul; die runde Flaeche ist nur der Platzhalter-Vorschlag, kein Zwang zu Kreisen.
 
 **FÜLLEN**
 
-- Grafik aus dem Keynote-Master übernehmen, nicht neu zeichnen.
-- Links Topline + eine Aussage, warum das Modell relevant ist.
+- Grafik aus dem Keynote-Master oder einer anderen Quelle uebernehmen, nicht neu zeichnen.
+- Links Topline + eine Aussage, warum die Grafik hier relevant ist.
 
-**SCROLL** — Kreisebenen lassen sich nacheinander einblenden (Business → Service → Coordination), gut als Pinned Section.
+**SCROLL** — Bei mehrteiligen Grafiken (z. B. Ebenen eines Modells) lassen sich Teile nacheinander einblenden, gut als Pinned Section.
 
 ### `05 Diagramme/02 diagrammkarte`
 
