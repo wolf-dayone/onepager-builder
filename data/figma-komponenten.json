@@ -5,39 +5,141 @@
   "sectionName": "Module",
   "stand": "2026-09-15",
   "komponenten": [
-    { "nodeId": "56:58",   "name": "00 Elemente/01 kapitel-nav" },
-    { "nodeId": "64:594",  "name": "00 Elemente/02 karte" },
-    { "nodeId": "9:2",     "name": "01 Einstieg/01 cover-hero" },
-    { "nodeId": "27:3",    "name": "01 Einstieg/02 agenda" },
-    { "nodeId": "118:70",  "name": "02 Struktur/01 section-divider" },
-    { "nodeId": "9:4",     "name": "02 Struktur/02 big-statement" },
-    { "nodeId": "35:20",   "name": "02 Struktur/03 stepper" },
-    { "nodeId": "27:48",   "name": "03 Inhalt/01 headline-text-bild" },
-    { "nodeId": "9:5",     "name": "03 Inhalt/02 headline-textraster" },
-    { "nodeId": "9:6",     "name": "03 Inhalt/03 sticky-nummernliste" },
-    { "nodeId": "28:2",    "name": "03 Inhalt/04 karten-3er" },
-    { "nodeId": "28:22",   "name": "03 Inhalt/05 prozess-schritte" },
-    { "nodeId": "118:76",  "name": "04 Daten/01 kennzahlen-grid" },
-    { "nodeId": "36:3",    "name": "04 Daten/02 chart-slide" },
-    { "nodeId": "36:10",   "name": "04 Daten/03 matrix-2x2" },
-    { "nodeId": "36:27",   "name": "04 Daten/04 datenfluss-diagramm" },
-    { "nodeId": "36:41",   "name": "04 Daten/05 tabelle" },
-    { "nodeId": "33:19",   "name": "05 Diagramme/01 way-of-working-kreis" },
-    { "nodeId": "31:20",   "name": "05 Diagramme/02 case-study-diagrammkarte" },
-    { "nodeId": "9:9",     "name": "06 Zeitachse/01 roadmap-timeline" },
-    { "nodeId": "33:3",    "name": "06 Zeitachse/02 roadmap-zoom-in" },
-    { "nodeId": "32:3",    "name": "07 Media/01 screenshot-showcase" },
-    { "nodeId": "32:21",   "name": "07 Media/02 device-mockup" },
-    { "nodeId": "32:30",   "name": "07 Media/03 medien-karten-grid" },
-    { "nodeId": "72:31",   "name": "07 Media/04 grossbild" },
-    { "nodeId": "35:41",   "name": "08 Menschen/01 team-grid" },
-    { "nodeId": "35:74",   "name": "08 Menschen/02 personen-intro" },
-    { "nodeId": "9:8",     "name": "08 Menschen/03 quote-block" },
-    { "nodeId": "30:2",    "name": "09 Referenzen/01 logo-wand" },
-    { "nodeId": "29:38",   "name": "09 Referenzen/02 facts-figures" },
-    { "nodeId": "118:103", "name": "09 Referenzen/03 case-study-ziele" },
-    { "nodeId": "29:3",    "name": "10 Abschluss/01 karten-karussell" },
-    { "nodeId": "33:24",   "name": "10 Abschluss/02 qr-tool-verweis" },
-    { "nodeId": "118:121", "name": "10 Abschluss/03 cta-footer" }
+    {
+      "nodeId": "56:58",
+      "name": "00 Elemente/01 kapitel-nav"
+    },
+    {
+      "nodeId": "64:594",
+      "name": "00 Elemente/02 karte"
+    },
+    {
+      "nodeId": "9:2",
+      "name": "01 Einstieg/01 cover-hero"
+    },
+    {
+      "nodeId": "27:3",
+      "name": "01 Einstieg/02 agenda"
+    },
+    {
+      "nodeId": "118:70",
+      "name": "02 Struktur/01 section-divider"
+    },
+    {
+      "nodeId": "9:4",
+      "name": "02 Struktur/02 big-statement"
+    },
+    {
+      "nodeId": "35:20",
+      "name": "02 Struktur/03 stepper"
+    },
+    {
+      "nodeId": "27:48",
+      "name": "03 Inhalt/01 headline-text-bild"
+    },
+    {
+      "nodeId": "9:5",
+      "name": "03 Inhalt/02 headline-textraster"
+    },
+    {
+      "nodeId": "9:6",
+      "name": "03 Inhalt/03 sticky-nummernliste"
+    },
+    {
+      "nodeId": "28:2",
+      "name": "03 Inhalt/04 kartenraster"
+    },
+    {
+      "nodeId": "28:22",
+      "name": "03 Inhalt/05 prozess-schritte"
+    },
+    {
+      "nodeId": "118:76",
+      "name": "04 Daten/01 kennzahlen-grid"
+    },
+    {
+      "nodeId": "36:3",
+      "name": "04 Daten/02 chart-slide"
+    },
+    {
+      "nodeId": "36:10",
+      "name": "04 Daten/03 matrix-2x2"
+    },
+    {
+      "nodeId": "36:27",
+      "name": "04 Daten/04 fluss-diagramm"
+    },
+    {
+      "nodeId": "36:41",
+      "name": "04 Daten/05 tabelle"
+    },
+    {
+      "nodeId": "33:19",
+      "name": "05 Diagramme/01 konzentrische-kreise"
+    },
+    {
+      "nodeId": "31:20",
+      "name": "05 Diagramme/02 diagrammkarte"
+    },
+    {
+      "nodeId": "9:9",
+      "name": "06 Zeitachse/01 roadmap-timeline"
+    },
+    {
+      "nodeId": "33:3",
+      "name": "06 Zeitachse/02 roadmap-zoom-in"
+    },
+    {
+      "nodeId": "32:3",
+      "name": "07 Media/01 bild-feature-liste"
+    },
+    {
+      "nodeId": "32:21",
+      "name": "07 Media/02 device-mockup"
+    },
+    {
+      "nodeId": "32:30",
+      "name": "07 Media/03 medien-karten-grid"
+    },
+    {
+      "nodeId": "72:31",
+      "name": "07 Media/04 grossbild"
+    },
+    {
+      "nodeId": "35:41",
+      "name": "08 Menschen/01 team-grid"
+    },
+    {
+      "nodeId": "35:74",
+      "name": "08 Menschen/02 bild-intro"
+    },
+    {
+      "nodeId": "9:8",
+      "name": "08 Menschen/03 quote-block"
+    },
+    {
+      "nodeId": "30:2",
+      "name": "09 Referenzen/01 logo-wand"
+    },
+    {
+      "nodeId": "29:38",
+      "name": "09 Referenzen/02 bild-kennzahlenliste"
+    },
+    {
+      "nodeId": "118:103",
+      "name": "09 Referenzen/03 headline-liste"
+    },
+    {
+      "nodeId": "29:3",
+      "name": "10 Abschluss/01 karten-karussell"
+    },
+    {
+      "nodeId": "33:24",
+      "name": "10 Abschluss/02 qr-tool-verweis"
+    },
+    {
+      "nodeId": "118:121",
+      "name": "10 Abschluss/03 cta-footer"
+    }
   ]
 }

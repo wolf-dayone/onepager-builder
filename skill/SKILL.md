@@ -49,11 +49,21 @@ anzuhängen: Meeting-Notizen, Transkript, altes Deck, Stichpunktliste. Daraus di
 Kernbotschaften selbst ziehen und zur Bestätigung vorlegen, statt danach zu fragen.
 Sortieren ist Teil dieser Aufgabe, nicht Voraussetzung für sie.
 
-### 2. Dramaturgie vorschlagen
+### 2. Page Plan erstellen
 
-Vor dem Bauen die geplante Abfolge in einem kurzen Absatz zeigen — als Abschnittstitel in
-Alltagssprache, nicht als Modulnamen. So kann der Mensch die Reihenfolge korrigieren,
-bevor Arbeit hineinfließt.
+Vor dem Bauen die geplante Abfolge festhalten — nicht nur als Absatz im Chat, sondern als
+Datei: `page-plans/_vorlage.plan.md` kopieren nach `page-plans/<projekt-slug>.plan.md` und
+ausfüllen (Seite, Abschnitte, Modul je Abschnitt, Medienstatus). Dem Menschen dabei in
+Alltagssprache zeigen, worum es geht — als Abschnittstitel, nicht als Modulnamen — nicht die
+rohe Tabelle vorlegen. So kann er die Reihenfolge korrigieren, bevor Arbeit hineinfließt.
+
+Der Plan ist der Grund, warum eine spätere Korrektur wie „bei Abschnitt 6 lieber Cards"
+gezielt bleibt: nur die betroffene Zeile in der Tabelle ändern und nur diesen einen Abschnitt
+neu bauen — nicht die ganze Seite neu interpretieren. Jede so vorgenommene Änderung kurz im
+Änderungsprotokoll des Plans festhalten.
+
+Bei einem kurzen, eindeutigen Auftrag (z. B. 6 Module, alles im Briefing benannt) reicht eine
+knappe Tabelle in wenigen Minuten — der Plan ist ein Arbeitsmittel, kein Pflichtformular.
 
 Erprobte Abfolgen je Anlass stehen in `references/module-katalog.md`. Faustregeln:
 
@@ -74,7 +84,7 @@ Füllregeln und Abgrenzung — **direkt aus den Figma-Component-Descriptions gen
 nicht von Hand gepflegt. Was dort steht, steht so in Figma.
 
 Die Abgrenzungen ernst nehmen — sie verhindern die häufigsten Fehlgriffe:
-`big-statement` vs. `quote-block` (Namensnennung?), `karten-3er` vs.
+`big-statement` vs. `quote-block` (Namensnennung?), `kartenraster` vs.
 `headline-textraster` (visuell abgesetzt?), `roadmap-timeline` vs. `roadmap-zoom-in`
 (Überblick oder Planung?).
 
@@ -254,8 +264,9 @@ ist sie für den Menschen nicht erreichbar.
 
 Dazu kurz sagen:
 - welche Abschnitte die Seite hat,
-- was noch fehlt (Bilder, Zahlen, Freigaben) — **Links einzeln nennen**: welcher
-  Button noch kein Ziel hat und welcher Prototyp noch kein Vorschaubild,
+- was noch fehlt — die `Unresolved`-Liste aus dem Page Plan unverändert übernehmen, nicht
+  neu aus dem Gedächtnis zusammenstellen. **Links einzeln nennen**: welcher Button noch kein
+  Ziel hat und welcher Prototyp noch kein Vorschaubild,
 - was der Qualitäts-Check gemeldet hat und was davon bewusst so bleibt,
 - dass sie sich per Doppelklick im Browser öffnen lässt.
 
@@ -300,6 +311,7 @@ Viewports mitschreiben. Der Qualitäts-Check meldet mehrspaltige Raster ohne sol
 | `assets/starter.html` | Immer — Grundlage jeder neuen Seite (Weekly-Abfolge) |
 | `assets/modul-galerie.html` | Sobald ein Modul gebraucht wird, das nicht im Starter steht — alle 34 zum Herauskopieren |
 | `assets/tokens.css` | Wenn ein Modul von Grund auf neu gebaut wird |
+| `assets/page-plan-vorlage.md` | Schritt 2 — Kopiervorlage für den Page Plan |
 | `tools/pruefen.py` | Schritt 8 — prüft eine fertige Seite gegen die Figma-Regeln |
 
 Die Figma-Quelle der Module:
@@ -308,5 +320,5 @@ Die Figma-Quelle der Module:
 `tools/katalog_bauen.py` bei jedem Sync.
 
 **Dieser Skill ist ein Build-Ergebnis.** Quelle ist das Repo
-`github.com/wolf-dayone/slides-test`. Änderungen an Modulen gehören nach `bausteine/`,
+`github.com/wolf-dayone/onepager-builder`. Änderungen an Modulen gehören nach `bausteine/`,
 Änderungen an Regeln in die Figma-Component-Description — nicht in die Dateien hier.

@@ -173,7 +173,25 @@
           var aktiv = t === tab;
           t.setAttribute("aria-selected", aktiv ? "true" : "false");
           var panel = document.getElementById(t.getAttribute("aria-controls"));
-          if (panel) panel.hidden = !aktiv;
+          if (!panel) return;
+          if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
+          panel.hidden = false;
+          if (reduce) return;
+          /* Panels tragen noch ein transitionDelay als Inline-Style vom
+             gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
+             (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
+             verzoegern - deshalb hier zuruecksetzen, damit der Panel-Wechsel
+             immer sofort losläuft. */
+          panel.style.transitionDelay = "0ms";
+          /* Panel startet unsichtbar/leicht versetzt (CSS: .ist-erscheinend),
+             dann per Klasse-Entfernen in den Endzustand ueberfuehrt - das
+             doppelte rAF stellt sicher, dass der Browser den Startzustand
+             erst gemalt hat, bevor die Transition losläuft (sonst überspringt
+             sie manche Browser komplett). */
+          panel.classList.add("ist-erscheinend");
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { panel.classList.remove("ist-erscheinend"); });
+          });
         });
       });
     });

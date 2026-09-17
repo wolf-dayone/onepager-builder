@@ -202,7 +202,8 @@ def pruefe_platzhalter(s, b):
                 b.melden(FEHLER, "platzhalter",
                          f"Unersetzter Platzhalter {p} im sichtbaren Text.",
                          knoten.zeile)
-    for tag, attr in (("title", None), ("meta", "content"), ("img", "alt")):
+    for tag, attr in (("title", None), ("meta", "content"), ("img", "alt"),
+                       ("img", "src")):
         for knoten in s.alle(tag):
             wert = knoten.voller_text() if attr is None else knoten.attrs.get(attr, "")
             if PLATZHALTER.search(wert or ""):
@@ -400,12 +401,12 @@ def pruefe_links(s, b, ist_vorlage):
 # Eine Seite ganz ohne so ein Modul ist eine Textwueste.
 VISUELLE_MODULE = {
     "03 Inhalt/01 headline-text-bild", "04 Daten/02 chart-slide",
-    "05 Diagramme/01 way-of-working-kreis",
-    "05 Diagramme/02 case-study-diagrammkarte",
-    "07 Media/01 screenshot-showcase", "07 Media/02 device-mockup",
+    "05 Diagramme/01 konzentrische-kreise",
+    "05 Diagramme/02 diagrammkarte",
+    "07 Media/01 bild-feature-liste", "07 Media/02 device-mockup",
     "07 Media/03 medien-karten-grid", "07 Media/04 grossbild",
-    "08 Menschen/01 team-grid", "08 Menschen/02 personen-intro",
-    "09 Referenzen/01 logo-wand", "09 Referenzen/02 facts-figures",
+    "08 Menschen/01 team-grid", "08 Menschen/02 bild-intro",
+    "09 Referenzen/01 logo-wand", "09 Referenzen/02 bild-kennzahlenliste",
     "10 Abschluss/02 qr-tool-verweis",
 }
 

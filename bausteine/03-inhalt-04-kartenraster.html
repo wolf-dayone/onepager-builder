@@ -1,0 +1,31 @@
+<!-- braucht: 00 Elemente/02 karte -->
+<style>
+/* ==== Kartenraster ==== */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-8);align-items:start}
+/* Figma: Eyebrow/Headline/Intro stehen HIER gestapelt (nicht wie beim
+   generischen .section-head nebeneinander in zwei Spalten) - Kopf-Container
+   max. 930px breit. Verifiziert 2026-09-16 (Ernst, Screenshot + erneuter
+   Abgleich gegen Node 28:2). Deshalb eigene Klasse statt .section-head. */
+.kartenraster-kopf{max-width:930px}
+.kartenraster-kopf .intro{margin-top:var(--space-6)}
+</style>
+
+<section data-modul="03 Inhalt/04 kartenraster">
+  <div class="wrap">
+    <div class="kartenraster-kopf reveal">
+      <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+      <p class="eyebrow">[NN] — [Kapitelname]</p>
+      <h2 class="h1">[Wie gehen wir vor?]</h2>
+      <p class="intro">[Ein Satz Einordnung.]</p>
+    </div>
+    <div class="cards">
+      <div class="card reveal"><span class="label">[Option A]</span><h3 class="h3">[Titel]</h3>
+        <p class="body">[2–3 Sätze.]</p><span class="tag">[Status]</span></div>
+      <!-- is-selected = die gewählte Option, trägt als einzige Fläche -->
+      <div class="card is-selected reveal"><span class="label">[Option B]</span><h3 class="h3">[Titel]</h3>
+        <p class="body">[2–3 Sätze.]</p><span class="tag">[Gewählt]</span></div>
+      <div class="card reveal"><span class="label">[Option C]</span><h3 class="h3">[Titel]</h3>
+        <p class="body">[2–3 Sätze.]</p><span class="tag">[Nicht evaluiert]</span></div>
+    </div>
+  </div>
+</section>

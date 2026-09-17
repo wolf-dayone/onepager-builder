@@ -258,15 +258,18 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Karte (Baustein) ==== */
 /* Kein Abschnitt, sondern ein Element innerhalb anderer Module - laut Figma
-   eingesetzt in karten-3er und karten-karussell. Deshalb liegt das Karten-CSS
+   eingesetzt in kartenraster und karten-karussell. Deshalb liegt das Karten-CSS
    hier und nicht bei einem der beiden Module: sonst fehlt es einer Seite, die
    nur das Karussell verwendet. */
 .card{display:flex;flex-direction:column;gap:var(--space-4);
-  border-top:1px solid var(--color-main-text);padding-top:28px;padding-bottom:var(--space-8)}
-/* Editorial: Hairline statt Flaeche. Nur die hervorgehobene Karte bekommt
-   Flaeche (Sand/200) - im Hairline-Raster ist das die Auszeichnung fuer
-   "hervorgehoben", deshalb sparsam einsetzen (Figma). */
-.card.is-selected{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-8)}
+  border:1px solid var(--color-border);border-radius:var(--radius-card);
+  padding:var(--space-8)}
+/* Volle Box mit Rahmen fuer jede Karte - Figma-Vorgabe (Node 64:594), nach
+   Abgleich mit Ernst am 2026-09-16 als verbindlich bestaetigt: Figma ist
+   die Quelle der Wahrheit, der Code hatte auf Hairline-Raender abweichen
+   lassen. Die hervorgehobene Karte behaelt zusaetzlich die Flaechenfarbe
+   (Sand/200) als Auszeichnung fuer "gewaehlt". */
+.card.is-selected{background:var(--color-detail)}
 .card .label{font-size:var(--text-body-s);color:var(--color-text)}
 .card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .card.is-selected .tag{color:var(--color-main-text)}
@@ -278,6 +281,12 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Kartenraster ==== */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-8);align-items:start}
+/* Figma: Eyebrow/Headline/Intro stehen HIER gestapelt (nicht wie beim
+   generischen .section-head nebeneinander in zwei Spalten) - Kopf-Container
+   max. 930px breit. Verifiziert 2026-09-16 (Ernst, Screenshot + erneuter
+   Abgleich gegen Node 28:2). Deshalb eigene Klasse statt .section-head. */
+.kartenraster-kopf{max-width:930px}
+.kartenraster-kopf .intro{margin-top:var(--space-6)}
 
 /* ==== Prozess-Schritte (mit Rollen-Spalten) ==== */
 .process-steps{display:flex;flex-direction:column}
@@ -374,6 +383,14 @@ footer.cta{padding-block:var(--space-20)}
   <div class="wrap">
     <div class="top reveal">
       <svg class="logo-mark" width="150" height="27" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
+      <!-- Beide Badges sind unabhaengig voneinander optional (Figma-Description:
+           "Badges sind optional - bei Kundenpitches meist nur einer oder
+           keiner."). Die accent-Badge ist speziell fuer den DAYONE-Weekly-
+           Live-Q&A-Link gedacht - bei allem, was kein Weekly ist (Kundenpitch,
+           Case Study, Review-Seite wie dieser Testbau), eher loeschen statt
+           mit anderem Text zu ueberschreiben. Genauso die zweite Badge
+           (Anlass/KW): nur behalten, wenn es wirklich etwas zu zeigen gibt,
+           sonst den ganzen <div class="badges"> entfernen. -->
       <div class="badges">
         <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
         <span class="badge">[ANLASS – KW 00]</span>
@@ -442,11 +459,13 @@ footer.cta{padding-block:var(--space-20)}
   </div>
 </section>
 
-<section data-modul="03 Inhalt/04 karten-3er">
+<section data-modul="03 Inhalt/04 kartenraster">
   <div class="wrap">
-    <div class="section-head reveal">
-      <div><h2 class="h1">[Wie gehen wir vor?]</h2></div>
-      <p class="intro">[Ein Satz Einordnung — steht rechts neben der Headline.]</p>
+    <div class="kartenraster-kopf reveal">
+      <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+      <p class="eyebrow">[NN] — [Kapitelname]</p>
+      <h2 class="h1">[Wie gehen wir vor?]</h2>
+      <p class="intro">[Ein Satz Einordnung.]</p>
     </div>
     <div class="cards">
       <div class="card reveal"><span class="label">[Option A]</span><h3 class="h3">[Titel]</h3>
@@ -731,7 +750,25 @@ footer.cta{padding-block:var(--space-20)}
           var aktiv = t === tab;
           t.setAttribute("aria-selected", aktiv ? "true" : "false");
           var panel = document.getElementById(t.getAttribute("aria-controls"));
-          if (panel) panel.hidden = !aktiv;
+          if (!panel) return;
+          if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
+          panel.hidden = false;
+          if (reduce) return;
+          /* Panels tragen noch ein transitionDelay als Inline-Style vom
+             gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
+             (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
+             verzoegern - deshalb hier zuruecksetzen, damit der Panel-Wechsel
+             immer sofort losläuft. */
+          panel.style.transitionDelay = "0ms";
+          /* Panel startet unsichtbar/leicht versetzt (CSS: .ist-erscheinend),
+             dann per Klasse-Entfernen in den Endzustand ueberfuehrt - das
+             doppelte rAF stellt sicher, dass der Browser den Startzustand
+             erst gemalt hat, bevor die Transition losläuft (sonst überspringt
+             sie manche Browser komplett). */
+          panel.classList.add("ist-erscheinend");
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { panel.classList.remove("ist-erscheinend"); });
+          });
         });
       });
     });

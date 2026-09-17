@@ -29,7 +29,7 @@ DRAMATURGIE_WEEKLY = [
     "01 Einstieg/02 agenda",
     "02 Struktur/01 section-divider",
     "03 Inhalt/03 sticky-nummernliste",
-    "03 Inhalt/04 karten-3er",
+    "03 Inhalt/04 kartenraster",
     "03 Inhalt/05 prozess-schritte",
     "04 Daten/01 kennzahlen-grid",
     "08 Menschen/03 quote-block",
@@ -49,7 +49,7 @@ def baustein(name, mit_abhaengigkeiten=True):
     """Liest einen Baustein und trennt <style> vom Markup.
 
     Ein Baustein kann per '<!-- braucht: <Figma-Name> -->' erklaeren, dass er
-    das CSS eines anderen voraussetzt - so wie karten-3er und karten-karussell
+    das CSS eines anderen voraussetzt - so wie kartenraster und karten-karussell
     beide auf '00 Elemente/02 karte' aufbauen. Ohne diese Aufloesung faellt ein
     Modul auseinander, sobald das andere nicht mit auf der Seite liegt.
     """
@@ -221,7 +221,19 @@ def starter_bauen(daten):
         css, markup = baustein(name)
         if vorheriger_war_divider:
             markup = marker_entfernen(markup)
-        if "[NN]" in markup:
+        # Nur numerieren, wenn die Sektion wirklich ein neues, in der Nav
+        # verlinktes Kapitel markiert (data-chapter) - nicht bei jedem "[NN]".
+        # Mehrere Module (big-statement, grossbild, bild-kennzahlenliste, ...) tragen
+        # eine EIGENE, optionale Eyebrow mit "[NN]" als Beat innerhalb eines
+        # Kapitels, ohne selbst data-chapter zu fuehren. Wuerde man auf jedes
+        # "[NN]" numerieren, bekaeme so ein Beat eine Kapitelnummer, die in
+        # der selbstbauenden Nav gar nicht existiert - Nummern und Nav-Links
+        # liefen auseinander. Bleibt "[NN]" danach unersetzt stehen, faengt
+        # das der bestehende Platzhalter-FEHLER in tools/pruefen.py ab: wer
+        # das Modul als Kapitelstart braucht, ergaenzt data-chapter selbst
+        # (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow") - wer es
+        # nur als Beat braucht, loescht die Eyebrow-Zeile.
+        if 'data-chapter="[NN]"' in markup:
             kapitel += 1
             markup = nummerieren(markup, f"{kapitel:02d}")
         elif vorheriger_war_divider:

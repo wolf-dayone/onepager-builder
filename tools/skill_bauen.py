@@ -31,6 +31,7 @@ INHALT = {
     "referenzen/tokens.css": "assets/tokens.css",
     "starter.html": "assets/starter.html",
     "modul-galerie.html": "assets/modul-galerie.html",
+    "page-plans/_vorlage.plan.md": "assets/page-plan-vorlage.md",
 
     # Der Qualitaets-Check muss mit: SKILL.md Schritt 7 verlangt ihn, und ohne
     # diese Dateien laeuft er bei niemandem ausserhalb dieses Repos. Die Pfade

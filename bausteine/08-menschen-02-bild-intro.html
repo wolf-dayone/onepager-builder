@@ -1,0 +1,31 @@
+<style>
+/* ==== Bild-Intro ==== */
+.bild-intro{display:grid;grid-template-columns:400px minmax(0,1fr);gap:var(--space-16);
+  align-items:center;max-width:1036px;margin-inline:auto}
+.bild-intro-bild{aspect-ratio:1;border-radius:var(--radius-card);overflow:hidden;
+  background:var(--color-detail);display:flex;align-items:center;justify-content:center;
+  color:var(--color-text);font-size:var(--text-body-s)}
+.bild-intro-bild img{width:100%;height:100%;object-fit:cover}
+.bild-intro .person-name{margin-top:var(--space-4);font-size:var(--text-body-m);
+  line-height:1.3;color:var(--color-main-text)}
+.bild-intro .person-rolle{margin-top:4px;font-size:var(--text-body-s);line-height:1.2;
+  color:var(--color-text)}
+@media(max-width:900px){.bild-intro{grid-template-columns:1fr;gap:var(--space-8)}}
+</style>
+
+<!-- Eine Person. Ab zwei Personen team-grid verwenden. -->
+<section data-modul="08 Menschen/02 bild-intro">
+  <div class="wrap bild-intro">
+    <!-- Portrait aufgelockert, kein Bewerbungsfoto-Look. Figma: Bild links,
+         Text rechts (verifiziert 2026-09-16, Ernst) - anders als bei
+         text-bild ohne .is-gedreht-Pendant, hier fest so verdrahtet. -->
+    <div class="bild-intro-bild reveal">[Portraitfoto]</div>
+    <div class="reveal">
+      <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+      <p class="eyebrow">[NN] — [Vorstellung]</p>
+      <h2 class="h2">[Hi, ich bin …]</h2>
+      <p class="person-name">[Name Nachname]</p>
+      <p class="person-rolle">[Rolle im Projekt]</p>
+    </div>
+  </div>
+</section>

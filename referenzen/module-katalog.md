@@ -17,6 +17,31 @@ zusammengehörige Abschnitte optisch als Einheit. Es gibt **keine feste**
 **Zuordnung** von Farbe zu Modul oder Kapiteltyp — Notizen wie „· dunkel“
 an einzelnen Modulen sind falsch und wurden entfernt.
 
+## Mindesthöhe gilt für alle Module
+
+Jedes Modul ist **mindestens eine Bildschirmhöhe groß** (Code: `100svh`;
+in Figma stellvertretend als 960-px-Rahmen dargestellt — der Rahmen steht
+für „Viewport“, nicht für einen festen Pixelwert). **Mit mehr Inhalt darf**
+**ein Modul wachsen**, verkürzt werden darf es nicht. Eine eigene, kleinere
+`min-height` auf Sektionsebene ist nur zulässig, wenn hier ausdrücklich als
+Ausnahme dokumentiert — aktuell gibt es **keine** Ausnahme.
+
+## Eyebrow ist optional
+
+Die Eyebrow-Zeile (`[NN] — [Kapitelname]`) markiert ein neues, **in der**
+**Kapitel-Nav verlinktes Kapitel** — nicht mehr und nicht weniger. Mehrere
+Module (u. a. `big-statement`, `grossbild`, `bild-kennzahlenliste`,
+`headline-liste`, `device-mockup`, `diagrammkarte`,
+`bild-intro`, `qr-tool-verweis`) tragen in Figma eine eigene, aber
+**optionale** Eyebrow für den Fall, dass sie ein Kapitel eröffnen. Wird ein
+solches Modul **innerhalb** eines Kapitels eingesetzt (als Beat, nicht als
+Kapitelstart), gehört die Eyebrow-Zeile **gelöscht** — pro Kapitel trägt nur
+die jeweils erste Sektion den Kapitelmarker (siehe „KEIN DOPPELTER
+KAPITELMARKER“ weiter unten). Eröffnet das Modul dagegen selbst ein Kapitel,
+braucht es zusätzlich `data-chapter`/`data-chapter-title`/`id` auf der
+Sektion, sonst bleibt die Nummer unverlinkt und `tools/bauen.py` numeriert
+sie nicht (numeriert wird nur, wenn `data-chapter="[NN]"` vorkommt).
+
 > **Lücke in der Quelle:** `01 Einstieg/02 agenda` hat in Figma keine Zweck-/Füllregeln. Bis das nachgetragen ist,
 > gibt es für dieses Modul nichts zu prüfen.
 
@@ -69,7 +94,7 @@ an einzelnen Modulen sind falsch und wurden entfernt.
 **EINGESETZT IN**
 
 - karten-karussell — als horizontal scrollbarer Karten-Track.
-- karten-3er — wenn eine Option Fläche tragen soll.
+- kartenraster — wenn eine Option Fläche tragen soll.
 
 **HINWEIS** — Trägt als einzige Kartenvariante eine Fläche (Sand/200). Im Hairline-Raster der Module ist das die Auszeichnung für "hervorgehoben" — deshalb sparsam einsetzen.
 
@@ -184,7 +209,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 **ZWECK** — Vier gleichrangige Aspekte kompakt nebeneinander, ohne Karten-Optik.
 
-**ABGRENZUNG** — Sollen die Punkte visuell abgesetzt sein, karten-3er nehmen; bei Reihenfolge 00 Elemente/02 karte (als nummerierte Kachel-Reihe).
+**ABGRENZUNG** — Sollen die Punkte visuell abgesetzt sein, kartenraster nehmen; bei Reihenfolge 00 Elemente/02 karte (als nummerierte Kachel-Reihe).
 
 **FÜLLEN**
 
@@ -215,7 +240,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 <sub>Maschinell geprüft: 3–5 Punkte</sub>
 
-### `03 Inhalt/04 karten-3er`
+### `03 Inhalt/04 kartenraster`
 
 <sub>Figma-Node `28:2`</sub>
 
@@ -299,7 +324,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 - Pro Quadrant Titel + 1–2 Sätze.
 - Wenn eine Einordnung gezeigt wird (Punkt/Marker), im Text begründen.
 
-### `04 Daten/04 datenfluss-diagramm`
+### `04 Daten/04 fluss-diagramm`
 
 <sub>Figma-Node `36:27`</sub>
 
@@ -333,7 +358,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 ## 05 Diagramme
 
-### `05 Diagramme/01 way-of-working-kreis`
+### `05 Diagramme/01 konzentrische-kreise`
 
 <sub>Figma-Node `33:19`</sub>
 
@@ -346,7 +371,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 **SCROLL** — Kreisebenen lassen sich nacheinander einblenden (Business → Service → Coordination), gut als Pinned Section.
 
-### `05 Diagramme/02 case-study-diagrammkarte`
+### `05 Diagramme/02 diagrammkarte`
 
 <sub>Figma-Node `31:20`</sub>
 
@@ -399,7 +424,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 ## 07 Media
 
-### `07 Media/01 screenshot-showcase`
+### `07 Media/01 bild-feature-liste`
 
 <sub>Figma-Node `32:3`</sub>
 
@@ -421,7 +446,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 **ZWECK** — Prototypen im Gerätekontext zeigen, wenn die Plattform Teil der Aussage ist.
 
-**ABGRENZUNG** — Geht es um Funktionen statt um Look & Feel: screenshot-showcase.
+**ABGRENZUNG** — Geht es um Funktionen statt um Look & Feel: bild-feature-liste.
 
 **FÜLLEN**
 
@@ -456,7 +481,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 **ZWECK** — Ein Bild, das für sich steht: Atmosphäre, Ort, Team, Produkt im Einsatz. Setzt einen visuellen Ruhepunkt zwischen textlastigen Abschnitten.
 
-**ABGRENZUNG** — Geht es um ein Interface mit Funktionen: screenshot-showcase. Um ein Gerät: device-mockup. Um mehrere Bilder nebeneinander: medien-karten-grid.
+**ABGRENZUNG** — Geht es um ein Interface mit Funktionen: bild-feature-liste. Um ein Gerät: device-mockup. Um mehrere Bilder nebeneinander: medien-karten-grid.
 
 **AUFBAU** — Das Bild läuft randabfallend über die volle Breite und bricht bewusst aus dem 12-Spalten-Raster aus. Kopf und Bildlegende bleiben im Raster (96 px Marge). Genau dieser Kontrast macht die Wirkung — Bild nicht in die Marge einrücken.
 
@@ -489,7 +514,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 <sub>Maschinell geprüft: 3–6 Personen</sub>
 
-### `08 Menschen/02 personen-intro`
+### `08 Menschen/02 bild-intro`
 
 <sub>Figma-Node `35:74`</sub>
 
@@ -535,7 +560,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 <sub>Maschinell geprüft: 12–24 Logos</sub>
 
-### `09 Referenzen/02 facts-figures`
+### `09 Referenzen/02 bild-kennzahlenliste`
 
 <sub>Figma-Node `29:38`</sub>
 
@@ -549,7 +574,7 @@ Bewusst invertiert (Gray/900 + Gray/50), bleibt auch im Dark Mode dunkel.
 
 <sub>Maschinell geprüft: 4–6 Key-Value-Paare</sub>
 
-### `09 Referenzen/03 case-study-ziele`
+### `09 Referenzen/03 headline-liste`
 
 <sub>Figma-Node `118:103`</sub>
 

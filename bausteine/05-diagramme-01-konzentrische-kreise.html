@@ -1,0 +1,34 @@
+<style>
+/* ==== Konzentrische Kreise ==== */
+/* Figma: Grafik aus dem Keynote-Master uebernehmen, nicht neu zeichnen.
+   Hier drei konzentrische Ringe als Platzhalter mit der richtigen Groesse. */
+.kreis-modell{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-16);
+  align-items:center;max-width:1036px;margin-inline:auto}
+.kreis-modell-ringe{position:relative;width:400px;height:400px;max-width:100%;aspect-ratio:1}
+.kreis-modell-ring{position:absolute;inset:0;border-radius:var(--radius-pill);
+  border:1px solid var(--color-border);display:flex;align-items:flex-start;
+  justify-content:center;padding-top:var(--space-4);font-size:var(--text-body-s);
+  color:var(--color-text)}
+.kreis-modell-ring.ist-mitte{inset:22%}
+.kreis-modell-ring.ist-kern{inset:40%;background:var(--color-detail);align-items:center;padding-top:0}
+@media(max-width:900px){
+  .kreis-modell{grid-template-columns:1fr;gap:var(--space-10)}
+  .kreis-modell-ringe{width:100%;margin-inline:auto}
+}
+</style>
+
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="05 Diagramme/01 konzentrische-kreise">
+  <div class="wrap kreis-modell">
+    <div class="reveal">
+      <p class="eyebrow">[NN] — [Way of Working]</p>
+      <h2 class="h2">[Unser Organisationsmodell]</h2>
+      <p class="lead" style="margin-top:var(--space-6)">[Ein Satz, warum das Modell hier relevant ist.]</p>
+    </div>
+    <!-- Ersetzen durch die Grafik aus dem Keynote-Master. -->
+    <div class="kreis-modell-ringe reveal" role="img" aria-label="[Business-, Service- und Coordination-Circles]">
+      <div class="kreis-modell-ring">[Business Circles]</div>
+      <div class="kreis-modell-ring ist-mitte">[Service Circles]</div>
+      <div class="kreis-modell-ring ist-kern">[Coordination]</div>
+    </div>
+  </div>
+</section>

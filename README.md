@@ -50,7 +50,7 @@ python3 tools/skill_bauen.py --pruefen   # Skill-Paket bauen und Drift melden
 | Kapitelmarker passt zur Kapitelnummer; nie auf Divider *und* Folgesektion | Figma `section-divider` |
 | keine Roh-Hexwerte, keine Schriftgröße außerhalb 14/16/19/24/36/76 px | Figma-Variablen |
 | Roobert nicht per `@font-face` eingebettet | Lizenz |
-| keine übrigen `[Platzhalter]` im sichtbaren Text | Skill, Schritt 4 |
+| keine übrigen `[Platzhalter]` im sichtbaren Text, in `<title>`, `<meta content>` oder `<img alt/src>` | Skill, Schritt 4 |
 | Stückzahlen je Modul (3–5 Punkte, 12–24 Logos, 4–6 Meilensteine …) | Figma `FÜLLEN` |
 | `alt` vorhanden, `loading="lazy"` | Zugänglichkeit, Ladezeit |
 | `prefers-reduced-motion` vorhanden | Zugänglichkeit |
@@ -71,8 +71,9 @@ wirklich fehlte — einmal wegen einer zu engen Regex, einmal weil einzeilige Me
 Queries die Zustandsverfolgung zerlegten. Ein Prüfer, der bei kaputtem Input nichts
 meldet, ist schlimmer als keiner: er erzeugt Vertrauen, das er nicht deckt.
 
-`selbsttest.py` baut deshalb zwölf bekannte Fehler in die gebaute Vorlage ein und
-verlangt, dass der Lint genau diese findet.
+`selbsttest.py` baut deshalb eine feste Liste bekannter Fehler in die gebaute Vorlage
+ein und verlangt, dass der Lint genau diese findet — siehe `FAELLE` in der Datei für
+die aktuelle Anzahl und Auswahl.
 
 ---
 

@@ -13,8 +13,14 @@
 .stepper-tab:hover{opacity:.75}
 .stepper-tab[aria-selected="true"]{opacity:1;color:var(--color-main-text);
   border-bottom-color:var(--color-main-text)}
-.stepper-panel{padding-top:var(--space-8)}
+.stepper-panel{padding-top:var(--space-8);transition:opacity .35s var(--ease),transform .35s var(--ease)}
 .stepper-panel[hidden]{display:none}
+/* Uebergangszustand beim Tab-Wechsel: das neu erscheinende Panel startet hier
+   und wird per JS (doppeltes requestAnimationFrame) in den Endzustand
+   ueberfuehrt - siehe _basis.js Abschnitt 9. Nur wenn KEIN
+   prefers-reduced-motion aktiv ist (JS prueft das vorher), sonst bleibt es
+   beim harten hidden-Umschalten wie zuvor. */
+.stepper-panel.ist-erscheinend{opacity:0;transform:translateY(8px)}
 .stepper-panel h3{font-size:var(--text-body-m);font-weight:600;line-height:1.3;
   color:var(--color-main-text)}
 .stepper-panel .desc{margin-top:var(--space-4);font-size:var(--text-body-s);
@@ -26,7 +32,9 @@
 @media(max-width:900px){.stepper-tabs{top:0}}
 </style>
 
-<!-- 3-6 Phasen. Die Leiste bleibt beim Scrollen stehen, der Inhalt wechselt. -->
+<!-- Beliebig viele Phasen ab 3 (2026-09-16, Ernst bestaetigt: keine feste
+     Obergrenze). Die Leiste bleibt beim Scrollen stehen, der Inhalt wechselt.
+     Jedes Panel einheitlich mit 2 Bullet-Punkten befuellen. -->
 <section class="stepper" data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="02 Struktur/03 stepper">
   <div class="wrap">
     <p class="eyebrow">[NN] — [Lifecycle]</p>
@@ -43,7 +51,6 @@
       <h3>[Phase 1]</h3>
       <p class="desc">[Ein Satz, der diese Phase beschreibt.]</p>
       <ul class="stepper-chancen">
-        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
         <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
         <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
       </ul>

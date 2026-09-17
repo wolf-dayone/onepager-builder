@@ -136,7 +136,7 @@ Modul: `logo-wand`. Basiert auf 7.
 
 ## 9. Zoom-Through
 Ein abstraktes Schaubild vergrößert sich beim Scrollen in einen konkreten Screenshot.
-Modul: `case-study-diagrammkarte`. Basiert auf 7, gesteuert über `transform: scale()`.
+Modul: `diagrammkarte`. Basiert auf 7, gesteuert über `transform: scale()`.
 Referenz: cupra-pitch.
 
 ---

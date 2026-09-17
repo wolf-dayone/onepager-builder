@@ -17,6 +17,9 @@
 .device.ist-phone{width:min(220px,100%)}
 .device.ist-phone .schirm{aspect-ratio:9/19.5;border:8px solid var(--color-main-text);
   border-radius:28px}
+.device.ist-tablet{width:min(420px,100%)}
+.device.ist-tablet .schirm{aspect-ratio:4/3;border:10px solid var(--color-main-text);
+  border-radius:18px}
 .device-legende{margin-top:var(--space-8);text-align:center}
 .device-legende h3{font-size:var(--text-body-l);font-weight:600;line-height:1.2;
   color:var(--color-main-text)}
@@ -25,13 +28,19 @@
 @media(max-width:900px){.device-buehne{gap:var(--space-8)}}
 </style>
 
-<!-- Mobile-Screens paarweise, Desktop einzeln - so bleibt die Komposition ruhig. -->
+<!-- Situativ (2026-09-16, Ernst bestaetigt): zeigt je nach Kontext einen
+     einzelnen Laptop, ein einzelnes Tablet, oder ein/mehrere Telefone -
+     keine feste Kombinationspflicht. Nur wenn mehrere Telefone zusammen
+     gezeigt werden, paarweise anordnen, damit die Komposition ruhig bleibt. -->
 <section data-modul="07 Media/02 device-mockup">
   <div class="wrap">
+    <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
     <p class="eyebrow is-centered">[NN] — [Prototyp]</p>
+    <!-- Beispiel: einzelner Laptop. Alternativen: <div class="device ist-tablet">
+         oder ein/mehrere <div class="device ist-phone"> - je nach Kontext waehlen,
+         nicht zwingend kombinieren. -->
     <div class="device-buehne reveal">
       <div class="device ist-laptop"><div class="schirm">[Screen]</div><div class="fuss"></div></div>
-      <div class="device ist-phone"><div class="schirm">[Screen]</div></div>
     </div>
     <div class="device-legende reveal">
       <h3>[Prototyp im Device]</h3>

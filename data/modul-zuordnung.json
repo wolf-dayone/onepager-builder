@@ -27,33 +27,33 @@
     "03 Inhalt/01 headline-text-bild":          { "klasse": "text-bild", "textlastig": true },
     "03 Inhalt/02 headline-textraster":         { "klasse": "textraster", "zaehlt": "raster-col", "einheit": "Spalten", "textlastig": true },
     "03 Inhalt/03 sticky-nummernliste":         { "klasse": "sticky-list", "zaehlt": "item", "einheit": "Punkte", "textlastig": true },
-    "03 Inhalt/04 karten-3er":                  { "klasse": "cards", "zaehlt": "card", "genau": 3, "textlastig": true },
+    "03 Inhalt/04 kartenraster":                  { "klasse": "cards", "zaehlt": "card", "textlastig": true },
     "03 Inhalt/05 prozess-schritte":            { "klasse": "process-steps", "zaehlt": "process-step", "einheit": "Schritte", "textlastig": true },
 
     "04 Daten/01 kennzahlen-grid":              { "klasse": "stats", "zaehlt": "stat", "einheit": "Kennzahlen" },
     "04 Daten/02 chart-slide":                  { "klasse": "chart-slide" },
     "04 Daten/03 matrix-2x2":                   { "klasse": "matrix-grid", "zaehlt": "matrix-quadrant", "genau": 4, "textlastig": true },
-    "04 Daten/04 datenfluss-diagramm":          { "klasse": "datenfluss", "zaehlt": "fluss-station", "einheit": "Stationen" },
+    "04 Daten/04 fluss-diagramm":          { "klasse": "fluss-diagramm", "zaehlt": "fluss-station", "einheit": "Stationen" },
     "04 Daten/05 tabelle":                      { "klasse": "table", "textlastig": true },
 
-    "05 Diagramme/01 way-of-working-kreis":     { "klasse": "wow-kreis" },
-    "05 Diagramme/02 case-study-diagrammkarte": { "klasse": "diagrammkarte" },
+    "05 Diagramme/01 konzentrische-kreise":     { "klasse": "kreis-modell" },
+    "05 Diagramme/02 diagrammkarte": { "klasse": "diagrammkarte" },
 
     "06 Zeitachse/01 roadmap-timeline":         { "klasse": "timeline", "zaehlt": "timeline-item", "einheit": "Meilensteine" },
     "06 Zeitachse/02 roadmap-zoom-in":          { "klasse": "roadmap-zoom", "zaehlt": "zoom-meilenstein", "einheit": "Meilensteine" },
 
-    "07 Media/01 screenshot-showcase":          { "klasse": "showcase", "zaehlt": "showcase-punkt", "einheit": "Feature-Punkte" },
+    "07 Media/01 bild-feature-liste":          { "klasse": "bild-feature", "zaehlt": "bild-feature-punkt", "einheit": "Feature-Punkte" },
     "07 Media/02 device-mockup":                { "klasse": "device-mockup", "zaehlt": "device", "einheit": "Devices" },
     "07 Media/03 medien-karten-grid":           { "klasse": "medien-grid", "zaehlt": "medien-karte" },
     "07 Media/04 grossbild":                    { "klasse": "fullbleed" },
 
     "08 Menschen/01 team-grid":                 { "klasse": "team-grid", "zaehlt": "team-member", "einheit": "Personen" },
-    "08 Menschen/02 personen-intro":            { "klasse": "personen-intro" },
+    "08 Menschen/02 bild-intro":            { "klasse": "bild-intro" },
     "08 Menschen/03 quote-block":               { "klasse": "quote" },
 
     "09 Referenzen/01 logo-wand":               { "klasse": "logo-wand", "zaehlt": "logo-slot", "einheit": "Logos" },
-    "09 Referenzen/02 facts-figures":           { "klasse": "facts-list", "zaehlt": "facts-item", "einheit": "Key-Value-Paare" },
-    "09 Referenzen/03 case-study-ziele":        { "klasse": "cs-ziele", "zaehlt": "ziel", "einheit": "Ziele" },
+    "09 Referenzen/02 bild-kennzahlenliste":           { "klasse": "kennzahlenliste", "zaehlt": "kennzahlenliste-item", "einheit": "Key-Value-Paare" },
+    "09 Referenzen/03 headline-liste":        { "klasse": "headline-liste", "zaehlt": "ziel", "einheit": "Ziele" },
 
     "10 Abschluss/01 karten-karussell":         { "klasse": "carousel", "zaehlt": "card", "einheit": "Elemente" },
     "10 Abschluss/02 qr-tool-verweis":          { "klasse": "qr-verweis" },

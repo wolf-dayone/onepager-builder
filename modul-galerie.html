@@ -221,15 +221,18 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Karte (Baustein) ==== */
 /* Kein Abschnitt, sondern ein Element innerhalb anderer Module - laut Figma
-   eingesetzt in karten-3er und karten-karussell. Deshalb liegt das Karten-CSS
+   eingesetzt in kartenraster und karten-karussell. Deshalb liegt das Karten-CSS
    hier und nicht bei einem der beiden Module: sonst fehlt es einer Seite, die
    nur das Karussell verwendet. */
 .card{display:flex;flex-direction:column;gap:var(--space-4);
-  border-top:1px solid var(--color-main-text);padding-top:28px;padding-bottom:var(--space-8)}
-/* Editorial: Hairline statt Flaeche. Nur die hervorgehobene Karte bekommt
-   Flaeche (Sand/200) - im Hairline-Raster ist das die Auszeichnung fuer
-   "hervorgehoben", deshalb sparsam einsetzen (Figma). */
-.card.is-selected{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-8)}
+  border:1px solid var(--color-border);border-radius:var(--radius-card);
+  padding:var(--space-8)}
+/* Volle Box mit Rahmen fuer jede Karte - Figma-Vorgabe (Node 64:594), nach
+   Abgleich mit Ernst am 2026-09-16 als verbindlich bestaetigt: Figma ist
+   die Quelle der Wahrheit, der Code hatte auf Hairline-Raender abweichen
+   lassen. Die hervorgehobene Karte behaelt zusaetzlich die Flaechenfarbe
+   (Sand/200) als Auszeichnung fuer "gewaehlt". */
+.card.is-selected{background:var(--color-detail)}
 .card .label{font-size:var(--text-body-s);color:var(--color-text)}
 .card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .card.is-selected .tag{color:var(--color-main-text)}
@@ -301,8 +304,14 @@ footer.cta{padding-block:var(--space-20)}
 .stepper-tab:hover{opacity:.75}
 .stepper-tab[aria-selected="true"]{opacity:1;color:var(--color-main-text);
   border-bottom-color:var(--color-main-text)}
-.stepper-panel{padding-top:var(--space-8)}
+.stepper-panel{padding-top:var(--space-8);transition:opacity .35s var(--ease),transform .35s var(--ease)}
 .stepper-panel[hidden]{display:none}
+/* Uebergangszustand beim Tab-Wechsel: das neu erscheinende Panel startet hier
+   und wird per JS (doppeltes requestAnimationFrame) in den Endzustand
+   ueberfuehrt - siehe _basis.js Abschnitt 9. Nur wenn KEIN
+   prefers-reduced-motion aktiv ist (JS prueft das vorher), sonst bleibt es
+   beim harten hidden-Umschalten wie zuvor. */
+.stepper-panel.ist-erscheinend{opacity:0;transform:translateY(8px)}
 .stepper-panel h3{font-size:var(--text-body-m);font-weight:600;line-height:1.3;
   color:var(--color-main-text)}
 .stepper-panel .desc{margin-top:var(--space-4);font-size:var(--text-body-s);
@@ -354,6 +363,12 @@ footer.cta{padding-block:var(--space-20)}
 
 /* ==== Kartenraster ==== */
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-8);align-items:start}
+/* Figma: Eyebrow/Headline/Intro stehen HIER gestapelt (nicht wie beim
+   generischen .section-head nebeneinander in zwei Spalten) - Kopf-Container
+   max. 930px breit. Verifiziert 2026-09-16 (Ernst, Screenshot + erneuter
+   Abgleich gegen Node 28:2). Deshalb eigene Klasse statt .section-head. */
+.kartenraster-kopf{max-width:930px}
+.kartenraster-kopf .intro{margin-top:var(--space-6)}
 
 /* ==== Prozess-Schritte (mit Rollen-Spalten) ==== */
 .process-steps{display:flex;flex-direction:column}
@@ -407,8 +422,8 @@ footer.cta{padding-block:var(--space-20)}
 @media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
   .matrix-axis-y{writing-mode:horizontal-tb;transform:none}}
 
-/* ==== Datenfluss-Diagramm ==== */
-.datenfluss{display:flex;align-items:center;gap:var(--space-6);margin-top:var(--space-8)}
+/* ==== Fluss-Diagramm ==== */
+.fluss-diagramm{display:flex;align-items:center;gap:var(--space-6);margin-top:var(--space-8)}
 .fluss-station{flex:1;min-height:120px;border-radius:var(--radius-card);
   background:var(--color-detail);display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:4px;padding:var(--space-4);text-align:center}
@@ -416,7 +431,7 @@ footer.cta{padding-block:var(--space-20)}
 .fluss-station .art{font-size:var(--text-body-s);line-height:1.2;color:var(--color-text)}
 .fluss-pfeil{flex:none;font-size:var(--text-body-m);color:var(--color-text)}
 @media(max-width:900px){
-  .datenfluss{flex-direction:column;align-items:stretch}
+  .fluss-diagramm{flex-direction:column;align-items:stretch}
   .fluss-pfeil{align-self:center;transform:rotate(90deg)}
 }
 
@@ -428,23 +443,26 @@ footer.cta{padding-block:var(--space-20)}
   font-size:var(--text-body-m);color:var(--color-text)}
 .table td:first-child{font-weight:600;font-size:var(--text-body-ms);color:var(--color-main-text)}
 .table td.num{text-align:right;font-variant-numeric:tabular-nums}
+/* Figma: alternierende Zeilenfaerbung (Zebra-Streifen) - 2026-09-16 von
+   Ernst bestaetigt, Code hatte bisher nur die Hairline-Trennung. */
+.table tbody tr:nth-child(even) td{background:var(--color-detail)}
 @media(max-width:700px){.table-scroll{overflow-x:auto}.table{min-width:560px}}
 
-/* ==== Way-of-Working-Kreis ==== */
+/* ==== Konzentrische Kreise ==== */
 /* Figma: Grafik aus dem Keynote-Master uebernehmen, nicht neu zeichnen.
    Hier drei konzentrische Ringe als Platzhalter mit der richtigen Groesse. */
-.wow-kreis{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-16);
+.kreis-modell{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-16);
   align-items:center;max-width:1036px;margin-inline:auto}
-.wow-ringe{position:relative;width:400px;height:400px;max-width:100%;aspect-ratio:1}
-.wow-ring{position:absolute;inset:0;border-radius:var(--radius-pill);
+.kreis-modell-ringe{position:relative;width:400px;height:400px;max-width:100%;aspect-ratio:1}
+.kreis-modell-ring{position:absolute;inset:0;border-radius:var(--radius-pill);
   border:1px solid var(--color-border);display:flex;align-items:flex-start;
   justify-content:center;padding-top:var(--space-4);font-size:var(--text-body-s);
   color:var(--color-text)}
-.wow-ring.ist-mitte{inset:22%}
-.wow-ring.ist-kern{inset:40%;background:var(--color-detail);align-items:center;padding-top:0}
+.kreis-modell-ring.ist-mitte{inset:22%}
+.kreis-modell-ring.ist-kern{inset:40%;background:var(--color-detail);align-items:center;padding-top:0}
 @media(max-width:900px){
-  .wow-kreis{grid-template-columns:1fr;gap:var(--space-10)}
-  .wow-ringe{width:100%;margin-inline:auto}
+  .kreis-modell{grid-template-columns:1fr;gap:var(--space-10)}
+  .kreis-modell-ringe{width:100%;margin-inline:auto}
 }
 
 /* ==== Case-Study-Diagrammkarte ==== */
@@ -504,22 +522,22 @@ footer.cta{padding-block:var(--space-20)}
   .gantt-balken{grid-column:1 / -1}
 }
 
-/* ==== Screenshot-Showcase ==== */
-.showcase{display:grid;grid-template-columns:760px minmax(0,1fr);gap:var(--space-16);
+/* ==== Bild + Feature-Liste ==== */
+.bild-feature{display:grid;grid-template-columns:760px minmax(0,1fr);gap:var(--space-16);
   align-items:center}
-.showcase-bild{aspect-ratio:760/480;border-radius:var(--radius-card);overflow:hidden;
+.bild-feature-bild{aspect-ratio:760/480;border-radius:var(--radius-card);overflow:hidden;
   background:var(--color-detail);display:flex;align-items:center;justify-content:center;
   color:var(--color-text);font-size:var(--text-body-s)}
-.showcase-bild img{width:100%;height:100%;object-fit:cover}
-.showcase-version{font-size:var(--text-body-s);line-height:1.2;color:var(--color-text)}
-.showcase-feature{margin-top:var(--space-4);font-size:var(--text-body-l);font-weight:600;
+.bild-feature-bild img{width:100%;height:100%;object-fit:cover}
+.bild-feature-version{font-size:var(--text-body-s);line-height:1.2;color:var(--color-text)}
+.bild-feature-titel{margin-top:var(--space-4);font-size:var(--text-body-l);font-weight:600;
   line-height:1.2;color:var(--color-main-text)}
-.showcase-punkte{list-style:none;padding:0;margin:var(--space-4) 0 0;
+.bild-feature-punkte{list-style:none;padding:0;margin:var(--space-4) 0 0;
   display:flex;flex-direction:column;gap:var(--space-4)}
-.showcase-punkt{display:flex;gap:12px;font-size:var(--text-body-s);line-height:1.2;
+.bild-feature-punkt{display:flex;gap:12px;font-size:var(--text-body-s);line-height:1.2;
   color:var(--color-text)}
-@media(max-width:1200px){.showcase{grid-template-columns:minmax(0,1fr) 320px}}
-@media(max-width:900px){.showcase{grid-template-columns:1fr;gap:var(--space-8)}}
+@media(max-width:1200px){.bild-feature{grid-template-columns:minmax(0,1fr) 320px}}
+@media(max-width:900px){.bild-feature{grid-template-columns:1fr;gap:var(--space-8)}}
 
 /* ==== Device-Mockup ==== */
 /* Figma: echte Geraete aus dem DAYONE Designsystem. Hier als CSS-Rahmen
@@ -539,6 +557,9 @@ footer.cta{padding-block:var(--space-20)}
 .device.ist-phone{width:min(220px,100%)}
 .device.ist-phone .schirm{aspect-ratio:9/19.5;border:8px solid var(--color-main-text);
   border-radius:28px}
+.device.ist-tablet{width:min(420px,100%)}
+.device.ist-tablet .schirm{aspect-ratio:4/3;border:10px solid var(--color-main-text);
+  border-radius:18px}
 .device-legende{margin-top:var(--space-8);text-align:center}
 .device-legende h3{font-size:var(--text-body-l);font-weight:600;line-height:1.2;
   color:var(--color-main-text)}
@@ -596,18 +617,18 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 .team-member .name{font-weight:600;font-size:var(--text-body-ms)}
 .team-member .role{font-size:var(--text-body-s);color:var(--color-text)}
 
-/* ==== Personen-Intro ==== */
-.personen-intro{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:var(--space-16);
+/* ==== Bild-Intro ==== */
+.bild-intro{display:grid;grid-template-columns:400px minmax(0,1fr);gap:var(--space-16);
   align-items:center;max-width:1036px;margin-inline:auto}
-.personen-portrait{aspect-ratio:1;border-radius:var(--radius-card);overflow:hidden;
+.bild-intro-bild{aspect-ratio:1;border-radius:var(--radius-card);overflow:hidden;
   background:var(--color-detail);display:flex;align-items:center;justify-content:center;
   color:var(--color-text);font-size:var(--text-body-s)}
-.personen-portrait img{width:100%;height:100%;object-fit:cover}
-.personen-intro .person-name{margin-top:var(--space-4);font-size:var(--text-body-m);
+.bild-intro-bild img{width:100%;height:100%;object-fit:cover}
+.bild-intro .person-name{margin-top:var(--space-4);font-size:var(--text-body-m);
   line-height:1.3;color:var(--color-main-text)}
-.personen-intro .person-rolle{margin-top:4px;font-size:var(--text-body-s);line-height:1.2;
+.bild-intro .person-rolle{margin-top:4px;font-size:var(--text-body-s);line-height:1.2;
   color:var(--color-text)}
-@media(max-width:900px){.personen-intro{grid-template-columns:1fr;gap:var(--space-8)}}
+@media(max-width:900px){.bild-intro{grid-template-columns:1fr;gap:var(--space-8)}}
 
 /* ==== Zitat ==== */
 .quote{background:var(--color-detail);text-align:center}
@@ -625,24 +646,23 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   filter:grayscale(1);opacity:.85}
 @media(max-width:900px){.logo-wand{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-/* ==== Facts & Figures ==== */
-.facts{display:flex;gap:var(--space-16);align-items:center}
-.facts-image{flex:none;width:40%;aspect-ratio:560/360;background:var(--gray-100);border-radius:var(--radius-card);
+/* ==== Bild + Kennzahlenliste ==== */
+.bild-liste{display:flex;gap:var(--space-16);align-items:center}
+.bild-liste-bild{flex:none;width:40%;aspect-ratio:560/360;background:var(--gray-100);border-radius:var(--radius-card);
   display:flex;align-items:center;justify-content:center;color:var(--color-text);font-size:var(--text-body-s)}
-.facts-list{flex:1;display:flex;flex-direction:column;gap:var(--space-6);margin:0}
-.facts-list dt{font-size:var(--text-body-s);color:var(--color-text)}
-.facts-list dd{margin:2px 0 0;font-size:var(--text-body-m);color:var(--color-main-text)}
-@media(max-width:900px){.facts{flex-direction:column;align-items:stretch}.facts-image{width:100%}}
+.kennzahlenliste{flex:1;display:flex;flex-direction:column;gap:var(--space-6);margin:0}
+.kennzahlenliste dt{font-size:var(--text-body-s);color:var(--color-text)}
+.kennzahlenliste dd{margin:2px 0 0;font-size:var(--text-body-m);color:var(--color-main-text)}
+@media(max-width:900px){.bild-liste{flex-direction:column;align-items:stretch}.bild-liste-bild{width:100%}}
 
-/* ==== Case-Study-Ziele ==== */
-.cs-ziele{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-20);
+/* ==== Headline + Liste ==== */
+.headline-liste{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-20);
   align-items:center}
-.cs-ziele .kunde{font-size:var(--text-body-s);line-height:1.2;color:var(--color-main-text)}
-.cs-ziele .ziele{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;
+.headline-liste .ziele{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;
   gap:var(--space-4)}
-.cs-ziele .ziel{display:flex;gap:12px;font-size:var(--text-body-m);line-height:1.3;
+.headline-liste .ziel{display:flex;gap:12px;font-size:var(--text-body-m);line-height:1.3;
   color:var(--color-main-text)}
-@media(max-width:900px){.cs-ziele{grid-template-columns:1fr;gap:var(--space-8)}}
+@media(max-width:900px){.headline-liste{grid-template-columns:1fr;gap:var(--space-8)}}
 
 /* ==== Karten-Karussell ==== */
 .carousel{overflow-x:auto;scroll-snap-type:x mandatory;display:flex;gap:var(--space-8);
@@ -755,6 +775,14 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   <div class="wrap">
     <div class="top reveal">
       <svg class="logo-mark" width="150" height="27" aria-label="DAYONE"><use href="#dayone-logo"></use></svg>
+      <!-- Beide Badges sind unabhaengig voneinander optional (Figma-Description:
+           "Badges sind optional - bei Kundenpitches meist nur einer oder
+           keiner."). Die accent-Badge ist speziell fuer den DAYONE-Weekly-
+           Live-Q&A-Link gedacht - bei allem, was kein Weekly ist (Kundenpitch,
+           Case Study, Review-Seite wie dieser Testbau), eher loeschen statt
+           mit anderem Text zu ueberschreiben. Genauso die zweite Badge
+           (Anlass/KW): nur behalten, wenn es wirklich etwas zu zeigen gibt,
+           sonst den ganzen <div class="badges"> entfernen. -->
       <div class="badges">
         <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
         <span class="badge">[ANLASS – KW 00]</span>
@@ -809,13 +837,16 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <!-- Ohne Namensnennung. Mit Name + Rolle stattdessen quote-block nehmen. -->
 <section class="big-statement" data-modul="02 Struktur/02 big-statement">
   <div class="wrap reveal">
+    <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "02" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
     <p class="eyebrow is-centered">02 — [Kapitelname]</p>
     <p class="claim">[Ein Satz, max. zwei Zeilen. Stecken zwei Gedanken drin: zwei Module.]</p>
   </div>
 </section>
 
 <div class="galerie-kopf"><span><b>02 Struktur/03 stepper</b></span><span class="kategorie">Figma-Node 35:20</span></div>
-<!-- 3-6 Phasen. Die Leiste bleibt beim Scrollen stehen, der Inhalt wechselt. -->
+<!-- Beliebig viele Phasen ab 3 (2026-09-16, Ernst bestaetigt: keine feste
+     Obergrenze). Die Leiste bleibt beim Scrollen stehen, der Inhalt wechselt.
+     Jedes Panel einheitlich mit 2 Bullet-Punkten befuellen. -->
 <section class="stepper" data-chapter="03" data-chapter-title="[Kapitelname]" id="kapitel-03" data-modul="02 Struktur/03 stepper">
   <div class="wrap">
     <p class="eyebrow">03 — [Lifecycle]</p>
@@ -832,7 +863,6 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
       <h3>[Phase 1]</h3>
       <p class="desc">[Ein Satz, der diese Phase beschreibt.]</p>
       <ul class="stepper-chancen">
-        <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
         <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
         <li><span aria-hidden="true">→</span><span>[Konkreter Nutzen in dieser Phase.]</span></li>
       </ul>
@@ -914,12 +944,14 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>03 Inhalt/04 karten-3er</b></span><span class="kategorie">Figma-Node 28:2</span></div>
-<section data-modul="03 Inhalt/04 karten-3er">
+<div class="galerie-kopf"><span><b>03 Inhalt/04 kartenraster</b></span><span class="kategorie">Figma-Node 28:2</span></div>
+<section data-modul="03 Inhalt/04 kartenraster">
   <div class="wrap">
-    <div class="section-head reveal">
-      <div><h2 class="h1">[Wie gehen wir vor?]</h2></div>
-      <p class="intro">[Ein Satz Einordnung — steht rechts neben der Headline.]</p>
+    <div class="kartenraster-kopf reveal">
+      <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "07" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+      <p class="eyebrow">07 — [Kapitelname]</p>
+      <h2 class="h1">[Wie gehen wir vor?]</h2>
+      <p class="intro">[Ein Satz Einordnung.]</p>
     </div>
     <div class="cards">
       <div class="card reveal"><span class="label">[Option A]</span><h3 class="h3">[Titel]</h3>
@@ -934,9 +966,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>03 Inhalt/05 prozess-schritte</b></span><span class="kategorie">Figma-Node 28:22</span></div>
-<section data-chapter="07" data-chapter-title="[Kapitelname]" id="kapitel-07" data-modul="03 Inhalt/05 prozess-schritte">
+<section data-chapter="08" data-chapter-title="[Kapitelname]" id="kapitel-08" data-modul="03 Inhalt/05 prozess-schritte">
   <div class="wrap">
-    <p class="eyebrow">07 — [Vorgehen]</p>
+    <p class="eyebrow">08 — [Vorgehen]</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Wie läuft es ab?]</h2>
     <div class="process-steps">
       <div class="process-step reveal"><span class="num">01</span>
@@ -962,11 +994,11 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>04 Daten/01 kennzahlen-grid</b></span><span class="kategorie">Figma-Node 118:76</span></div>
-<section class="dark" data-chapter="08" data-chapter-title="[Kapitelname]" id="kapitel-08" data-modul="04 Daten/01 kennzahlen-grid">
+<section class="dark" data-chapter="09" data-chapter-title="[Kapitelname]" id="kapitel-09" data-modul="04 Daten/01 kennzahlen-grid">
   <div class="wrap">
     <div class="section-head reveal">
       <div>
-        <p class="eyebrow">08 — [Bilanz]</p>
+        <p class="eyebrow">09 — [Bilanz]</p>
         <h2 class="h1">[Das Projekt in Zahlen]</h2>
       </div>
     </div>
@@ -983,9 +1015,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 
 <div class="galerie-kopf"><span><b>04 Daten/02 chart-slide</b></span><span class="kategorie">Figma-Node 36:3</span></div>
 <!-- Ein Chart pro Modul. Titel sagt die Erkenntnis, nicht die Datenart. -->
-<section class="chart-slide" data-chapter="09" data-chapter-title="[Kapitelname]" id="kapitel-09" data-modul="04 Daten/02 chart-slide">
+<section class="chart-slide" data-chapter="10" data-chapter-title="[Kapitelname]" id="kapitel-10" data-modul="04 Daten/02 chart-slide">
   <div class="wrap">
-    <p class="eyebrow">09 — [Daten]</p>
+    <p class="eyebrow">10 — [Daten]</p>
     <h2 class="h1 reveal">[Nutzung verdoppelt sich ab März]</h2>
     <p class="small" style="margin-top:6px;color:var(--color-text)">[Kurze Einordnung, was das Chart zeigt.]</p>
     <div class="chart reveal" role="img" aria-label="[Beschreibung des Diagramms für Screenreader]">
@@ -1000,9 +1032,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>04 Daten/03 matrix-2x2</b></span><span class="kategorie">Figma-Node 36:10</span></div>
-<section data-chapter="10" data-chapter-title="[Kapitelname]" id="kapitel-10" data-modul="04 Daten/03 matrix-2x2">
+<section data-chapter="11" data-chapter-title="[Kapitelname]" id="kapitel-11" data-modul="04 Daten/03 matrix-2x2">
   <div class="wrap">
-    <p class="eyebrow">10 — [Einordnung]</p>
+    <p class="eyebrow">11 — [Einordnung]</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
     <div class="matrix-wrap">
       <div class="matrix-axis-y">[ACHSE Y]</div>
@@ -1019,13 +1051,13 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>04 Daten/04 datenfluss-diagramm</b></span><span class="kategorie">Figma-Node 36:27</span></div>
+<div class="galerie-kopf"><span><b>04 Daten/04 fluss-diagramm</b></span><span class="kategorie">Figma-Node 36:27</span></div>
 <!-- 3-5 Stationen, Pfeilrichtung konsequent links nach rechts. -->
-<section data-chapter="11" data-chapter-title="[Kapitelname]" id="kapitel-11" data-modul="04 Daten/04 datenfluss-diagramm">
+<section data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-modul="04 Daten/04 fluss-diagramm">
   <div class="wrap">
-    <p class="eyebrow">11 — [Architektur]</p>
+    <p class="eyebrow">12 — [Architektur]</p>
     <h2 class="h1 reveal">[Was fließt von wo nach wo]</h2>
-    <div class="datenfluss reveal">
+    <div class="fluss-diagramm reveal">
       <div class="fluss-station"><span class="name">[Quelle]</span><span class="art">[System / Dienst]</span></div>
       <span class="fluss-pfeil" aria-hidden="true">→</span>
       <div class="fluss-station"><span class="name">[Verarbeitung]</span><span class="art">[System / Dienst]</span></div>
@@ -1036,9 +1068,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>04 Daten/05 tabelle</b></span><span class="kategorie">Figma-Node 36:41</span></div>
-<section data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-modul="04 Daten/05 tabelle">
+<section data-chapter="13" data-chapter-title="[Kapitelname]" id="kapitel-13" data-modul="04 Daten/05 tabelle">
   <div class="wrap table-scroll">
-    <p class="eyebrow">12 — [Übersicht]</p>
+    <p class="eyebrow">13 — [Übersicht]</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-16)">[Tabellentitel]</h2>
     <table class="table reveal">
       <thead><tr><th>[Spalte A]</th><th>[Spalte B]</th><th>[Spalte C]</th><th>[Spalte D]</th></tr></thead>
@@ -1051,28 +1083,29 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>05 Diagramme/01 way-of-working-kreis</b></span><span class="kategorie">Figma-Node 33:19</span></div>
-<section data-chapter="13" data-chapter-title="[Kapitelname]" id="kapitel-13" data-modul="05 Diagramme/01 way-of-working-kreis">
-  <div class="wrap wow-kreis">
+<div class="galerie-kopf"><span><b>05 Diagramme/01 konzentrische-kreise</b></span><span class="kategorie">Figma-Node 33:19</span></div>
+<section data-chapter="14" data-chapter-title="[Kapitelname]" id="kapitel-14" data-modul="05 Diagramme/01 konzentrische-kreise">
+  <div class="wrap kreis-modell">
     <div class="reveal">
-      <p class="eyebrow">13 — [Way of Working]</p>
+      <p class="eyebrow">14 — [Way of Working]</p>
       <h2 class="h2">[Unser Organisationsmodell]</h2>
       <p class="lead" style="margin-top:var(--space-6)">[Ein Satz, warum das Modell hier relevant ist.]</p>
     </div>
     <!-- Ersetzen durch die Grafik aus dem Keynote-Master. -->
-    <div class="wow-ringe reveal" role="img" aria-label="[Business-, Service- und Coordination-Circles]">
-      <div class="wow-ring">[Business Circles]</div>
-      <div class="wow-ring ist-mitte">[Service Circles]</div>
-      <div class="wow-ring ist-kern">[Coordination]</div>
+    <div class="kreis-modell-ringe reveal" role="img" aria-label="[Business-, Service- und Coordination-Circles]">
+      <div class="kreis-modell-ring">[Business Circles]</div>
+      <div class="kreis-modell-ring ist-mitte">[Service Circles]</div>
+      <div class="kreis-modell-ring ist-kern">[Coordination]</div>
     </div>
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>05 Diagramme/02 case-study-diagrammkarte</b></span><span class="kategorie">Figma-Node 31:20</span></div>
+<div class="galerie-kopf"><span><b>05 Diagramme/02 diagrammkarte</b></span><span class="kategorie">Figma-Node 31:20</span></div>
 <!-- Diagramm reduziert halten: es soll Aufmerksamkeit binden, nicht erklaert werden. -->
-<section class="diagrammkarte" data-modul="05 Diagramme/02 case-study-diagrammkarte">
+<section class="diagrammkarte" data-modul="05 Diagramme/02 diagrammkarte">
   <div class="wrap reveal">
-    <p class="eyebrow is-centered">14 — [Case Study]</p>
+    <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "15" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+    <p class="eyebrow is-centered">15 — [Case Study]</p>
     <div class="schaubild">[Diagramm / Flywheel]</div>
     <p class="projekt">[PROJEKTNAME]</p>
     <p class="leistungen">[Digitalstrategie und Produktentwicklung]</p>
@@ -1080,9 +1113,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>06 Zeitachse/01 roadmap-timeline</b></span><span class="kategorie">Figma-Node 9:9</span></div>
-<section data-chapter="15" data-chapter-title="[Kapitelname]" id="kapitel-15" data-modul="06 Zeitachse/01 roadmap-timeline">
+<section data-chapter="16" data-chapter-title="[Kapitelname]" id="kapitel-16" data-modul="06 Zeitachse/01 roadmap-timeline">
   <div class="wrap">
-    <p class="eyebrow">15 — [Timeline]</p>
+    <p class="eyebrow">16 — [Timeline]</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
     <div class="timeline">
       <div class="timeline-progress"></div>
@@ -1102,10 +1135,10 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>06 Zeitachse/02 roadmap-zoom-in</b></span><span class="kategorie">Figma-Node 33:3</span></div>
-<section data-chapter="16" data-chapter-title="[Kapitelname]" id="kapitel-16" data-modul="06 Zeitachse/02 roadmap-zoom-in">
+<section data-chapter="17" data-chapter-title="[Kapitelname]" id="kapitel-17" data-modul="06 Zeitachse/02 roadmap-zoom-in">
   <div class="wrap roadmap-zoom">
     <div class="reveal">
-      <p class="eyebrow">16 — [Planung]</p>
+      <p class="eyebrow">17 — [Planung]</p>
       <h2 class="h1">[Wie die Phasen liegen]</h2>
       <div class="gantt" style="--spalten:6">
         <div class="gantt-kopf">
@@ -1125,21 +1158,21 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>07 Media/01 screenshot-showcase</b></span><span class="kategorie">Figma-Node 32:3</span></div>
+<div class="galerie-kopf"><span><b>07 Media/01 bild-feature-liste</b></span><span class="kategorie">Figma-Node 32:3</span></div>
 <!-- Screenshot in echter Aufloesung. Sensible Daten vorher anonymisieren. -->
-<section data-chapter="17" data-chapter-title="[Kapitelname]" id="kapitel-17" data-modul="07 Media/01 screenshot-showcase">
+<section data-chapter="18" data-chapter-title="[Kapitelname]" id="kapitel-18" data-modul="07 Media/01 bild-feature-liste">
   <div class="wrap">
-    <p class="eyebrow">17 — [Ergebnis]</p>
-    <div class="showcase" style="margin-top:var(--space-12)">
-      <div class="showcase-bild reveal">[Screenshot]</div>
+    <p class="eyebrow">18 — [Ergebnis]</p>
+    <div class="bild-feature" style="margin-top:var(--space-12)">
+      <div class="bild-feature-bild reveal">[Screenshot]</div>
       <div class="reveal">
-        <p class="showcase-version">[VERSION 1.0]</p>
-        <h3 class="showcase-feature">[Feature-Name]</h3>
-        <ul class="showcase-punkte">
-          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Erste Kernfunktion]</span></li>
-          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Zweite Kernfunktion]</span></li>
-          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Dritte Kernfunktion]</span></li>
-          <li class="showcase-punkt"><span aria-hidden="true">→</span><span>[Export- oder Filtermöglichkeit]</span></li>
+        <p class="bild-feature-version">[VERSION 1.0]</p>
+        <h3 class="bild-feature-titel">[Feature-Name]</h3>
+        <ul class="bild-feature-punkte">
+          <li class="bild-feature-punkt"><span aria-hidden="true">→</span><span>[Erste Kernfunktion]</span></li>
+          <li class="bild-feature-punkt"><span aria-hidden="true">→</span><span>[Zweite Kernfunktion]</span></li>
+          <li class="bild-feature-punkt"><span aria-hidden="true">→</span><span>[Dritte Kernfunktion]</span></li>
+          <li class="bild-feature-punkt"><span aria-hidden="true">→</span><span>[Export- oder Filtermöglichkeit]</span></li>
         </ul>
       </div>
     </div>
@@ -1147,13 +1180,19 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>07 Media/02 device-mockup</b></span><span class="kategorie">Figma-Node 32:21</span></div>
-<!-- Mobile-Screens paarweise, Desktop einzeln - so bleibt die Komposition ruhig. -->
+<!-- Situativ (2026-09-16, Ernst bestaetigt): zeigt je nach Kontext einen
+     einzelnen Laptop, ein einzelnes Tablet, oder ein/mehrere Telefone -
+     keine feste Kombinationspflicht. Nur wenn mehrere Telefone zusammen
+     gezeigt werden, paarweise anordnen, damit die Komposition ruhig bleibt. -->
 <section data-modul="07 Media/02 device-mockup">
   <div class="wrap">
-    <p class="eyebrow is-centered">18 — [Prototyp]</p>
+    <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "19" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+    <p class="eyebrow is-centered">19 — [Prototyp]</p>
+    <!-- Beispiel: einzelner Laptop. Alternativen: <div class="device ist-tablet">
+         oder ein/mehrere <div class="device ist-phone"> - je nach Kontext waehlen,
+         nicht zwingend kombinieren. -->
     <div class="device-buehne reveal">
       <div class="device ist-laptop"><div class="schirm">[Screen]</div><div class="fuss"></div></div>
-      <div class="device ist-phone"><div class="schirm">[Screen]</div></div>
     </div>
     <div class="device-legende reveal">
       <h3>[Prototyp im Device]</h3>
@@ -1164,9 +1203,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 
 <div class="galerie-kopf"><span><b>07 Media/03 medien-karten-grid</b></span><span class="kategorie">Figma-Node 32:30</span></div>
 <!-- Bei CTA-Nutzung die ganze Kachel verlinken, nicht nur den Titel. -->
-<section data-chapter="19" data-chapter-title="[Kapitelname]" id="kapitel-19" data-modul="07 Media/03 medien-karten-grid">
+<section data-chapter="20" data-chapter-title="[Kapitelname]" id="kapitel-20" data-modul="07 Media/03 medien-karten-grid">
   <div class="wrap">
-    <p class="eyebrow">19 — [Weiterführend]</p>
+    <p class="eyebrow">20 — [Weiterführend]</p>
     <h2 class="h1 reveal">[Prototypen entdecken]</h2>
     <div class="medien-grid">
       <a class="medien-karte reveal" href="[URL]">
@@ -1188,7 +1227,8 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <div class="galerie-kopf"><span><b>07 Media/04 grossbild</b></span><span class="kategorie">Figma-Node 72:31</span></div>
 <section data-modul="07 Media/04 grossbild">
   <div class="wrap">
-    <p class="eyebrow">20 — [Eindruck]</p>
+    <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "21" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+    <p class="eyebrow">21 — [Eindruck]</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-12)">[Was das Bild sagt — nicht was es zeigt]</h2>
   </div>
   <!-- Randabfallend: bricht bewusst aus dem Raster aus. Mind. 2880px breit. -->
@@ -1202,31 +1242,34 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 </section>
 
 <div class="galerie-kopf"><span><b>08 Menschen/01 team-grid</b></span><span class="kategorie">Figma-Node 35:41</span></div>
-<section data-chapter="21" data-chapter-title="[Kapitelname]" id="kapitel-21" data-modul="08 Menschen/01 team-grid">
+<section data-chapter="22" data-chapter-title="[Kapitelname]" id="kapitel-22" data-modul="08 Menschen/01 team-grid">
   <div class="wrap">
-    <p class="eyebrow">21 — [Team]</p>
+    <p class="eyebrow">22 — [Team]</p>
     <h2 class="h1 reveal" style="margin-bottom:var(--space-20)">[Wer arbeitet daran?]</h2>
     <div class="team-grid">
-      <div class="team-member reveal"><div class="team-avatar">21</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member reveal"><div class="team-avatar">21</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member reveal"><div class="team-avatar">21</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
-      <div class="team-member reveal"><div class="team-avatar">21</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
+      <div class="team-member reveal"><div class="team-avatar">22</div><p class="name">[Name Nachname]</p><p class="role">[Rolle im Projekt]</p></div>
     </div>
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>08 Menschen/02 personen-intro</b></span><span class="kategorie">Figma-Node 35:74</span></div>
+<div class="galerie-kopf"><span><b>08 Menschen/02 bild-intro</b></span><span class="kategorie">Figma-Node 35:74</span></div>
 <!-- Eine Person. Ab zwei Personen team-grid verwenden. -->
-<section data-modul="08 Menschen/02 personen-intro">
-  <div class="wrap personen-intro">
+<section data-modul="08 Menschen/02 bild-intro">
+  <div class="wrap bild-intro">
+    <!-- Portrait aufgelockert, kein Bewerbungsfoto-Look. Figma: Bild links,
+         Text rechts (verifiziert 2026-09-16, Ernst) - anders als bei
+         text-bild ohne .is-gedreht-Pendant, hier fest so verdrahtet. -->
+    <div class="bild-intro-bild reveal">[Portraitfoto]</div>
     <div class="reveal">
-      <p class="eyebrow">22 — [Vorstellung]</p>
+      <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "23" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+      <p class="eyebrow">23 — [Vorstellung]</p>
       <h2 class="h2">[Hi, ich bin …]</h2>
       <p class="person-name">[Name Nachname]</p>
       <p class="person-rolle">[Rolle im Projekt]</p>
     </div>
-    <!-- Portrait aufgelockert, kein Bewerbungsfoto-Look. -->
-    <div class="personen-portrait reveal">[Portraitfoto]</div>
   </div>
 </section>
 
@@ -1240,9 +1283,9 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 
 <div class="galerie-kopf"><span><b>09 Referenzen/01 logo-wand</b></span><span class="kategorie">Figma-Node 30:2</span></div>
 <!-- 12-24 Logos, bekannteste oben links. Leere Slots am Zeilenende vermeiden. -->
-<section data-chapter="23" data-chapter-title="[Kapitelname]" id="kapitel-23" data-modul="09 Referenzen/01 logo-wand">
+<section data-chapter="24" data-chapter-title="[Kapitelname]" id="kapitel-24" data-modul="09 Referenzen/01 logo-wand">
   <div class="wrap">
-    <p class="eyebrow">23 — [Referenzen]</p>
+    <p class="eyebrow">24 — [Referenzen]</p>
     <h2 class="h1 reveal">[Unsere Kunden]</h2>
     <div class="logo-wand">
       <div class="logo-slot reveal">[Logo 01]</div><div class="logo-slot reveal">[Logo 02]</div>
@@ -1257,29 +1300,34 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>09 Referenzen/02 facts-figures</b></span><span class="kategorie">Figma-Node 29:38</span></div>
-<section data-modul="09 Referenzen/02 facts-figures">
+<div class="galerie-kopf"><span><b>09 Referenzen/02 bild-kennzahlenliste</b></span><span class="kategorie">Figma-Node 29:38</span></div>
+<section data-modul="09 Referenzen/02 bild-kennzahlenliste">
   <div class="wrap">
-    <p class="eyebrow">24 — [Über uns]</p>
-    <div class="facts">
-      <div class="facts-image reveal">[Bild: Büro oder Team — kein Stockfoto]</div>
-      <dl class="facts-list">
-        <div class="facts-item reveal"><dt>[Kennzahl A]</dt><dd>[Wert]</dd></div>
-        <div class="facts-item reveal"><dt>[Kennzahl B]</dt><dd>[Wert]</dd></div>
-        <div class="facts-item reveal"><dt>[Kennzahl C]</dt><dd>[Wert]</dd></div>
-        <div class="facts-item reveal"><dt>[Kennzahl D]</dt><dd>[Wert]</dd></div>
+    <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "25" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+    <p class="eyebrow">25 — [Über uns]</p>
+    <div class="bild-liste">
+      <div class="bild-liste-bild reveal">[Bild: Büro oder Team — kein Stockfoto]</div>
+      <dl class="kennzahlenliste">
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl A]</dt><dd>[Wert]</dd></div>
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl B]</dt><dd>[Wert]</dd></div>
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl C]</dt><dd>[Wert]</dd></div>
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl D]</dt><dd>[Wert]</dd></div>
       </dl>
     </div>
   </div>
 </section>
 
-<div class="galerie-kopf"><span><b>09 Referenzen/03 case-study-ziele</b></span><span class="kategorie">Figma-Node 118:103</span></div>
+<div class="galerie-kopf"><span><b>09 Referenzen/03 headline-liste</b></span><span class="kategorie">Figma-Node 118:103</span></div>
 <!-- Folgt meist direkt auf den Case-Study-Divider. Ziele als Ergebnis formulieren. -->
-<section data-modul="09 Referenzen/03 case-study-ziele">
-  <div class="wrap cs-ziele">
+<section data-modul="09 Referenzen/03 headline-liste">
+  <div class="wrap headline-liste">
     <div class="reveal">
-      <p class="eyebrow">25 — [Case Study]</p>
-      <p class="kunde">CASE STUDY</p>
+      <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "26" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+      <!-- "CASE STUDY" stand hier frueher zusaetzlich als eigene Zeile - auf
+           Wunsch von Ernst (2026-09-16) entfernt/auf die Eyebrow verlagert,
+           die die Info bereits traegt ("... — Case Study"), um Dopplung zu
+           vermeiden. -->
+      <p class="eyebrow">26 — [Case Study]</p>
       <h2 class="h1">[Kundenname]</h2>
     </div>
     <ul class="ziele reveal">
@@ -1294,10 +1342,10 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <!-- Generisches Modul für nummerierte Textinhalte, nicht nur für Abschluss-Takeaways.
      .carousel-shell begrenzt den Track auf --grid-max, damit die erste Karte am
      linken Grid-Rand startet statt am nackten Viewport-Rand. -->
-<section data-chapter="26" data-chapter-title="[Kapitelname]" id="kapitel-26" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
+<section data-chapter="27" data-chapter-title="[Kapitelname]" id="kapitel-27" style="padding-inline:0" data-modul="10 Abschluss/01 karten-karussell">
   <div class="wrap">
     <div class="section-head reveal">
-      <div><p class="eyebrow">26 — [Kapitelname]</p><h2 class="h1">[Was wir euch mitgeben]</h2></div>
+      <div><p class="eyebrow">27 — [Kapitelname]</p><h2 class="h1">[Was wir euch mitgeben]</h2></div>
     </div>
   </div>
   <div class="carousel-shell">
@@ -1324,7 +1372,8 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
 <section data-modul="10 Abschluss/02 qr-tool-verweis">
   <div class="wrap qr-verweis">
     <div class="reveal">
-      <p class="eyebrow">27 — [Ausprobieren]</p>
+      <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "28" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+      <p class="eyebrow">28 — [Ausprobieren]</p>
       <h2 class="h1">[Unsere interne Toolbox]</h2>
       <div class="qr-code">[QR-Code]</div>
       <p class="qr-url">Scannen oder öffnen: <a href="[URL]">[url.dayone.de/tool]</a></p>
@@ -1525,7 +1574,25 @@ a.medien-karte:hover{border-color:var(--color-main-text)}
           var aktiv = t === tab;
           t.setAttribute("aria-selected", aktiv ? "true" : "false");
           var panel = document.getElementById(t.getAttribute("aria-controls"));
-          if (panel) panel.hidden = !aktiv;
+          if (!panel) return;
+          if (!aktiv) { panel.hidden = true; panel.classList.remove("ist-erscheinend"); return; }
+          panel.hidden = false;
+          if (reduce) return;
+          /* Panels tragen noch ein transitionDelay als Inline-Style vom
+             gestaffelten Scroll-Reveal beim ersten Sichtbarwerden der Section
+             (siehe stageReveal). Ungeloescht wuerde das auch diesen Wechsel
+             verzoegern - deshalb hier zuruecksetzen, damit der Panel-Wechsel
+             immer sofort losläuft. */
+          panel.style.transitionDelay = "0ms";
+          /* Panel startet unsichtbar/leicht versetzt (CSS: .ist-erscheinend),
+             dann per Klasse-Entfernen in den Endzustand ueberfuehrt - das
+             doppelte rAF stellt sicher, dass der Browser den Startzustand
+             erst gemalt hat, bevor die Transition losläuft (sonst überspringt
+             sie manche Browser komplett). */
+          panel.classList.add("ist-erscheinend");
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () { panel.classList.remove("ist-erscheinend"); });
+          });
         });
       });
     });

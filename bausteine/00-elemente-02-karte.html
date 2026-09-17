@@ -1,15 +1,18 @@
 <style>
 /* ==== Karte (Baustein) ==== */
 /* Kein Abschnitt, sondern ein Element innerhalb anderer Module - laut Figma
-   eingesetzt in karten-3er und karten-karussell. Deshalb liegt das Karten-CSS
+   eingesetzt in kartenraster und karten-karussell. Deshalb liegt das Karten-CSS
    hier und nicht bei einem der beiden Module: sonst fehlt es einer Seite, die
    nur das Karussell verwendet. */
 .card{display:flex;flex-direction:column;gap:var(--space-4);
-  border-top:1px solid var(--color-main-text);padding-top:28px;padding-bottom:var(--space-8)}
-/* Editorial: Hairline statt Flaeche. Nur die hervorgehobene Karte bekommt
-   Flaeche (Sand/200) - im Hairline-Raster ist das die Auszeichnung fuer
-   "hervorgehoben", deshalb sparsam einsetzen (Figma). */
-.card.is-selected{background:var(--color-detail);border-top:0;border-radius:var(--radius-card);padding:var(--space-8)}
+  border:1px solid var(--color-border);border-radius:var(--radius-card);
+  padding:var(--space-8)}
+/* Volle Box mit Rahmen fuer jede Karte - Figma-Vorgabe (Node 64:594), nach
+   Abgleich mit Ernst am 2026-09-16 als verbindlich bestaetigt: Figma ist
+   die Quelle der Wahrheit, der Code hatte auf Hairline-Raender abweichen
+   lassen. Die hervorgehobene Karte behaelt zusaetzlich die Flaechenfarbe
+   (Sand/200) als Auszeichnung fuer "gewaehlt". */
+.card.is-selected{background:var(--color-detail)}
 .card .label{font-size:var(--text-body-s);color:var(--color-text)}
 .card .tag{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .card.is-selected .tag{color:var(--color-main-text)}

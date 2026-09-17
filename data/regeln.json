@@ -157,7 +157,7 @@
       "slug": "03-inhalt-02-headline-textraster",
       "nodeId": "9:5",
       "zweck": "Vier gleichrangige Aspekte kompakt nebeneinander, ohne Karten-Optik.",
-      "abgrenzung": "Sollen die Punkte visuell abgesetzt sein, karten-3er nehmen; bei Reihenfolge 00 Elemente/02 karte (als nummerierte Kachel-Reihe).",
+      "abgrenzung": "Sollen die Punkte visuell abgesetzt sein, kartenraster nehmen; bei Reihenfolge 00 Elemente/02 karte (als nummerierte Kachel-Reihe).",
       "fuellen": [
         "3–4 Spalten. Titel je 1 Zeile, Text je 2–3 Zeilen.",
         "Spalten etwa gleich lang halten — ungleiche Längen lassen das Raster kippen."
@@ -197,10 +197,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "03 Inhalt/04 karten-3er": {
-      "kurzname": "karten-3er",
+    "03 Inhalt/04 kartenraster": {
+      "kurzname": "kartenraster",
       "kategorie": "03 Inhalt",
-      "slug": "03-inhalt-04-karten-3er",
+      "slug": "03-inhalt-04-kartenraster",
       "nodeId": "28:2",
       "zweck": "Drei gleichrangige Dinge nebeneinander stellen. Zwei erprobte Anwendungsfälle: · Optionen-Vergleich (A/B/C) für Entscheidungs-Slides — eine Option als gewählt markieren. · Zielgruppen-/Persona-Karten — je Segment Rolle, Kurztitel, Alltag. (Ersetzt \"persona-cards\".)",
       "abgrenzung": "",
@@ -305,10 +305,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "04 Daten/04 datenfluss-diagramm": {
-      "kurzname": "datenfluss-diagramm",
+    "04 Daten/04 fluss-diagramm": {
+      "kurzname": "fluss-diagramm",
       "kategorie": "04 Daten",
-      "slug": "04-daten-04-datenfluss-diagramm",
+      "slug": "04-daten-04-fluss-diagramm",
       "nodeId": "36:27",
       "zweck": "Systemlandschaft oder Datenweg: was fließt von wo nach wo.",
       "abgrenzung": "",
@@ -351,10 +351,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "05 Diagramme/01 way-of-working-kreis": {
-      "kurzname": "way-of-working-kreis",
+    "05 Diagramme/01 konzentrische-kreise": {
+      "kurzname": "konzentrische-kreise",
       "kategorie": "05 Diagramme",
-      "slug": "05-diagramme-01-way-of-working-kreis",
+      "slug": "05-diagramme-01-konzentrische-kreise",
       "nodeId": "33:19",
       "zweck": "DAYONE-Organisationsmodell (Business / Service / Coordination Circles). Fester Bestandteil von Credential-Decks.",
       "abgrenzung": "",
@@ -366,10 +366,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "05 Diagramme/02 case-study-diagrammkarte": {
-      "kurzname": "case-study-diagrammkarte",
+    "05 Diagramme/02 diagrammkarte": {
+      "kurzname": "diagrammkarte",
       "kategorie": "05 Diagramme",
-      "slug": "05-diagramme-02-case-study-diagrammkarte",
+      "slug": "05-diagramme-02-diagrammkarte",
       "nodeId": "31:20",
       "zweck": "Abstraktes Schaubild (Flywheel, Loop, Ökosystem) als visueller Einstieg in eine Case Study.",
       "abgrenzung": "",
@@ -433,10 +433,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "07 Media/01 screenshot-showcase": {
-      "kurzname": "screenshot-showcase",
+    "07 Media/01 bild-feature-liste": {
+      "kurzname": "bild-feature-liste",
       "kategorie": "07 Media",
-      "slug": "07-media-01-screenshot-showcase",
+      "slug": "07-media-01-bild-feature-liste",
       "nodeId": "32:3",
       "zweck": "Ein Produkt oder Feature zeigen und gleichzeitig benennen, was es kann.",
       "abgrenzung": "",
@@ -462,7 +462,7 @@
       "slug": "07-media-02-device-mockup",
       "nodeId": "32:21",
       "zweck": "Prototypen im Gerätekontext zeigen, wenn die Plattform Teil der Aussage ist.",
-      "abgrenzung": "Geht es um Funktionen statt um Look & Feel: screenshot-showcase.",
+      "abgrenzung": "Geht es um Funktionen statt um Look & Feel: bild-feature-liste.",
       "fuellen": [
         "Enthält echte Geräte aus dem DAYONE Designsystem (iPhone, MacBook; iPad ebenfalls verfügbar).",
         "Screen einsetzen: Screen-Ebene im Gerät auswählen und den Screenshot als Bild-Fill einsetzen — Gerät selbst nicht verändern.",
@@ -504,7 +504,7 @@
       "slug": "07-media-04-grossbild",
       "nodeId": "72:31",
       "zweck": "Ein Bild, das für sich steht: Atmosphäre, Ort, Team, Produkt im Einsatz. Setzt einen visuellen Ruhepunkt zwischen textlastigen Abschnitten.",
-      "abgrenzung": "Geht es um ein Interface mit Funktionen: screenshot-showcase. Um ein Gerät: device-mockup. Um mehrere Bilder nebeneinander: medien-karten-grid.",
+      "abgrenzung": "Geht es um ein Interface mit Funktionen: bild-feature-liste. Um ein Gerät: device-mockup. Um mehrere Bilder nebeneinander: medien-karten-grid.",
       "fuellen": [
         "Seitenverhältnis 3:2 oder 16:9, mindestens 2880 px breit (randabfallend auf Retina).",
         "Headline sagt die Aussage des Bildes, nicht seinen Inhalt. Also \"So arbeiten wir wirklich\", nicht \"Büro Berlin\".",
@@ -545,10 +545,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "08 Menschen/02 personen-intro": {
-      "kurzname": "personen-intro",
+    "08 Menschen/02 bild-intro": {
+      "kurzname": "bild-intro",
       "kategorie": "08 Menschen",
-      "slug": "08-menschen-02-personen-intro",
+      "slug": "08-menschen-02-bild-intro",
       "nodeId": "35:74",
       "zweck": "Eine einzelne Person vorstellen, meist die präsentierende.",
       "abgrenzung": "Ab zwei Personen team-grid verwenden.",
@@ -600,10 +600,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "09 Referenzen/02 facts-figures": {
-      "kurzname": "facts-figures",
+    "09 Referenzen/02 bild-kennzahlenliste": {
+      "kurzname": "bild-kennzahlenliste",
       "kategorie": "09 Referenzen",
-      "slug": "09-referenzen-02-facts-figures",
+      "slug": "09-referenzen-02-bild-kennzahlenliste",
       "nodeId": "29:38",
       "zweck": "Unternehmenskennzahlen für Credential-Teile: Gründung, Standort, Größe.",
       "abgrenzung": "",
@@ -623,10 +623,10 @@
       "farbe_frei": true,
       "hat_regeln": true
     },
-    "09 Referenzen/03 case-study-ziele": {
-      "kurzname": "case-study-ziele",
+    "09 Referenzen/03 headline-liste": {
+      "kurzname": "headline-liste",
       "kategorie": "09 Referenzen",
-      "slug": "09-referenzen-03-case-study-ziele",
+      "slug": "09-referenzen-03-headline-liste",
       "nodeId": "118:103",
       "zweck": "Was in einem Kundenprojekt erreicht werden sollte. Folgt meist direkt auf den Case-Study-Divider.",
       "abgrenzung": "",

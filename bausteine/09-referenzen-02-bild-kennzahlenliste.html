@@ -1,0 +1,26 @@
+<style>
+/* ==== Bild + Kennzahlenliste ==== */
+.bild-liste{display:flex;gap:var(--space-16);align-items:center}
+.bild-liste-bild{flex:none;width:40%;aspect-ratio:560/360;background:var(--gray-100);border-radius:var(--radius-card);
+  display:flex;align-items:center;justify-content:center;color:var(--color-text);font-size:var(--text-body-s)}
+.kennzahlenliste{flex:1;display:flex;flex-direction:column;gap:var(--space-6);margin:0}
+.kennzahlenliste dt{font-size:var(--text-body-s);color:var(--color-text)}
+.kennzahlenliste dd{margin:2px 0 0;font-size:var(--text-body-m);color:var(--color-main-text)}
+@media(max-width:900px){.bild-liste{flex-direction:column;align-items:stretch}.bild-liste-bild{width:100%}}
+</style>
+
+<section data-modul="09 Referenzen/02 bild-kennzahlenliste">
+  <div class="wrap">
+    <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
+    <p class="eyebrow">[NN] — [Über uns]</p>
+    <div class="bild-liste">
+      <div class="bild-liste-bild reveal">[Bild: Büro oder Team — kein Stockfoto]</div>
+      <dl class="kennzahlenliste">
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl A]</dt><dd>[Wert]</dd></div>
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl B]</dt><dd>[Wert]</dd></div>
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl C]</dt><dd>[Wert]</dd></div>
+        <div class="kennzahlenliste-item reveal"><dt>[Kennzahl D]</dt><dd>[Wert]</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
