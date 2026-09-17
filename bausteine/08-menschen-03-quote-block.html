@@ -2,12 +2,44 @@
 /* ==== Zitat ==== */
 .quote{background:var(--color-detail);text-align:center}
 .quote blockquote{margin:0 auto;max-width:60ch;font-size:var(--text-body-xl);font-weight:600;line-height:1.4}
+/* Das Zitat wird getippt statt eingeblendet (Feedback 2026-09-17). Damit die
+   Sektion dabei nicht in der Hoehe springt, steht der vollstaendige Satz als
+   unsichtbarer Platzhalter darunter und haelt den Raum frei; getippt wird in
+   einer daruebergelegten Schicht. */
+.quote-typo{position:relative}
+.quote-typo .platzhalter{visibility:hidden}
+.quote-typo .getippt{position:absolute;inset:0}
+/* Cursor blinkt nur, solange getippt wird. */
+.quote-typo .getippt::after{content:"";display:inline-block;width:2px;height:1em;
+  margin-left:2px;vertical-align:-.12em;background:var(--color-action);opacity:0}
+.quote-typo.ist-am-tippen .getippt::after{animation:quote-cursor 1s steps(2,start) infinite}
+@keyframes quote-cursor{0%,50%{opacity:1}50.01%,100%{opacity:0}}
 .quote cite{display:block;margin-top:var(--space-6);font-style:normal;font-size:var(--text-body-s);color:var(--color-text)}
+/* Die Quelle haengt bewusst NICHT an .reveal: der Sektions-Stagger wuerde sie
+   sonst sofort mit einblenden. Sie wartet auf .ist-da, das zitatTippen() erst
+   setzt, wenn der letzte Buchstabe steht. */
+.quote cite.ist-nachzitat{opacity:0;transform:translateY(8px);
+  transition:opacity var(--dur-reveal) var(--ease-reveal),
+             transform var(--dur-reveal) var(--ease-reveal)}
+.quote cite.ist-nachzitat.ist-da{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  /* Ohne Bewegung steht der Satz sofort komplett da - Buchstabe fuer Buchstabe
+     aufzubauen ist genau die Art Bewegung, die hier vermieden werden soll. */
+  .quote-typo .platzhalter{visibility:visible}
+  .quote-typo .getippt{display:none}
+  .quote cite.ist-nachzitat{opacity:1;transform:none;transition:none}
+}
 </style>
 
+<!-- Ohne Namensnennung? Dann stattdessen big-statement nehmen.
+     Das Zitat wird per _basis.js (Abschnitt 9b) getippt, die Quelle blendet
+     erst danach auf - sie ist die Auflösung, nicht der Anfang. -->
 <section class="quote" data-modul="08 Menschen/03 quote-block">
-  <div class="wrap reveal">
-    <blockquote>„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</blockquote>
-    <cite>[Name Nachname, Rolle]</cite>
+  <div class="wrap">
+    <blockquote class="quote-typo reveal">
+      <span class="platzhalter">„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</span>
+      <span class="getippt" aria-hidden="true"></span>
+    </blockquote>
+    <cite class="ist-nachzitat">[Name Nachname, Rolle]</cite>
   </div>
 </section>

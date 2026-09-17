@@ -2,17 +2,28 @@
 /* ==== Stepper (Phasen) ==== */
 /* Figma: Sticky Scrollspy - die Phasenleiste bleibt oben stehen, der Inhalt
    darunter wechselt. top-Offset laesst Platz fuer die Kapitel-Navigation. */
-.stepper-tabs{display:flex;gap:0;border-bottom:2px solid var(--color-border);
-  position:sticky;top:72px;background:var(--color-bg);z-index:10;overflow-x:auto;
+/* Leiste ohne eigene Flaeche: in Figma liegt sie transparent auf dem
+   Sektionshintergrund, nur eine Haarlinie traegt die Tabs (Feedback
+   2026-09-17). Der frueher gesetzte --color-bg-Fuellton erzeugte beim
+   Sticky-Scrollen einen sichtbaren Kasten, der im Design nicht existiert.
+   background bleibt bewusst weg - die Sektion hat ohnehin eine deckende
+   Flaeche, der Inhalt darunter scrollt also nicht durch. */
+.stepper-tabs{display:flex;gap:var(--space-8);border-bottom:1px solid var(--color-border);
+  position:sticky;top:72px;background:transparent;z-index:10;overflow-x:auto;
   scrollbar-width:none}
 .stepper-tabs::-webkit-scrollbar{display:none}
 .stepper-tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
-  margin-bottom:-2px;padding:0 var(--space-4) var(--space-4);cursor:pointer;
+  margin-bottom:-1px;padding:0 0 var(--space-4);cursor:pointer;
   font-family:inherit;font-size:var(--text-body-m);font-weight:600;line-height:1.3;
-  color:var(--color-text);opacity:.45;white-space:nowrap;transition:opacity .2s var(--ease)}
+  color:var(--color-text);opacity:.45;white-space:nowrap;
+  transition:opacity var(--dur-ui) var(--ease-ui),color var(--dur-ui) var(--ease-ui),
+             border-color var(--dur-ui) var(--ease-ui)}
 .stepper-tab:hover{opacity:.75}
+/* Aktiver Tab: dunkle Linie in Textfarbe, nicht in der Aktionsfarbe - der
+   Tab ist eine Positionsanzeige, kein Aufruf zum Handeln (Screenshot Figma,
+   2026-09-17). */
 .stepper-tab[aria-selected="true"]{opacity:1;color:var(--color-main-text);
-  border-bottom-width:3px;margin-bottom:-3px;border-bottom-color:var(--color-action)}
+  border-bottom-color:var(--color-main-text)}
 .stepper-panel{padding-top:var(--space-8);transition:opacity .35s var(--ease),transform .35s var(--ease)}
 .stepper-panel[hidden]{display:none}
 /* Uebergangszustand beim Tab-Wechsel: das neu erscheinende Panel startet hier

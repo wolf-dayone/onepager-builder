@@ -77,17 +77,17 @@ FAELLE = [
 
     # Die Weekly-Vorlage enthaelt kein <img>; fuer diesen Fall eins einsetzen.
     ("Bild ohne alt-Attribut",
-     lambda s: s.replace("<blockquote>",
-                         '<img src="a.jpg" loading="lazy"><blockquote>', 1),
+     lambda s: s.replace("<blockquote",
+                         '<img src="a.jpg" loading="lazy"><blockquote', 1),
      "bilder"),
 
     # Medien-Blocker: ein Bild, dessen src-Attribut noch den Figma-Platzhalter
     # traegt (z.B. aus bausteine/07-media-04-grossbild.html unverandert
     # uebernommen), darf eine fertige Seite nicht mehr passieren.
     ("Bild-Platzhalter im src nicht ersetzt",
-     lambda s: s.replace("<blockquote>",
+     lambda s: s.replace("<blockquote",
                          '<img src="[bild.jpg]" alt="Team beim Workshop" '
-                         'loading="lazy"><blockquote>', 1),
+                         'loading="lazy"><blockquote', 1),
      "platzhalter"),
 
     # Aus dem ersten Blindtest: eine fertige Seite ging mit zwei toten

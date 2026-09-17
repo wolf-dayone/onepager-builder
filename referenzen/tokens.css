@@ -25,9 +25,14 @@
   --blue-2: #2a7fc7;   /* Accent Color/Blue Highlight 2 */
   --blue-3: #1487dd;   /* Accent Color/Blue Highlight 3 — Standard-Highlight */
 
-  --red-700: #cc443d;
-  --red-500: #ff544c;
+  --red-700: #cc443d;   /* Figma "action/warning" */
+  --red-500: #ff544c;   /* Figma "action/danger" — Aktionsfarbe */
   --red-300: #ff8580;
+
+  /* Figma "icon/tertiary" — eigener Wert, NICHT sand-400 (#c9c1b5) oder
+     sand-600 (#9e9a94), sondern genau dazwischen. Traegt in Figma die
+     ruhenden Datenflaechen (Chart-Saeulen, Achsen). */
+  --icon-tertiary: #b4aea4;
 
   /* --- Semantisch (Figma: Collection "Modes", Light) --- */
   --color-main-text:  var(--gray-900);
@@ -41,6 +46,11 @@
      blue, but red ... the action color should be red instead of any other
      color"). Gilt gleich in Hell und Dunkel, daher kein .dark-Override. */
   --color-action:     var(--red-500);
+  /* Figma "icon/tertiary" / "icon/secondary": Ruhe- und Hover-Stufe fuer
+     Datenflaechen (chart-slide-Saeulen, Achsen, Gantt-Balken). Bewusst NICHT
+     --color-border/--color-main-text: das sind Linien- bzw. Textrollen. */
+  --color-icon-tertiary:  var(--icon-tertiary);
+  --color-icon-secondary: var(--sand-900);
   /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
      Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
      Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln
@@ -92,9 +102,25 @@
   --radius-card:  8px;
   --radius-pill:  9999px;
 
-  /* --- Motion --- */
+  /* --- Motion ---
+     Eine Stelle fuer alle Dauern und Kurven. Welche Rolle wann welchen Wert
+     bekommt, steht in referenzen/animationen.md - Module greifen NUR auf
+     diese Tokens zu, nie auf eigene ms-Werte. */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --dur:  0.6s;
+  /* Standardkurve fuer Einblendungen: schneller Start, langes Ausrollen -
+     laesst Bewegung ankommen statt abbremsen (ease-out, kein ease-in-out). */
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Linien/Balken, die eine Strecke zeichnen: gleichmaessiger, leicht
+     beschleunigter Zug, damit die Linie nicht am Ende "kriecht". */
+  --ease-linie:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* UI-Reaktionen (Hover, Fokus, Tabwechsel): kurz und direkt. */
+  --ease-ui:     cubic-bezier(0.33, 1, 0.68, 1);
+
+  --dur-ui:      0.2s;   /* Hover/Fokus/Tab-Wechsel */
+  --dur-reveal:  1.1s;   /* Standard-Einblendung (.reveal) */
+  --dur-linie:   0.8s;   /* Linien-/Achsen-Reveal, Balkenwachstum */
+  --dur-lang:    1.4s;   /* lange Strecken (Timeline-Segment) */
 }
 
 @media (max-width: 900px) {

@@ -38,9 +38,14 @@
   --blue-2: #2a7fc7;   /* Accent Color/Blue Highlight 2 */
   --blue-3: #1487dd;   /* Accent Color/Blue Highlight 3 — Standard-Highlight */
 
-  --red-700: #cc443d;
-  --red-500: #ff544c;
+  --red-700: #cc443d;   /* Figma "action/warning" */
+  --red-500: #ff544c;   /* Figma "action/danger" — Aktionsfarbe */
   --red-300: #ff8580;
+
+  /* Figma "icon/tertiary" — eigener Wert, NICHT sand-400 (#c9c1b5) oder
+     sand-600 (#9e9a94), sondern genau dazwischen. Traegt in Figma die
+     ruhenden Datenflaechen (Chart-Saeulen, Achsen). */
+  --icon-tertiary: #b4aea4;
 
   /* --- Semantisch (Figma: Collection "Modes", Light) --- */
   --color-main-text:  var(--gray-900);
@@ -54,6 +59,11 @@
      blue, but red ... the action color should be red instead of any other
      color"). Gilt gleich in Hell und Dunkel, daher kein .dark-Override. */
   --color-action:     var(--red-500);
+  /* Figma "icon/tertiary" / "icon/secondary": Ruhe- und Hover-Stufe fuer
+     Datenflaechen (chart-slide-Saeulen, Achsen, Gantt-Balken). Bewusst NICHT
+     --color-border/--color-main-text: das sind Linien- bzw. Textrollen. */
+  --color-icon-tertiary:  var(--icon-tertiary);
+  --color-icon-secondary: var(--sand-900);
   /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
      Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
      Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln
@@ -105,9 +115,25 @@
   --radius-card:  8px;
   --radius-pill:  9999px;
 
-  /* --- Motion --- */
+  /* --- Motion ---
+     Eine Stelle fuer alle Dauern und Kurven. Welche Rolle wann welchen Wert
+     bekommt, steht in referenzen/animationen.md - Module greifen NUR auf
+     diese Tokens zu, nie auf eigene ms-Werte. */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --dur:  0.6s;
+  /* Standardkurve fuer Einblendungen: schneller Start, langes Ausrollen -
+     laesst Bewegung ankommen statt abbremsen (ease-out, kein ease-in-out). */
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Linien/Balken, die eine Strecke zeichnen: gleichmaessiger, leicht
+     beschleunigter Zug, damit die Linie nicht am Ende "kriecht". */
+  --ease-linie:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* UI-Reaktionen (Hover, Fokus, Tabwechsel): kurz und direkt. */
+  --ease-ui:     cubic-bezier(0.33, 1, 0.68, 1);
+
+  --dur-ui:      0.2s;   /* Hover/Fokus/Tab-Wechsel */
+  --dur-reveal:  1.1s;   /* Standard-Einblendung (.reveal) */
+  --dur-linie:   0.8s;   /* Linien-/Achsen-Reveal, Balkenwachstum */
+  --dur-lang:    1.4s;   /* lange Strecken (Timeline-Segment) */
 }
 
 @media (max-width: 900px) {
@@ -187,8 +213,15 @@ footer.cta{padding-block:var(--space-20)}
    von links (Standard) bzw. von der Mitte aus (is-centered) - Video-Feedback
    2026-09-17. Aktiviert ueber dieselbe .reveal/.in-Mechanik wie der Rest: die
    Eyebrow ist jetzt selbst ein eigener .reveal-Schritt (siehe Modul-HTML). */
+/* Kapitelmarker bewegen sich NICHT mehr mit nach oben (Feedback 2026-09-17):
+   sie blenden rein auf und lassen die Linie einlaufen. Der Marker ist ein
+   ruhender Anker - wandert er mit, konkurriert er mit der Headline darunter,
+   die genau diese Aufwaertsbewegung als eigenen Akzent braucht. */
+.reveal.eyebrow{transform:none}
 .eyebrow-linie{width:68px;height:1px;background:currentColor;flex:none;
-  transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease) .25s}
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur-linie) var(--ease-linie);
+  transition-delay:calc(var(--reveal-delay,0ms) + 150ms)}
 .eyebrow.in .eyebrow-linie,.reveal.in.eyebrow .eyebrow-linie{transform:scaleX(1)}
 /* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
 .eyebrow.is-centered{align-items:center;text-align:center}
@@ -201,9 +234,21 @@ footer.cta{padding-block:var(--space-20)}
    projektweit Rot, nicht Blau - gilt fuer alle inline Textlinks. Buttons/Badges
    mit eigener main-text/border-Farbe (btn-primary/-secondary, .badge) sind
    bewusst ausgenommen, die sind keine Textlinks. */
-a{color:var(--color-action);text-decoration-color:currentColor;text-underline-offset:2px}
-a:hover{opacity:.8}
-a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
+/* Fliesstext-Links: fett + unterstrichen in der normalen Textfarbe, Rot ist
+   die HOVER-Farbe (Feedback 2026-09-17). Dauerhaftes Rot zieht sonst mehr
+   Aufmerksamkeit als die Aussage, in der der Link steht. Gewicht und
+   Unterstrich tragen die Erkennbarkeit auch ohne Farbe - und damit auch bei
+   Farbfehlsichtigkeit. Buttons/Badges/Karten-Links mit eigener Farbe sind
+   ausgenommen (.btn, .badge, .medien-karte, .brand-group, .nav-*). */
+a{color:inherit;font-weight:600;text-decoration:underline;
+  text-decoration-thickness:1px;text-underline-offset:3px;
+  transition:color var(--dur-ui) var(--ease-ui),
+             text-decoration-color var(--dur-ui) var(--ease-ui)}
+a:hover{color:var(--color-action)}
+a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-radius:2px}
+.btn,.badge,.medien-karte,.brand-group,#chapter-nav a,.gantt-balken{
+  font-weight:inherit;text-decoration:none}
+.btn:hover,.badge:hover,.medien-karte:hover,.brand-group:hover,#chapter-nav a:hover{color:inherit}
 
 /* ==== Typo-Rollen ==== */
 /* overflow-wrap: ein einzelnes langes Wort (Produktname, Kompositum) darf
@@ -218,11 +263,38 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 .small{font-size:var(--text-body-s)}
 
 /* ==== Reveal on scroll ==== */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 1.4s var(--ease),transform 1.4s var(--ease)}
+/* Die Staffel-Verzoegerung liegt als Custom Property auf dem Element, nicht
+   als transition-delay (_basis.js stageReveal setzt --reveal-delay). Grund:
+   ein inline transition-delay erreicht KEINE Pseudo-Elemente - die Linien in
+   .raster-col/.stat starteten dadurch alle gleichzeitig, waehrend die Bloecke
+   selbst gestaffelt hochkamen. Der vierte Block schob sich so mit einer
+   laengst fertig gezeichneten Linie ins Bild (Feedback 2026-09-17). Ueber die
+   Property erben ::before/::after dieselbe Verzoegerung und laufen synchron
+   mit ihrem Element. */
+.reveal{opacity:0;transform:translateY(24px);
+  transition:opacity var(--dur-reveal) var(--ease-reveal),
+             transform var(--dur-reveal) var(--ease-reveal);
+  transition-delay:var(--reveal-delay,0ms);
+  /* Halbtransparente Zwischenbilder sauber rastern lassen. */
+  will-change:opacity,transform}
 .reveal.in{opacity:1;transform:none}
+/* Fuer Inhalte, die ohne Ortswechsel erscheinen sollen (Achsenlabel, Quadranten,
+   Prozesskarten): gleiche Mechanik, nur Opacity. */
+.reveal.ist-nur-opacity{transform:none}
+
+/* Wiederverwendbare Linie, die mit ihrem Element einlaeuft (Textraster-Spalten,
+   Kennzahlen). Element traegt .linie-oben + .reveal, sonst nichts. */
+.linie-oben{position:relative}
+.linie-oben::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;
+  background:var(--linie-farbe,var(--color-border));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur-linie) var(--ease-linie);
+  transition-delay:var(--reveal-delay,0ms)}
+.linie-oben.in::before{transform:scaleX(1)}
+
 @media(prefers-reduced-motion:reduce){
-  .reveal{opacity:1;transform:none;transition:none}
-  .eyebrow-linie{transform:scaleX(1);transition:none}
+  .reveal{opacity:1;transform:none;transition:none;will-change:auto}
+  .eyebrow-linie,.linie-oben::before{transform:scaleX(1);transition:none}
   /* Erzwungenes Einrasten kann bei vestibulären Empfindlichkeiten unangenehm
      sein - dieselbe Vorsicht wie bei jedem anderen Bewegungseffekt hier. */
   html{scroll-behavior:auto;scroll-snap-type:none}
@@ -285,7 +357,8 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 .badge{border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:10px 20px;
   font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-main-text);text-decoration:none}
 .badge.accent{border-color:var(--color-action);color:var(--color-action)}
-.hero h1 .line2{display:block;font-weight:400;color:var(--color-text)}
+.hero h1 .line1,.hero h1 .line2{display:block}
+.hero h1 .line2{font-weight:400;color:var(--color-text)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
 .hero .meta-block{display:flex;flex-direction:column}
 .hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);order:-1;
@@ -359,7 +432,10 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    generischen .section-head nebeneinander in zwei Spalten) - Kopf-Container
    max. 930px breit. Verifiziert 2026-09-16 (Ernst, Screenshot + erneuter
    Abgleich gegen Node 28:2). Deshalb eigene Klasse statt .section-head. */
-.kartenraster-kopf{max-width:930px}
+/* 80px Abstand zur Kartenreihe - stand nur als Figma-Wert fest, war im Code
+   nie gesetzt (Feedback 2026-09-17). Margin sitzt am Kopf, nicht an .cards:
+   .cards wird auch ohne Kopf verwendet. */
+.kartenraster-kopf{max-width:930px;margin-bottom:var(--space-20)}
 .kartenraster-kopf .intro{margin-top:var(--space-6)}
 
 /* ==== Prozess-Schritte (mit Rollen-Spalten) ==== */
@@ -376,11 +452,10 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 
 /* ==== Kennzahlen (dunkel) ==== */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-6);margin-top:var(--space-10)}
-.stat{position:relative;padding-top:28px}
-.stat::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;background:var(--color-border);
-  transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease) .2s}
-.stat.in::before{transform:scaleX(1)}
-@media(prefers-reduced-motion:reduce){.stat::before{transform:scaleX(1);transition:none}}
+/* Linie ueber .linie-oben (_basis.css): zeichnet sich synchron mit dem
+   Hochkommen der Kennzahl und dem Hochzaehlen - vorher war sie fertig, bevor
+   die spaeteren Kennzahlen ueberhaupt sichtbar wurden (Feedback 2026-09-17). */
+.stat{padding-top:28px}
 .stat .value{font-size:var(--text-display-1);font-weight:600;line-height:1}
 .stat .label{margin-top:var(--space-4);font-size:var(--text-body-ms);font-weight:600}
 .stat .note{margin-top:8px;font-size:var(--text-body-s);color:var(--color-text)}
@@ -388,7 +463,33 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 /* ==== Zitat ==== */
 .quote{background:var(--color-detail);text-align:center}
 .quote blockquote{margin:0 auto;max-width:60ch;font-size:var(--text-body-xl);font-weight:600;line-height:1.4}
+/* Das Zitat wird getippt statt eingeblendet (Feedback 2026-09-17). Damit die
+   Sektion dabei nicht in der Hoehe springt, steht der vollstaendige Satz als
+   unsichtbarer Platzhalter darunter und haelt den Raum frei; getippt wird in
+   einer daruebergelegten Schicht. */
+.quote-typo{position:relative}
+.quote-typo .platzhalter{visibility:hidden}
+.quote-typo .getippt{position:absolute;inset:0}
+/* Cursor blinkt nur, solange getippt wird. */
+.quote-typo .getippt::after{content:"";display:inline-block;width:2px;height:1em;
+  margin-left:2px;vertical-align:-.12em;background:var(--color-action);opacity:0}
+.quote-typo.ist-am-tippen .getippt::after{animation:quote-cursor 1s steps(2,start) infinite}
+@keyframes quote-cursor{0%,50%{opacity:1}50.01%,100%{opacity:0}}
 .quote cite{display:block;margin-top:var(--space-6);font-style:normal;font-size:var(--text-body-s);color:var(--color-text)}
+/* Die Quelle haengt bewusst NICHT an .reveal: der Sektions-Stagger wuerde sie
+   sonst sofort mit einblenden. Sie wartet auf .ist-da, das zitatTippen() erst
+   setzt, wenn der letzte Buchstabe steht. */
+.quote cite.ist-nachzitat{opacity:0;transform:translateY(8px);
+  transition:opacity var(--dur-reveal) var(--ease-reveal),
+             transform var(--dur-reveal) var(--ease-reveal)}
+.quote cite.ist-nachzitat.ist-da{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  /* Ohne Bewegung steht der Satz sofort komplett da - Buchstabe fuer Buchstabe
+     aufzubauen ist genau die Art Bewegung, die hier vermieden werden soll. */
+  .quote-typo .platzhalter{visibility:visible}
+  .quote-typo .getippt{display:none}
+  .quote cite.ist-nachzitat{opacity:1;transform:none;transition:none}
+}
 
 /* ==== Karten-Karussell ==== */
 .carousel{overflow-x:auto;scroll-snap-type:x mandatory;display:flex;gap:var(--space-6);
@@ -402,17 +503,18 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    dieses Problem nicht. Breite = gewuenschter Einzug minus den ohnehin
    folgenden .carousel-gap, weil der Flex-gap zwischen Spacer und erster
    Karte den Rest beisteuert.
-   Rechts: padding-right in derselben Groesse, damit der Track auf gleicher
-   Kante wie die Button-Gruppe darunter endet (Ernst, Review Gruppe D) - das
-   Modul haelt sich also doch an den regulaeren Modul-Rand statt bis zum
-   nackten Viewport-Rand zu laufen; padding-right ist hier unproblematisch,
-   der Snap-Ruheposition-Bug betrifft nur die START-Seite eines
-   scroll-snap:mandatory-Containers, nicht das Ende. */
-.carousel{padding-right:max(var(--grid-margin),
-  calc((100% - var(--grid-max)) / 2 + var(--grid-margin)))}
+   Rechts steht ein ZWEITER Spacer statt eines padding-right. Das war der
+   Grund, warum die erste Karte oberhalb von 1440px nicht mehr unter der
+   Headline stand (Feedback 2026-09-17): ein padding-right verkleinert die
+   Content-Box des Tracks, und genau gegen diese Box loest das 100% in der
+   Einzugsformel auf. Bei 1920px rechnete der Spacer dadurch mit 1584px statt
+   1920px und fiel um 168px zu schmal aus. Ohne horizontales Padding stimmt
+   der Bezug wieder, und der Track endet trotzdem auf der Kante der
+   Button-Gruppe. */
 .carousel-spacer{flex:0 0 auto;width:calc(max(var(--grid-margin),
   calc((100% - var(--grid-max)) / 2 + var(--grid-margin))) - var(--space-6));
   scroll-snap-align:start}
+.carousel-spacer.ist-ende{scroll-snap-align:none}
 /* scroll-snap-align auf dem Spacer, nicht nur auf den Karten: bei
    scroll-snap-type:x MANDATORY zwingt der Browser die Ruheposition auf den
    naechsten gueltigen Snap-Punkt - ohne diese Zeile war Position 0 (Spacer)
@@ -514,9 +616,13 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
         -->
       </div>
     </div>
-    <div class="reveal">
-      <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
-      <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
+    <!-- Titel, Untertitel und Beschreibung sind drei eigene Reveal-Schritte
+         (Feedback 2026-09-17): der Blick laeuft die Zeilen in derselben
+         Reihenfolge ab, in der man sie liest, statt dass der ganze Block als
+         eine Flaeche erscheint. -->
+    <div>
+      <h1 class="h1"><span class="line1 reveal">[PROJEKTNAME]</span><span class="line2 reveal">[UNTERTITEL DER SESSION]</span></h1>
+      <p class="lead sub reveal">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
     </div>
     <div class="meta-block">
       <dl class="meta">
@@ -639,20 +745,26 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
       </div>
     </div>
     <div class="stats">
-      <div class="stat reveal"><div class="value" data-count-to="34">0</div>
+      <div class="stat linie-oben reveal"><div class="value" data-count-to="34">0</div>
         <div class="label">[Projekttage]</div><div class="note">[Kurze Einordnung.]</div></div>
-      <div class="stat reveal"><div class="value" data-count-to="21">0</div>
+      <div class="stat linie-oben reveal"><div class="value" data-count-to="21">0</div>
         <div class="label">[Tage/Jahr gespart]</div><div class="note">[Kurze Einordnung.]</div></div>
-      <div class="stat reveal"><div class="value" data-count-to="9">0</div>
+      <div class="stat linie-oben reveal"><div class="value" data-count-to="9">0</div>
         <div class="label">[Aktive Nutzer:innen]</div><div class="note">[Kurze Einordnung.]</div></div>
     </div>
   </div>
 </section>
 
+<!-- Ohne Namensnennung? Dann stattdessen big-statement nehmen.
+     Das Zitat wird per _basis.js (Abschnitt 9b) getippt, die Quelle blendet
+     erst danach auf - sie ist die Auflösung, nicht der Anfang. -->
 <section class="quote" data-modul="08 Menschen/03 quote-block">
-  <div class="wrap reveal">
-    <blockquote>„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</blockquote>
-    <cite>[Name Nachname, Rolle]</cite>
+  <div class="wrap">
+    <blockquote class="quote-typo reveal">
+      <span class="platzhalter">„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</span>
+      <span class="getippt" aria-hidden="true"></span>
+    </blockquote>
+    <cite class="ist-nachzitat">[Name Nachname, Rolle]</cite>
   </div>
 </section>
 
@@ -676,8 +788,12 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
       <div class="card reveal"><span class="num">04</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
+      <div class="carousel-spacer ist-ende" aria-hidden="true"></div>
     </div>
   </div>
+  <!-- Standard-Karussell: startet links buendig mit der Headline darueber
+       (dafuer sorgt .carousel-spacer + scroll-snap:start, siehe oben) und
+       springt pro Klick um genau eine Kartenbreite. -->
   <div class="wrap carousel-controls reveal">
     <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">
       <svg aria-hidden="true"><use href="#icon-pfeil-links"></use></svg>
@@ -832,7 +948,7 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
      kommen. Die Verzögerung pro Element wird per data-Attribut auf jeder Sektion
      gesteuert, nicht global — dadurch bleibt eine 3-Item-Section knackig und eine
      8-Item-Section trotzdem lesbar gestaffelt statt trödelnd. ---- */
-  var STAGGER_MS = 220, STAGGER_MAX_MS = 960;
+  var STAGGER_MS = 130, STAGGER_MAX_MS = 900;
   function stageReveal(container) {
     var items = container.classList && container.classList.contains("reveal")
       ? [container] : container.querySelectorAll(".reveal");
@@ -846,17 +962,23 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
       if (!isNaN(eigen)) takt = eigen;
     }
     items.forEach(function (el, i) {
-      el.style.transitionDelay = Math.min(i * takt, STAGGER_MAX_MS) + "ms";
+      // --reveal-delay statt inline transition-delay: Pseudo-Elemente (die
+      // Linien in .linie-oben/.raster-col/.stat) erben die Property und laufen
+      // dadurch synchron mit ihrem Element ein. Siehe _basis.css, Reveal-Block.
+      el.style.setProperty("--reveal-delay", Math.min(i * takt, STAGGER_MAX_MS) + "ms");
       el.classList.add("in");
     });
   }
+  /* Auch der Hero laeuft ueber denselben Beobachter statt sofort beim Laden:
+     auf einem echten Onepager steht er ohnehin im Viewport und startet damit
+     praktisch gleichzeitig - in der Galerie (und bei jedem Direktsprung per
+     Anker) sieht man ihn dagegen genau dann, wenn man ihn erreicht. Vorher
+     spielte er blind beim Laden, unabhaengig davon, wo man gerade steht
+     (Feedback 2026-09-17: "nur beim Reinscrollen, nicht initial fuer alle"). */
   var heroEl = document.getElementById("hero");
-  if (heroEl) {
-    if (reduceMotion()) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
-    else { stageReveal(heroEl); }
-  }
-  var revealSections = Array.prototype.slice.call(document.querySelectorAll("section, footer"))
-    .filter(function (s) { return s !== heroEl && s.querySelector(".reveal"); });
+  var revealSections = Array.prototype.slice.call(
+      document.querySelectorAll("section, header.hero, footer"))
+    .filter(function (s) { return s.querySelector(".reveal") || s.classList.contains("reveal"); });
   if (reduceMotion() || !("IntersectionObserver" in window)) {
     revealSections.forEach(function (s) { stageReveal(s); });
   } else {
@@ -893,10 +1015,24 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
     }
     requestAnimationFrame(step);
   }
+  // Der Zaehler startet um genau die Staffel-Verzoegerung seiner eigenen
+  // .reveal-Huelle versetzt: er laeuft dadurch WAEHREND die Kennzahl hochkommt
+  // und die Linie einlaeuft, nicht schon vorher im noch unsichtbaren Element
+  // (Feedback 2026-09-17).
+  function revealVerzoegerung(el) {
+    var huelle = el.closest ? el.closest(".reveal") : null;
+    if (!huelle) return 0;
+    var wert = parseFloat(huelle.style.getPropertyValue("--reveal-delay"));
+    return isNaN(wert) ? 0 : wert;
+  }
   if ("IntersectionObserver" in window) {
     var cObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { countUp(e.target); cObs.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        cObs.unobserve(e.target);
+        var warten = revealVerzoegerung(e.target);
+        if (warten > 0) setTimeout(function () { countUp(e.target); }, warten);
+        else countUp(e.target);
       });
     }, { threshold: 0.5 });
     counters.forEach(function (el) { cObs.observe(el); });
@@ -915,6 +1051,7 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
     if (reduceMotion()) {
       balken.forEach(function (b) {
         b.style.setProperty("--wert", b.dataset.wert);
+        b.classList.add("ist-gewachsen");
         var wert = b.querySelector(".chart-wert");
         if (wert) wert.textContent = wert.dataset.countTo;
       });
@@ -925,6 +1062,9 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
     balken.forEach(function (b, i) {
       setTimeout(function () {
         b.style.setProperty("--wert", b.dataset.wert);
+        // Blendet den Wert ein (CSS .ist-gewachsen .chart-wert) - der Zaehler
+        // laeuft dann sichtbar mit der Saeule nach oben statt davor.
+        b.classList.add("ist-gewachsen");
         var wert = b.querySelector(".chart-wert");
         if (wert) countUp(wert);
       }, i * STAGGER);
@@ -972,67 +1112,127 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
     }, { passive: true });
   });
 
-  /* ---- 7) Roadmap-Timeline: farbige Linie bis zum aktuellen Punkt ----
-     Breite = Position des .is-current-Punkts im Track (Dots sitzen am linken Rand
-     jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
-     Zielbreite animieren (transition auf .timeline-progress erledigt das optisch),
-     damit die Linie sich sichtbar "auffüllt" statt einfach dazustehen. */
-  // Ausgelagert (statt Inline in der forEach unten), weil Abschnitt 10
-  // (replayTimeline) dieselbe Berechnung fuer den Replay-Control braucht -
-  // eine Kopie der Formel haette bei einer spaeteren Aenderung leicht
-  // auseinanderlaufen koennen.
-  function timelineZielProzent(tl) {
+  /* ---- 7) Roadmap-Timeline: chronologisch aufgebaute Zeitachse ----
+     Reihenfolge (Figma node 9-9, Feedback 2026-09-17):
+       Punkt skaliert ein -> sein Datum/Meilenstein blendet auf ->
+       die Linie waechst aus dem Punkt heraus zum naechsten -> von vorn.
+     Der aktuelle Punkt pulsiert danach dauerhaft weiter, die Strecke zu
+     kuenftigen Meilensteinen wird gestrichelt und grau gezogen.
+
+     Die Segmentgeometrie kommt aus den echten Dot-Positionen statt aus einer
+     Prozentformel: sie stimmt damit bei jeder Anzahl Meilensteine, bei
+     unterschiedlich breiten Beschriftungen und nach jedem Resize. */
+  var TL_DOT = 300,     // Punkt setzt sich
+      TL_TEXT = 150,    // danach Beschriftung
+      TL_LINIE = 430;   // danach Linie zum naechsten Punkt
+
+  function timelineWaagerecht(tl) {
+    // Mobile stapelt die Punkte untereinander (siehe Media-Query im Modul) -
+    // dann traegt die waagerechte Linienebene nichts und bleibt leer.
     var items = tl.querySelectorAll(".timeline-item");
-    if (!items.length) return null;
-    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
-      return it.classList.contains("is-current");
-    });
-    if (currentIndex < 0) return null; // kein aktueller Punkt markiert -> keine Linie zeichnen
-    return (currentIndex / items.length) * 100 + "%";
+    if (items.length < 2) return false;
+    return items[0].offsetTop === items[1].offsetTop;
   }
-  var TIMELINE_DAUER = 1100; // deckt sich mit der width-transition auf .timeline-progress
-  // Dots skalieren erst ein, wenn die rote Linie sie "erreicht" hat - zeitlich
-  // proportional zur Laufzeit/Position der width-Transition, nicht mehr Teil
-  // des generischen .reveal-Fades. Der Ring am aktuellen Punkt folgt nochmal
-  // verzoegert danach (Video-Feedback 2026-09-17).
-  function timelineDotsAnimieren(tl) {
-    var items = tl.querySelectorAll(".timeline-item");
-    if (!items.length) return;
-    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
-      return it.classList.contains("is-current");
-    });
-    var nenner = currentIndex >= 0 ? currentIndex : items.length - 1;
-    items.forEach(function (it, i) {
+
+  // Legt pro Luecke zwischen zwei Punkten ein Segment an und setzt es exakt
+  // von Dot-Mitte zu Dot-Mitte. Laeuft auch bei Resize erneut.
+  function timelineSegmenteBauen(tl) {
+    var ebene = tl.querySelector(".timeline-linien");
+    if (!ebene) return [];
+    var items = Array.prototype.slice.call(tl.querySelectorAll(".timeline-item"));
+    if (items.length < 2 || !timelineWaagerecht(tl)) { ebene.innerHTML = ""; return []; }
+    var basis = ebene.getBoundingClientRect();
+    var mitten = items.map(function (it) {
       var dot = it.querySelector(".timeline-dot");
-      if (!dot) return;
-      dot.classList.remove("ist-sichtbar", "ist-ring-sichtbar");
-      if (reduceMotion()) { dot.classList.add("ist-sichtbar"); if (it.classList.contains("is-current")) dot.classList.add("ist-ring-sichtbar"); return; }
-      var anteil = nenner > 0 ? Math.min(i, nenner) / nenner : 0;
-      var verzoegerung = i <= nenner ? anteil * TIMELINE_DAUER : TIMELINE_DAUER;
-      setTimeout(function () {
-        dot.classList.add("ist-sichtbar");
-        if (it.classList.contains("is-current")) {
-          setTimeout(function () { dot.classList.add("ist-ring-sichtbar"); }, 300);
-        }
-      }, verzoegerung);
+      var r = (dot || it).getBoundingClientRect();
+      return r.left + r.width / 2 - basis.left;
+    });
+    var vorhandene = ebene.querySelectorAll(".timeline-seg");
+    if (vorhandene.length !== items.length - 1) {
+      ebene.innerHTML = "";
+      for (var k = 0; k < items.length - 1; k++) {
+        ebene.appendChild(document.createElement("span")).className = "timeline-seg";
+      }
+    }
+    var segmente = Array.prototype.slice.call(ebene.querySelectorAll(".timeline-seg"));
+    segmente.forEach(function (seg, i) {
+      seg.style.left = mitten[i] + "px";
+      // Ein Segment gilt als Ausblick, sobald der Punkt an seinem RECHTEN Ende
+      // noch bevorsteht - dann gestrichelt/grau statt durchgezogen rot.
+      seg.classList.toggle("ist-ausblick", items[i + 1].classList.contains("ist-ausblick"));
+      seg.dataset.ziel = Math.max(0, mitten[i + 1] - mitten[i]);
+      // Bereits ausgefahrene Segmente muessen beim Resize mitwandern.
+      if (seg.dataset.offen === "1") seg.style.width = seg.dataset.ziel + "px";
+    });
+    return segmente;
+  }
+
+  function timelineZuruecksetzen(tl) {
+    tl.querySelectorAll(".timeline-item").forEach(function (it) {
+      it.classList.remove("ist-beschriftet");
+      var dot = it.querySelector(".timeline-dot");
+      if (dot) dot.classList.remove("ist-da", "ist-aktuell");
+    });
+    tl.querySelectorAll(".timeline-seg").forEach(function (seg) {
+      seg.style.transition = "none";
+      seg.style.width = "0px";
+      seg.dataset.offen = "0";
+      void seg.offsetWidth;
+      seg.style.transition = "";
     });
   }
+
+  function timelineAbspielen(tl) {
+    var items = Array.prototype.slice.call(tl.querySelectorAll(".timeline-item"));
+    if (!items.length) return;
+    var segmente = timelineSegmenteBauen(tl);
+
+    function punktZeigen(i) {
+      var it = items[i];
+      var dot = it.querySelector(".timeline-dot");
+      if (dot) {
+        dot.classList.add("ist-da");
+        // Der Dauerpuls haengt am Dot, nicht am Item: er darf erst starten,
+        // wenn der Punkt wirklich gesetzt ist.
+        if (it.classList.contains("ist-aktuell")) dot.classList.add("ist-aktuell");
+      }
+      it.classList.add("ist-beschriftet");
+    }
+
+    if (reduceMotion()) {
+      items.forEach(function (_, i) { punktZeigen(i); });
+      segmente.forEach(function (seg) { seg.style.width = seg.dataset.ziel + "px"; seg.dataset.offen = "1"; });
+      return;
+    }
+
+    var t = 0;
+    items.forEach(function (_, i) {
+      setTimeout(function () { punktZeigen(i); }, t);
+      t += TL_DOT + TL_TEXT;
+      var seg = segmente[i];
+      if (seg) {
+        setTimeout(function () {
+          seg.style.width = seg.dataset.ziel + "px";
+          seg.dataset.offen = "1";
+        }, t);
+        t += TL_LINIE;
+      }
+    });
+  }
+
   document.querySelectorAll(".timeline").forEach(function (tl) {
-    var progress = tl.querySelector(".timeline-progress");
-    if (!progress) return;
-    var targetPct = timelineZielProzent(tl);
-    if (targetPct === null) return;
-    if (reduceMotion()) { progress.style.width = targetPct; timelineDotsAnimieren(tl); return; }
-    if ("IntersectionObserver" in window) {
+    timelineSegmenteBauen(tl);
+    var gelaufen = false;
+    function los() { if (gelaufen) return; gelaufen = true; timelineAbspielen(tl); }
+    if (reduceMotion() || !("IntersectionObserver" in window)) { los(); }
+    else {
       new IntersectionObserver(function (entries, obs) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { progress.style.width = targetPct; timelineDotsAnimieren(tl); obs.unobserve(e.target); }
+          if (e.isIntersecting) { los(); obs.unobserve(e.target); }
         });
-      }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 }).observe(tl);
-    } else {
-      progress.style.width = targetPct;
-      timelineDotsAnimieren(tl);
+      }, { rootMargin: "-40% 0px -40% 0px", threshold: 0 }).observe(tl);
     }
+    window.addEventListener("resize", function () { timelineSegmenteBauen(tl); });
   });
 
   /* ---- 7b) Roadmap Zoom-In: Balken<->Meilenstein-Kopplung ----
@@ -1041,6 +1241,24 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
      (.ist-aktuell), sondern ein reiner Hover-Zustand (Video-Feedback
      2026-09-17). Touch simuliert denselben Zustand kurzzeitig, wie beim
      Chart-Slide (Abschnitt 6b). */
+  // Balken fahren nacheinander von links auf, sobald das Gantt sichtbar ist -
+  // dieselbe Leserichtung wie beim Fluss-Diagramm und der Zeitachse.
+  function ganttAusfahren(gantt) {
+    var balken = Array.prototype.slice.call(gantt.querySelectorAll(".gantt-balken"));
+    if (reduceMotion()) { balken.forEach(function (b) { b.classList.add("ist-da"); }); return; }
+    balken.forEach(function (b, i) {
+      setTimeout(function () { b.classList.add("ist-da"); }, i * 180);
+    });
+  }
+  document.querySelectorAll(".gantt").forEach(function (gantt) {
+    if (reduceMotion() || !("IntersectionObserver" in window)) { ganttAusfahren(gantt); return; }
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { ganttAusfahren(gantt); obs.unobserve(e.target); }
+      });
+    }, { rootMargin: "-35% 0px -35% 0px", threshold: 0 }).observe(gantt);
+  });
+
   document.querySelectorAll(".roadmap-zoom").forEach(function (zoom) {
     var balken = zoom.querySelectorAll(".gantt-balken");
     function setzen(ref, an) {
@@ -1058,6 +1276,58 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
         setTimeout(function () { b.classList.remove("ist-betont"); setzen(ref, false); }, 1200);
       }, { passive: true });
     });
+  });
+
+  /* ---- 7c) Zitat: Schreibmaschinen-Effekt ----
+     Der Satz wird Zeichen fuer Zeichen gesetzt, die Quelle blendet erst auf,
+     wenn er fertig ist (Feedback 2026-09-17). Der volle Satz steht als
+     unsichtbarer Platzhalter im DOM und haelt die Hoehe - dadurch springt
+     weder das Layout noch die Sektionsmitte, und Screenreader lesen den
+     vollstaendigen Text (die getippte Schicht ist aria-hidden). */
+  var TIPP_MS = 26; // Zeichenabstand; ~40 Anschlaege/Sekunde, ruhig lesbar
+  function zitatTippen(block) {
+    var platzhalter = block.querySelector(".platzhalter");
+    var ziel = block.querySelector(".getippt");
+    var quelle = block.parentNode ? block.parentNode.querySelector("cite") : null;
+    if (!platzhalter || !ziel) return;
+    var text = platzhalter.textContent;
+    if (reduceMotion()) {
+      ziel.textContent = text;
+      if (quelle) quelle.classList.add("ist-da");
+      return;
+    }
+    ziel.textContent = "";
+    block.classList.add("ist-am-tippen");
+    var i = 0, letzte = 0;
+    // Ueber rAF statt setInterval: der Text laeuft dadurch im Takt der
+    // Bildwiederholrate und stockt nicht, wenn der Tab kurz ausgelastet ist.
+    function schritt(jetzt) {
+      if (!letzte) letzte = jetzt;
+      if (jetzt - letzte >= TIPP_MS) {
+        letzte = jetzt;
+        i += 1;
+        ziel.textContent = text.slice(0, i);
+      }
+      if (i < text.length) { requestAnimationFrame(schritt); }
+      else {
+        block.classList.remove("ist-am-tippen");
+        if (quelle) quelle.classList.add("ist-da");
+      }
+    }
+    requestAnimationFrame(schritt);
+  }
+  document.querySelectorAll(".quote-typo").forEach(function (block) {
+    // Getippt wird erst, wenn das Zitat selbst eingeblendet ist.
+    if (reduceMotion() || !("IntersectionObserver" in window)) { zitatTippen(block); return; }
+    var gestartet = false;
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting || gestartet) return;
+        gestartet = true;
+        obs.unobserve(e.target);
+        setTimeout(function () { zitatTippen(block); }, 450);
+      });
+    }, { rootMargin: "-40% 0px -40% 0px", threshold: 0 }).observe(block);
   });
 
   /* ---- 8) Karussell ---- */
@@ -1149,6 +1419,7 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
       el.style.transition = "none";
       el.classList.remove("in");
       el.style.transitionDelay = "";
+      el.style.removeProperty("--reveal-delay");
     });
     void root.offsetWidth;
     alle.forEach(function (el) { el.style.transition = ""; });
@@ -1165,18 +1436,32 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
     var timelines = root.classList && root.classList.contains("timeline")
       ? [root] : (root.querySelectorAll ? root.querySelectorAll(".timeline") : []);
     Array.prototype.forEach.call(timelines, function (tl) {
-      var progress = tl.querySelector(".timeline-progress");
-      if (!progress) return;
-      var targetPct = timelineZielProzent(tl);
-      if (targetPct === null) return;
-      // Breite ohne Transition auf 0 zuruecksetzen, Reflow erzwingen, dann
-      // Transition wieder zulassen und den Zielwert setzen - sonst faehrt
-      // die Linie nur von der aktuellen Breite ab statt sichtbar neu von 0.
-      progress.style.transition = "none";
-      progress.style.width = "0%";
-      void progress.offsetWidth;
-      progress.style.transition = "";
-      requestAnimationFrame(function () { progress.style.width = targetPct; timelineDotsAnimieren(tl); });
+      timelineZuruecksetzen(tl);
+      requestAnimationFrame(function () { timelineAbspielen(tl); });
+    });
+  }
+
+  function replayGantt(root) {
+    var gantts = root.classList && root.classList.contains("gantt")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".gantt") : []);
+    Array.prototype.forEach.call(gantts, function (gantt) {
+      gantt.querySelectorAll(".gantt-balken").forEach(function (b) {
+        b.style.transition = "none";
+        b.classList.remove("ist-da", "ist-betont");
+        void b.offsetWidth;
+        b.style.transition = "";
+      });
+      requestAnimationFrame(function () { ganttAusfahren(gantt); });
+    });
+  }
+
+  function replayZitat(root) {
+    var bloecke = root.classList && root.classList.contains("quote-typo")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".quote-typo") : []);
+    Array.prototype.forEach.call(bloecke, function (block) {
+      var quelle = block.parentNode ? block.parentNode.querySelector("cite") : null;
+      if (quelle) quelle.classList.remove("ist-da");
+      zitatTippen(block);
     });
   }
 
@@ -1202,7 +1487,7 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
       ? [root] : (root.querySelectorAll ? root.querySelectorAll(".chart-body") : []);
     Array.prototype.forEach.call(charts, function (chart) {
       chart.querySelectorAll(".chart-balken").forEach(function (b) {
-        b.classList.remove("ist-betont");
+        b.classList.remove("ist-betont", "ist-gewachsen");
         b.style.setProperty("--wert", 0);
         var wert = b.querySelector(".chart-wert");
         if (wert) { wert.textContent = "0"; }
@@ -1223,6 +1508,8 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
     replayCarousel(root);
     replayStepper(root);
     replayChart(root);
+    replayGantt(root);
+    replayZitat(root);
   }
 
   function replayAll() {

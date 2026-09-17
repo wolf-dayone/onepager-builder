@@ -12,7 +12,8 @@
 .badge{border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:10px 20px;
   font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-main-text);text-decoration:none}
 .badge.accent{border-color:var(--color-action);color:var(--color-action)}
-.hero h1 .line2{display:block;font-weight:400;color:var(--color-text)}
+.hero h1 .line1,.hero h1 .line2{display:block}
+.hero h1 .line2{font-weight:400;color:var(--color-text)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
 .hero .meta-block{display:flex;flex-direction:column}
 .hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);order:-1;
@@ -55,9 +56,13 @@
         -->
       </div>
     </div>
-    <div class="reveal">
-      <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
-      <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
+    <!-- Titel, Untertitel und Beschreibung sind drei eigene Reveal-Schritte
+         (Feedback 2026-09-17): der Blick laeuft die Zeilen in derselben
+         Reihenfolge ab, in der man sie liest, statt dass der ganze Block als
+         eine Flaeche erscheint. -->
+    <div>
+      <h1 class="h1"><span class="line1 reveal">[PROJEKTNAME]</span><span class="line2 reveal">[UNTERTITEL DER SESSION]</span></h1>
+      <p class="lead sub reveal">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
     </div>
     <div class="meta-block">
       <dl class="meta">

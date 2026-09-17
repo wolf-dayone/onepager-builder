@@ -38,9 +38,14 @@
   --blue-2: #2a7fc7;   /* Accent Color/Blue Highlight 2 */
   --blue-3: #1487dd;   /* Accent Color/Blue Highlight 3 — Standard-Highlight */
 
-  --red-700: #cc443d;
-  --red-500: #ff544c;
+  --red-700: #cc443d;   /* Figma "action/warning" */
+  --red-500: #ff544c;   /* Figma "action/danger" — Aktionsfarbe */
   --red-300: #ff8580;
+
+  /* Figma "icon/tertiary" — eigener Wert, NICHT sand-400 (#c9c1b5) oder
+     sand-600 (#9e9a94), sondern genau dazwischen. Traegt in Figma die
+     ruhenden Datenflaechen (Chart-Saeulen, Achsen). */
+  --icon-tertiary: #b4aea4;
 
   /* --- Semantisch (Figma: Collection "Modes", Light) --- */
   --color-main-text:  var(--gray-900);
@@ -54,6 +59,11 @@
      blue, but red ... the action color should be red instead of any other
      color"). Gilt gleich in Hell und Dunkel, daher kein .dark-Override. */
   --color-action:     var(--red-500);
+  /* Figma "icon/tertiary" / "icon/secondary": Ruhe- und Hover-Stufe fuer
+     Datenflaechen (chart-slide-Saeulen, Achsen, Gantt-Balken). Bewusst NICHT
+     --color-border/--color-main-text: das sind Linien- bzw. Textrollen. */
+  --color-icon-tertiary:  var(--icon-tertiary);
+  --color-icon-secondary: var(--sand-900);
   /* Figma "text/inverse": Text auf einer mit --color-main-text gefuellten
      Flaeche (hervorgehobener Balken, gefuellter Primaerbutton) - das
      Gegenstueck zu --color-main-text, nicht mit --color-bg zu verwechseln
@@ -105,9 +115,25 @@
   --radius-card:  8px;
   --radius-pill:  9999px;
 
-  /* --- Motion --- */
+  /* --- Motion ---
+     Eine Stelle fuer alle Dauern und Kurven. Welche Rolle wann welchen Wert
+     bekommt, steht in referenzen/animationen.md - Module greifen NUR auf
+     diese Tokens zu, nie auf eigene ms-Werte. */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --dur:  0.6s;
+  /* Standardkurve fuer Einblendungen: schneller Start, langes Ausrollen -
+     laesst Bewegung ankommen statt abbremsen (ease-out, kein ease-in-out). */
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Linien/Balken, die eine Strecke zeichnen: gleichmaessiger, leicht
+     beschleunigter Zug, damit die Linie nicht am Ende "kriecht". */
+  --ease-linie:  cubic-bezier(0.65, 0, 0.35, 1);
+  /* UI-Reaktionen (Hover, Fokus, Tabwechsel): kurz und direkt. */
+  --ease-ui:     cubic-bezier(0.33, 1, 0.68, 1);
+
+  --dur-ui:      0.2s;   /* Hover/Fokus/Tab-Wechsel */
+  --dur-reveal:  1.1s;   /* Standard-Einblendung (.reveal) */
+  --dur-linie:   0.8s;   /* Linien-/Achsen-Reveal, Balkenwachstum */
+  --dur-lang:    1.4s;   /* lange Strecken (Timeline-Segment) */
 }
 
 @media (max-width: 900px) {
@@ -187,8 +213,15 @@ footer.cta{padding-block:var(--space-20)}
    von links (Standard) bzw. von der Mitte aus (is-centered) - Video-Feedback
    2026-09-17. Aktiviert ueber dieselbe .reveal/.in-Mechanik wie der Rest: die
    Eyebrow ist jetzt selbst ein eigener .reveal-Schritt (siehe Modul-HTML). */
+/* Kapitelmarker bewegen sich NICHT mehr mit nach oben (Feedback 2026-09-17):
+   sie blenden rein auf und lassen die Linie einlaufen. Der Marker ist ein
+   ruhender Anker - wandert er mit, konkurriert er mit der Headline darunter,
+   die genau diese Aufwaertsbewegung als eigenen Akzent braucht. */
+.reveal.eyebrow{transform:none}
 .eyebrow-linie{width:68px;height:1px;background:currentColor;flex:none;
-  transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease) .25s}
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur-linie) var(--ease-linie);
+  transition-delay:calc(var(--reveal-delay,0ms) + 150ms)}
 .eyebrow.in .eyebrow-linie,.reveal.in.eyebrow .eyebrow-linie{transform:scaleX(1)}
 /* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
 .eyebrow.is-centered{align-items:center;text-align:center}
@@ -201,9 +234,21 @@ footer.cta{padding-block:var(--space-20)}
    projektweit Rot, nicht Blau - gilt fuer alle inline Textlinks. Buttons/Badges
    mit eigener main-text/border-Farbe (btn-primary/-secondary, .badge) sind
    bewusst ausgenommen, die sind keine Textlinks. */
-a{color:var(--color-action);text-decoration-color:currentColor;text-underline-offset:2px}
-a:hover{opacity:.8}
-a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
+/* Fliesstext-Links: fett + unterstrichen in der normalen Textfarbe, Rot ist
+   die HOVER-Farbe (Feedback 2026-09-17). Dauerhaftes Rot zieht sonst mehr
+   Aufmerksamkeit als die Aussage, in der der Link steht. Gewicht und
+   Unterstrich tragen die Erkennbarkeit auch ohne Farbe - und damit auch bei
+   Farbfehlsichtigkeit. Buttons/Badges/Karten-Links mit eigener Farbe sind
+   ausgenommen (.btn, .badge, .medien-karte, .brand-group, .nav-*). */
+a{color:inherit;font-weight:600;text-decoration:underline;
+  text-decoration-thickness:1px;text-underline-offset:3px;
+  transition:color var(--dur-ui) var(--ease-ui),
+             text-decoration-color var(--dur-ui) var(--ease-ui)}
+a:hover{color:var(--color-action)}
+a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-radius:2px}
+.btn,.badge,.medien-karte,.brand-group,#chapter-nav a,.gantt-balken{
+  font-weight:inherit;text-decoration:none}
+.btn:hover,.badge:hover,.medien-karte:hover,.brand-group:hover,#chapter-nav a:hover{color:inherit}
 
 /* ==== Typo-Rollen ==== */
 /* overflow-wrap: ein einzelnes langes Wort (Produktname, Kompositum) darf
@@ -218,11 +263,38 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 .small{font-size:var(--text-body-s)}
 
 /* ==== Reveal on scroll ==== */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 1.4s var(--ease),transform 1.4s var(--ease)}
+/* Die Staffel-Verzoegerung liegt als Custom Property auf dem Element, nicht
+   als transition-delay (_basis.js stageReveal setzt --reveal-delay). Grund:
+   ein inline transition-delay erreicht KEINE Pseudo-Elemente - die Linien in
+   .raster-col/.stat starteten dadurch alle gleichzeitig, waehrend die Bloecke
+   selbst gestaffelt hochkamen. Der vierte Block schob sich so mit einer
+   laengst fertig gezeichneten Linie ins Bild (Feedback 2026-09-17). Ueber die
+   Property erben ::before/::after dieselbe Verzoegerung und laufen synchron
+   mit ihrem Element. */
+.reveal{opacity:0;transform:translateY(24px);
+  transition:opacity var(--dur-reveal) var(--ease-reveal),
+             transform var(--dur-reveal) var(--ease-reveal);
+  transition-delay:var(--reveal-delay,0ms);
+  /* Halbtransparente Zwischenbilder sauber rastern lassen. */
+  will-change:opacity,transform}
 .reveal.in{opacity:1;transform:none}
+/* Fuer Inhalte, die ohne Ortswechsel erscheinen sollen (Achsenlabel, Quadranten,
+   Prozesskarten): gleiche Mechanik, nur Opacity. */
+.reveal.ist-nur-opacity{transform:none}
+
+/* Wiederverwendbare Linie, die mit ihrem Element einlaeuft (Textraster-Spalten,
+   Kennzahlen). Element traegt .linie-oben + .reveal, sonst nichts. */
+.linie-oben{position:relative}
+.linie-oben::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;
+  background:var(--linie-farbe,var(--color-border));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur-linie) var(--ease-linie);
+  transition-delay:var(--reveal-delay,0ms)}
+.linie-oben.in::before{transform:scaleX(1)}
+
 @media(prefers-reduced-motion:reduce){
-  .reveal{opacity:1;transform:none;transition:none}
-  .eyebrow-linie{transform:scaleX(1);transition:none}
+  .reveal{opacity:1;transform:none;transition:none;will-change:auto}
+  .eyebrow-linie,.linie-oben::before{transform:scaleX(1);transition:none}
   /* Erzwungenes Einrasten kann bei vestibulären Empfindlichkeiten unangenehm
      sein - dieselbe Vorsicht wie bei jedem anderen Bewegungseffekt hier. */
   html{scroll-behavior:auto;scroll-snap-type:none}
@@ -240,7 +312,6 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    soll (z. B. vertikale Zentrierung, Whitespace bei kurzem Inhalt). Macht
    die Galerie deutlich laenger (34 Module x mind. 1 Viewporthoehe) - das ist
    der akzeptierte Tradeoff. */
-.galerie-intro{padding:var(--space-24) var(--grid-margin)}
 .galerie-baustein{padding:var(--space-16) var(--grid-margin)}
 
 /* ==== Kapitel-Navigation ==== */
@@ -300,7 +371,8 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 .badge{border:1px solid var(--color-border);border-radius:var(--radius-pill);padding:10px 20px;
   font-size:var(--text-body-s);font-weight:400;letter-spacing:.06em;color:var(--color-main-text);text-decoration:none}
 .badge.accent{border-color:var(--color-action);color:var(--color-action)}
-.hero h1 .line2{display:block;font-weight:400;color:var(--color-text)}
+.hero h1 .line1,.hero h1 .line2{display:block}
+.hero h1 .line2{font-weight:400;color:var(--color-text)}
 .hero .sub{margin-top:var(--space-6);max-width:46ch}
 .hero .meta-block{display:flex;flex-direction:column}
 .hero .rule{height:1px;width:min(640px,100%);margin-bottom:var(--space-8);order:-1;
@@ -347,17 +419,28 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 /* ==== Stepper (Phasen) ==== */
 /* Figma: Sticky Scrollspy - die Phasenleiste bleibt oben stehen, der Inhalt
    darunter wechselt. top-Offset laesst Platz fuer die Kapitel-Navigation. */
-.stepper-tabs{display:flex;gap:0;border-bottom:2px solid var(--color-border);
-  position:sticky;top:72px;background:var(--color-bg);z-index:10;overflow-x:auto;
+/* Leiste ohne eigene Flaeche: in Figma liegt sie transparent auf dem
+   Sektionshintergrund, nur eine Haarlinie traegt die Tabs (Feedback
+   2026-09-17). Der frueher gesetzte --color-bg-Fuellton erzeugte beim
+   Sticky-Scrollen einen sichtbaren Kasten, der im Design nicht existiert.
+   background bleibt bewusst weg - die Sektion hat ohnehin eine deckende
+   Flaeche, der Inhalt darunter scrollt also nicht durch. */
+.stepper-tabs{display:flex;gap:var(--space-8);border-bottom:1px solid var(--color-border);
+  position:sticky;top:72px;background:transparent;z-index:10;overflow-x:auto;
   scrollbar-width:none}
 .stepper-tabs::-webkit-scrollbar{display:none}
 .stepper-tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
-  margin-bottom:-2px;padding:0 var(--space-4) var(--space-4);cursor:pointer;
+  margin-bottom:-1px;padding:0 0 var(--space-4);cursor:pointer;
   font-family:inherit;font-size:var(--text-body-m);font-weight:600;line-height:1.3;
-  color:var(--color-text);opacity:.45;white-space:nowrap;transition:opacity .2s var(--ease)}
+  color:var(--color-text);opacity:.45;white-space:nowrap;
+  transition:opacity var(--dur-ui) var(--ease-ui),color var(--dur-ui) var(--ease-ui),
+             border-color var(--dur-ui) var(--ease-ui)}
 .stepper-tab:hover{opacity:.75}
+/* Aktiver Tab: dunkle Linie in Textfarbe, nicht in der Aktionsfarbe - der
+   Tab ist eine Positionsanzeige, kein Aufruf zum Handeln (Screenshot Figma,
+   2026-09-17). */
 .stepper-tab[aria-selected="true"]{opacity:1;color:var(--color-main-text);
-  border-bottom-width:3px;margin-bottom:-3px;border-bottom-color:var(--color-action)}
+  border-bottom-color:var(--color-main-text)}
 .stepper-panel{padding-top:var(--space-8);transition:opacity .35s var(--ease),transform .35s var(--ease)}
 .stepper-panel[hidden]{display:none}
 /* Uebergangszustand beim Tab-Wechsel: das neu erscheinende Panel startet hier
@@ -398,11 +481,12 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 /* Gleichrangige Aspekte ohne Karten-Optik: Hairline statt Flaeche. */
 .textraster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-8)}
 .textraster.ist-dreispaltig{grid-template-columns:repeat(3,minmax(0,1fr))}
-.raster-col{position:relative;padding-top:var(--space-6)}
-.raster-col::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;background:var(--color-main-text);
-  transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease) .2s}
-.raster-col.in::before{transform:scaleX(1)}
-@media(prefers-reduced-motion:reduce){.raster-col::before{transform:scaleX(1);transition:none}}
+/* Linie kommt aus der gemeinsamen .linie-oben-Rolle (_basis.css): sie erbt
+   ueber --reveal-delay die Staffel-Verzoegerung ihrer Spalte und zeichnet sich
+   daher WAEHREND die Spalte hochkommt. Vorher lief sie mit fester eigener
+   Verzoegerung - die vierte Spalte schob sich mit fertiger Linie ins Bild
+   (Feedback 2026-09-17). */
+.raster-col{padding-top:var(--space-6);--linie-farbe:var(--color-main-text)}
 .raster-col h3{font-size:var(--text-body-ms);font-weight:600;line-height:1;
   color:var(--color-main-text)}
 .raster-col p{margin-top:var(--space-4);font-size:var(--text-body-s);line-height:1.2;
@@ -448,7 +532,10 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    generischen .section-head nebeneinander in zwei Spalten) - Kopf-Container
    max. 930px breit. Verifiziert 2026-09-16 (Ernst, Screenshot + erneuter
    Abgleich gegen Node 28:2). Deshalb eigene Klasse statt .section-head. */
-.kartenraster-kopf{max-width:930px}
+/* 80px Abstand zur Kartenreihe - stand nur als Figma-Wert fest, war im Code
+   nie gesetzt (Feedback 2026-09-17). Margin sitzt am Kopf, nicht an .cards:
+   .cards wird auch ohne Kopf verwendet. */
+.kartenraster-kopf{max-width:930px;margin-bottom:var(--space-20)}
 .kartenraster-kopf .intro{margin-top:var(--space-6)}
 
 /* ==== Prozess-Schritte (mit Rollen-Spalten) ==== */
@@ -465,11 +552,10 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 
 /* ==== Kennzahlen (dunkel) ==== */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-6);margin-top:var(--space-10)}
-.stat{position:relative;padding-top:28px}
-.stat::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;background:var(--color-border);
-  transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease) .2s}
-.stat.in::before{transform:scaleX(1)}
-@media(prefers-reduced-motion:reduce){.stat::before{transform:scaleX(1);transition:none}}
+/* Linie ueber .linie-oben (_basis.css): zeichnet sich synchron mit dem
+   Hochkommen der Kennzahl und dem Hochzaehlen - vorher war sie fertig, bevor
+   die spaeteren Kennzahlen ueberhaupt sichtbar wurden (Feedback 2026-09-17). */
+.stat{padding-top:28px}
 .stat .value{font-size:var(--text-display-1);font-weight:600;line-height:1}
 .stat .label{margin-top:var(--space-4);font-size:var(--text-body-ms);font-weight:600}
 .stat .note{margin-top:8px;font-size:var(--text-body-s);color:var(--color-text)}
@@ -497,7 +583,7 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    .chart basiert) leicht auseinander. */
 .chart-gitter{position:absolute;left:0;right:0;top:0;bottom:28px;pointer-events:none}
 .chart-gitter span{position:absolute;left:0;right:0;height:1px;background:var(--color-border);
-  transform:scaleX(0);transform-origin:left;transition:transform 1s var(--ease)}
+  transform:scaleX(0);transform-origin:left;transition:transform 1s var(--ease-linie)}
 .chart-gitter span:nth-child(1){bottom:0}
 .chart-gitter span:nth-child(2){bottom:25%}
 .chart-gitter span:nth-child(3){bottom:50%}
@@ -510,8 +596,13 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    den echten Wert per style.setProperty, sobald das leere Diagramm fertig
    eingeblendet ist. Dadurch "waechst" die Saeule wirklich, statt schon fertig
    dazustehen, wenn die Sektion in den Viewport kommt. */
-.chart-balken .saeule{width:100%;border-radius:4px 4px 0 0;background:var(--color-border);
-  height:calc(var(--wert,0) * 100%);transition:height .8s var(--ease),background .25s var(--ease);
+/* Farben aus den Figma-Icon-Rollen: icon/tertiary ruhend, icon/secondary im
+   Hover (2026-09-17). Vorher griff das Modul zu --color-border (eine
+   Linienrolle) und --color-main-text (eine Textrolle) - optisch aehnlich,
+   semantisch aber die falsche Ebene, und im Dunkelmodus dadurch zu hart. */
+.chart-balken .saeule{width:100%;border-radius:4px 4px 0 0;background:var(--color-icon-tertiary);
+  height:calc(var(--wert,0) * 100%);
+  transition:height var(--dur-linie) var(--ease-linie),background var(--dur-ui) var(--ease-ui);
   position:relative}
 /* .ist-betont simuliert (per JS, einmalig nach dem Einwachsen) genau den
    Zustand, den echtes Hover/Tap ohnehin ausloest - siehe :hover/:focus-visible
@@ -520,10 +611,22 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    2026-09-xx: "the darker column is supposed to be a simulation of a hovered
    or tapped state, so not the initial view"). */
 .chart-balken.ist-betont .saeule,.chart-balken:hover .saeule,.chart-balken:focus-visible .saeule{
-  background:var(--color-main-text)}
+  background:var(--color-icon-secondary)}
+/* Der Wert steht 8px UEBER der Saeule (Figma-Mass) und erscheint erst, wenn
+   die Saeule zu wachsen beginnt - vorher klebte eine Reihe fertiger Zahlen
+   ueber einem leeren Diagramm und nahm dem Wachsen die Pointe (2026-09-17).
+   .ist-gewachsen setzt growChart() in _basis.js zusammen mit --wert. */
+/* bottom:100% = Oberkante der Saeule, +8px Abstand darueber. Vorher stand hier
+   calc(var(--wert) * 100% + 8px) - der Prozentwert loeste aber gegen die
+   SAEULE auf (dort haengt das Element), nicht gegen die volle Balkenhoehe,
+   wodurch die Zahl im Balken landete statt darueber. Ueber bottom:100% wandert
+   sie automatisch mit, waehrend die Saeule waechst - ganz ohne --wert. */
 .chart-wert{position:absolute;left:50%;transform:translateX(-50%);
-  bottom:calc(var(--wert,0) * 100% + 10px);
-  font-size:var(--text-body-s);color:var(--color-text);transition:bottom .8s var(--ease),color .25s var(--ease)}
+  bottom:calc(100% + 8px);
+  font-size:var(--text-body-s);color:var(--color-text);opacity:0;
+  transition:color var(--dur-ui) var(--ease-ui),
+             opacity .45s var(--ease-reveal) .2s}
+.chart-balken.ist-gewachsen .chart-wert{opacity:1}
 .chart-balken.ist-betont .chart-wert,.chart-balken:hover .chart-wert,.chart-balken:focus-visible .chart-wert{
   color:var(--color-main-text);font-weight:600}
 .chart-balken .achse{position:absolute;bottom:-28px;left:0;right:0;text-align:center;
@@ -535,75 +638,106 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){
   .chart-balken .saeule,.chart-wert{transition:none}
   .chart-gitter span{transition:none}
+  .chart-balken .chart-wert{opacity:1}
 }
 @media(max-width:900px){.chart-slide .chart{min-height:180px;gap:var(--space-4)}}
 
 /* ==== Matrix 2x2 ==== */
-/* Figma: beide Achsen tragen an JEDEM Ende ein eigenes Label (z. B. "Attribute A"
-   links / "Attribute B" rechts), nicht nur einen Achsennamen in der Mitte - dazu
-   eine durchgezogene Linie mit Pfeilspitze. Frueher stand hier nur je ein
-   zentrierter Achsenname ohne Linie/Pfeile; beim Figma-Abgleich aufgefallen,
-   2026-09-17. */
-.matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
-.matrix-achse-y{position:relative;display:flex;flex-direction:column;
-  align-items:center;justify-content:space-between}
-/* Achsen wachsen von der Mitte nach aussen (nicht von oben/links nach unten/
-   rechts) - erst danach blenden die Endlabel per Opacity ein (keine
-   Vertikalbewegung). Reihenfolge kommt aus der DOM-Position ueber die
-   normale .reveal/.in-Stagger-Mechanik (_basis.js stageReveal). Video-
-   Feedback 2026-09-17, ersetzt die alte alte Scatter-Achsen-Idee. */
-.matrix-achse-y::before{content:"";position:absolute;top:6px;bottom:0;left:50%;
-  width:1px;background:var(--color-border);transform:scaleY(0);transform-origin:center;
-  transition:transform .7s var(--ease)}
-.matrix-achse-y.in::before{transform:scaleY(1)}
-.matrix-achse-y-pfeil{position:relative;z-index:1;width:0;height:0;
+/* Figma: ein Achsenkreuz um vier Quadranten. Die Y-Achse steht links NEBEN
+   den Quadranten, die X-Achse liegt UNTER ihnen (frueher hing sie als
+   Flex-Kind mit order-Trick zwischen Headline und Raster - dadurch stand die
+   waagerechte Achse ueber statt unter den Feldern, Feedback 2026-09-17).
+   Jetzt ein echtes 2x2-Raster: Spalte 1 = Y-Achse, Zeile 2 = X-Achse. */
+.matrix-wrap{display:grid;grid-template-columns:auto minmax(0,1fr);
+  grid-template-rows:auto auto;gap:var(--space-4) var(--space-6);
+  align-items:stretch}
+
+/* --- Y-Achse: Linie mit Pfeilspitzen an BEIDEN Enden, Label ausserhalb --- */
+/* Die Pfeilspitzen sassen vorher als eigenes Flex-Kind MITTEN im Strich, weil
+   sie zwischen den beiden Labels im Fluss lagen. Sie sind jetzt ::before/
+   ::after der Linie selbst und damit fest an deren Enden. */
+.matrix-achse-y{grid-column:1;grid-row:1;display:grid;grid-template-rows:auto 1fr auto;
+  justify-items:center;gap:8px}
+.matrix-achse-y .achsen-label{font-size:var(--text-body-s);font-weight:600;
+  color:var(--color-text);letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;opacity:0;transition:opacity .5s var(--ease-reveal)}
+.matrix-achse-y-linie{position:relative;width:1px;background:var(--color-border);
+  justify-self:center;align-self:stretch;
+  transform:scaleY(0);transform-origin:center;
+  transition:transform var(--dur-linie) var(--ease-linie)}
+.matrix-achse-y-linie::before,.matrix-achse-y-linie::after{content:"";position:absolute;
+  left:50%;transform:translateX(-50%);width:0;height:0;opacity:0;
   border-left:4px solid transparent;border-right:4px solid transparent;
-  border-bottom:6px solid var(--color-border);opacity:0;transition:opacity .4s var(--ease) .7s}
-.matrix-achse-y.in .matrix-achse-y-pfeil{opacity:1}
-.matrix-achse-y span{writing-mode:vertical-rl;transform:rotate(180deg);
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
-  letter-spacing:.08em;text-transform:uppercase;background:var(--color-bg);
-  position:relative;z-index:1;padding-block:6px;opacity:0;transition:opacity .5s var(--ease) .8s}
-.matrix-achse-y.in span{opacity:1}
-.matrix-main{display:flex;flex-direction:column;gap:var(--space-8)}
-.matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);order:2}
+  transition:opacity .35s var(--ease-reveal) var(--dur-linie)}
+.matrix-achse-y-linie::before{top:0;border-bottom:6px solid var(--color-border)}
+.matrix-achse-y-linie::after{bottom:0;border-top:6px solid var(--color-border)}
+
+/* --- X-Achse: unter den Quadranten, Labels links/rechts daneben --- */
+.matrix-achse-x{grid-column:2;grid-row:2;display:flex;align-items:center;gap:var(--space-4);
+  margin-top:var(--space-4)}
+.matrix-achse-x .achsen-label{font-size:var(--text-body-s);font-weight:600;
+  color:var(--color-text);letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;opacity:0;transition:opacity .5s var(--ease-reveal)}
+.matrix-achse-x-linie{flex:1;position:relative;height:1px;background:var(--color-border);
+  transform:scaleX(0);transform-origin:center;
+  transition:transform var(--dur-linie) var(--ease-linie)}
+.matrix-achse-x-linie::before,.matrix-achse-x-linie::after{content:"";position:absolute;
+  top:50%;transform:translateY(-50%);width:0;height:0;opacity:0;
+  border-top:4px solid transparent;border-bottom:4px solid transparent;
+  transition:opacity .35s var(--ease-reveal) var(--dur-linie)}
+.matrix-achse-x-linie::before{left:0;border-right:6px solid var(--color-border)}
+.matrix-achse-x-linie::after{right:0;border-left:6px solid var(--color-border)}
+
+/* --- Reveal-Choreografie ---
+   1. Achsenlinien wachsen aus der MITTE nach aussen (scaleY/scaleX, kein
+      Versatz von oben/links).
+   2. Sobald die Pfeilspitzen stehen, blenden Labels und Quadranteninhalte
+      per Opacity ein - ohne Ortswechsel (Feedback 2026-09-17).
+   Nur Headline/Subline der Sektion bewegen sich zusaetzlich nach oben, das
+   regelt die globale .reveal-Rolle. */
+.matrix-achsen.in .matrix-achse-y-linie{transform:scaleY(1)}
+.matrix-achsen.in .matrix-achse-x-linie{transform:scaleX(1)}
+.matrix-achsen.in .matrix-achse-y-linie::before,.matrix-achsen.in .matrix-achse-y-linie::after,
+.matrix-achsen.in .matrix-achse-x-linie::before,.matrix-achsen.in .matrix-achse-x-linie::after{opacity:1}
+.matrix-achsen.in .achsen-label{opacity:1;transition-delay:calc(var(--dur-linie) + .2s)}
+
+.matrix-grid{grid-column:2;grid-row:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
 .matrix-quadrant{background:var(--color-detail);padding:var(--space-8);border-radius:var(--radius-card);
   display:flex;flex-direction:column;gap:12px;min-height:130px}
 .matrix-quadrant h3{font-size:var(--text-display-3);font-weight:600}
-.matrix-achse-x{display:flex;align-items:center;gap:var(--space-4);order:1;
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
-  letter-spacing:.08em;text-transform:uppercase}
-.matrix-achse-x-linie{flex:1;position:relative;height:1px;background:var(--color-border);
-  transform:scaleX(0);transform-origin:center;transition:transform .7s var(--ease)}
-.matrix-achse-x.in .matrix-achse-x-linie{transform:scaleX(1)}
-.matrix-achse-x-linie::before,.matrix-achse-x-linie::after{content:"";position:absolute;
-  top:50%;transform:translateY(-50%);width:0;height:0;opacity:0;transition:opacity .4s var(--ease) .7s;
-  border-top:4px solid transparent;border-bottom:4px solid transparent}
-.matrix-achse-x.in .matrix-achse-x-linie::before,.matrix-achse-x.in .matrix-achse-x-linie::after{opacity:1}
-.matrix-achse-x-linie::before{left:0;border-right:6px solid var(--color-border)}
-.matrix-achse-x-linie::after{right:0;border-left:6px solid var(--color-border)}
-.matrix-achse-x>span{opacity:0;transition:opacity .5s var(--ease) .8s}
-.matrix-achse-x.in>span{opacity:1}
+
 @media(prefers-reduced-motion:reduce){
-  .matrix-achse-y::before,.matrix-achse-x-linie{transition:none;transform:none}
-  .matrix-achse-y-pfeil,.matrix-achse-y span,.matrix-achse-x-linie::before,
-  .matrix-achse-x-linie::after,.matrix-achse-x>span{transition:none;opacity:1}
+  .matrix-achse-y-linie,.matrix-achse-x-linie{transform:none;transition:none}
+  .matrix-achse-y-linie::before,.matrix-achse-y-linie::after,
+  .matrix-achse-x-linie::before,.matrix-achse-x-linie::after,
+  .matrix-achsen .achsen-label{opacity:1;transition:none}
 }
-@media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
-  .matrix-achse-y{flex-direction:row;justify-content:space-between}
-  .matrix-achse-y::before{top:50%;left:6px;right:0;bottom:auto;width:auto;height:1px}
-  .matrix-achse-y-pfeil{border-left:6px solid transparent;border-bottom:4px solid transparent;
-    border-top:4px solid transparent;border-right:6px solid var(--color-border)}
-  .matrix-achse-y span{writing-mode:horizontal-tb;transform:none}}
+/* Figma: bricht auf Mobile schnell - dort Quadranten untereinander, die
+   Y-Achse entfaellt (eine 1px-Linie neben einer Spalte traegt dort nichts). */
+@media(max-width:900px){
+  .matrix-wrap{grid-template-columns:1fr;grid-template-rows:auto auto}
+  .matrix-grid{grid-column:1;grid-template-columns:1fr}
+  .matrix-achse-y{display:none}
+  .matrix-achse-x{grid-column:1;grid-row:2}
+}
 
 /* ==== Fluss-Diagramm ==== */
-.fluss-diagramm{display:flex;align-items:center;gap:var(--space-6);margin-top:var(--space-8)}
+/* Figma-Ueberarbeitung 2026-09-17: die Stationen sind nicht mehr alle gleich
+   gefuellt, sondern tragen den Weg selbst - Eingang aussen (nur Kontur),
+   Verarbeitung gefuellt, Ziel gefuellt mit kraeftiger Kontur. Dadurch sieht
+   man die Richtung schon am Stillstand, nicht erst am Pfeil. */
+.fluss-diagramm{display:flex;align-items:stretch;gap:var(--space-6);margin-top:var(--space-12)}
 .fluss-station{flex:1;min-height:120px;border-radius:var(--radius-card);
-  background:var(--color-detail);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:4px;padding:var(--space-4);text-align:center}
-.fluss-station .name{font-size:var(--text-body-m);line-height:1.3;color:var(--color-main-text)}
+  border:1px solid var(--color-border);background:transparent;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;padding:var(--space-6);text-align:center}
+/* Zwischenstationen: gefuellte Flaeche (Figma "presentation/card"), keine Kontur. */
+.fluss-station.ist-gefuellt{background:var(--color-detail);border-color:transparent}
+/* Endstation: gefuellt UND klar umrandet - der Punkt, auf den alles zulaeuft. */
+.fluss-station.ist-ziel{background:var(--color-detail);border-color:var(--color-main-text)}
+.fluss-station .name{font-size:var(--text-body-m);font-weight:600;line-height:1.3;color:var(--color-main-text)}
 .fluss-station .art{font-size:var(--text-body-s);line-height:1.2;color:var(--color-text)}
-.fluss-pfeil{flex:none;font-size:var(--text-body-m);color:var(--color-text)}
+.fluss-pfeil{flex:none;align-self:center;font-size:var(--text-body-m);color:var(--color-main-text)}
 @media(max-width:900px){
   .fluss-diagramm{flex-direction:column;align-items:stretch}
   .fluss-pfeil{align-self:center;transform:rotate(90deg)}
@@ -652,75 +786,140 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
   color:var(--color-text)}
 
 /* ==== Roadmap-Timeline ==== */
-.timeline{position:relative;padding-top:20px}
-/* top/left zeigten frueher NICHT auf die Dot-Mitte (top:6px statt
-   padding-top+Radius=26px, left:2px statt Radius=6px) - die Linie lief ueber
-   den Dots statt durch ihre Mitte. Figma-/Video-Abgleich 2026-09-17. */
-.timeline::before{content:"";position:absolute;top:26px;left:6px;right:6px;height:1px;background:var(--color-border)}
-/* Farbige Linie vom Start bis zum aktuellen Punkt — Breite wird per JS anhand der Position
-   von .is-current gesetzt (--timeline-progress), die Animation zieht sie beim Reveal auf. */
-.timeline-progress{content:"";position:absolute;top:26px;left:6px;height:1px;background:var(--red-500);
-  width:0;transition:width 1.1s var(--ease)}
-.timeline-track{display:flex}
-.timeline-item{flex:1;display:flex;flex-direction:column;gap:14px;padding-right:var(--space-8)}
-/* Dots skalieren erst ein, NACHDEM die rote Linie sie erreicht hat (per JS
-   zeitlich an die width-Transition der .timeline-progress gekoppelt, Abschnitt
-   7 in _basis.js) - nicht mehr Teil des generischen .reveal-Fades. Der
-   aeussere Ring (zweiter Kreis) beim aktuellen Punkt erscheint nochmal
-   verzoegert danach. Video-Feedback 2026-09-17. */
-.timeline-dot{width:12px;height:12px;border-radius:50%;background:var(--color-main-text);position:relative;
-  transform:scale(0);transition:transform .35s var(--ease)}
-.timeline-dot.ist-sichtbar{transform:scale(1)}
-.timeline-dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;
-  box-shadow:0 0 0 5px rgba(255,84,76,.18);opacity:0;transition:opacity .3s var(--ease)}
-.timeline-dot.ist-ring-sichtbar::after{opacity:1}
-.timeline-item.is-current .timeline-dot{background:var(--red-500)}
-.timeline-date{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
-.timeline-item.is-current .timeline-date{color:var(--red-500)}
-.timeline-title{font-size:var(--text-body-ms);font-weight:600}
-.timeline-tag{font-size:var(--text-body-s);color:var(--red-500)}
+/* Figma (node 9-9): Datum ueber der Linie, Meilenstein darunter, die Strecke
+   bis zum aktuellen Punkt rot ausgefahren, der Ausblick dahinter gestrichelt
+   und ausgegraut. Der aktuelle Punkt pulsiert dauerhaft.
+   Geometrie der Liniensegmente rechnet _basis.js (Abschnitt 7) aus den echten
+   Dot-Positionen - dadurch stimmt sie bei 3 wie bei 6 Meilensteinen und nach
+   jedem Resize, ohne dass hier eine Anzahl hart verdrahtet ist. */
+.timeline{position:relative;display:flex;align-items:stretch;
+  --tl-datum-hoehe:28px; --tl-dot:14px}
+.timeline-item{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding-inline:var(--space-2)}
+
+/* Zeile 1: Datum. Feste Hoehe, damit alle Punkte exakt auf einer Linie sitzen. */
+.timeline-datum{height:var(--tl-datum-hoehe);display:flex;align-items:center;
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);white-space:nowrap}
+/* Zeile 2: der Punkt. */
+.timeline-dot{width:var(--tl-dot);height:var(--tl-dot);border-radius:50%;
+  background:var(--color-action);position:relative;z-index:1;flex:none;
+  transform:scale(0);
+  /* leichtes Ueberschwingen: der Punkt "setzt sich", statt nur aufzutauchen */
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.timeline-dot.ist-da{transform:scale(1)}
+/* Ausblick: noch nicht erreichte Meilensteine sind gedeckelt grau, nicht rot. */
+.timeline-item.ist-ausblick .timeline-dot{background:var(--color-muted)}
+.timeline-item.ist-ausblick .timeline-titel{color:var(--color-text)}
+
+/* Dauerpuls am aktuellen Punkt: zwei versetzte Ringe, die nach aussen laufen
+   und ausblenden - laeuft in Schleife weiter, das ist der einzige Teil der
+   Seite, der nicht zur Ruhe kommt (Figma: "AKTUELL"). */
+.timeline-dot.ist-aktuell::before,.timeline-dot.ist-aktuell::after{
+  content:"";position:absolute;inset:0;border-radius:50%;
+  border:1px solid var(--color-action);opacity:0}
+.timeline-dot.ist-aktuell.ist-da::before,.timeline-dot.ist-aktuell.ist-da::after{
+  animation:tl-puls 2.6s var(--ease-reveal) infinite}
+.timeline-dot.ist-aktuell.ist-da::after{animation-delay:1.3s}
+@keyframes tl-puls{
+  0%  {transform:scale(1);   opacity:.9}
+  70% {transform:scale(3.2); opacity:0}
+  100%{transform:scale(3.2); opacity:0}
+}
+
+/* Zeile 3: Meilenstein + optionales Badge. */
+.timeline-titel{margin-top:14px;font-size:var(--text-body-ms);font-weight:600;
+  line-height:1.3;color:var(--color-main-text)}
+.timeline-badge{margin-top:10px;align-self:center;background:var(--color-action);
+  color:var(--gray-50);border-radius:var(--radius-pill);padding:4px 12px;
+  font-size:var(--text-body-s);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+/* Datum, Titel und Badge kommen erst, wenn ihr Punkt steht - gesetzt per JS
+   ueber .ist-beschriftet auf dem Item. */
+.timeline-datum,.timeline-titel,.timeline-badge{opacity:0;transform:translateY(8px);
+  transition:opacity .5s var(--ease-reveal),transform .5s var(--ease-reveal)}
+.timeline-item.ist-beschriftet .timeline-datum,
+.timeline-item.ist-beschriftet .timeline-titel,
+.timeline-item.ist-beschriftet .timeline-badge{opacity:1;transform:none}
+.timeline-item.ist-beschriftet .timeline-titel{transition-delay:.08s}
+.timeline-item.ist-beschriftet .timeline-badge{transition-delay:.16s}
+
+/* Linienebene: liegt genau auf Punkt-Mitte, Segmente bekommen left/width per JS.
+   Die Breite (nicht scaleX) wird animiert, damit die Striche des gestrichelten
+   Ausblicks beim Wachsen ihre Laenge behalten. */
+.timeline-linien{position:absolute;left:0;right:0;
+  top:calc(var(--tl-datum-hoehe) + var(--tl-dot) / 2);height:1px;pointer-events:none}
+.timeline-seg{position:absolute;top:0;height:1px;width:0;
+  background:var(--color-action);
+  transition:width var(--dur-lang) var(--ease-linie)}
+/* Ausblick-Strecke: gestrichelt und grau statt durchgezogen rot. */
+.timeline-seg.ist-ausblick{background:none;color:var(--color-muted);
+  background-image:repeating-linear-gradient(90deg,currentColor 0 6px,transparent 6px 12px)}
+
 @media(prefers-reduced-motion:reduce){
-  .timeline-progress{transition:none}
   .timeline-dot{transform:scale(1);transition:none}
-  .timeline-dot::after{transition:none}
+  .timeline-dot.ist-aktuell.ist-da::before,.timeline-dot.ist-aktuell.ist-da::after{animation:none}
+  .timeline-datum,.timeline-titel,.timeline-badge{opacity:1;transform:none;transition:none}
+  .timeline-seg{transition:none}
+}
+/* Mobile: senkrecht gestapelt. Die Segment-Geometrie (waagerecht gerechnet)
+   greift dort nicht - _basis.js erkennt das und zeigt alles direkt an. */
+@media(max-width:900px){
+  .timeline{flex-direction:column;gap:var(--space-8);align-items:flex-start}
+  .timeline-item{flex-direction:row;align-items:center;gap:var(--space-4);
+    text-align:left;width:100%}
+  .timeline-datum{height:auto}
+  .timeline-titel{margin-top:0}
+  .timeline-linien{display:none}
 }
 
 /* ==== Roadmap Zoom-In (Gantt) ==== */
-/* Detailplanung: Phasenbalken ueber eine Zeitachse. Balken werden ueber
-   --von und --bis (Spalten im Raster) positioniert. Max. 6 Arbeitspakete. */
-.roadmap-zoom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+/* Figma (node 33-3): Monatsraster ueber der gesamten Kartenbreite, darunter
+   eine Trennlinie, dann die Phasenbalken mit ihrer Nummer IM Balken. Rechts
+   die Meilensteinliste, deren hervorgehobener Eintrag als Karte liegt.
+   Balken werden ueber --von und --bis (Spalten im Raster) positioniert. */
+.roadmap-zoom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);
   gap:var(--space-16);align-items:start}
-.gantt{margin-top:var(--space-6);display:flex;flex-direction:column;gap:10px;
-  padding:var(--space-6);border-radius:var(--radius-card);background:var(--color-detail)}
-.gantt-kopf{display:grid;grid-template-columns:repeat(var(--spalten,6),1fr);gap:4px;
-  font-size:var(--text-body-s);color:var(--color-text)}
-.gantt-zeile{display:grid;grid-template-columns:repeat(var(--spalten,6),1fr);gap:4px;
+.gantt{margin-top:var(--space-6);display:flex;flex-direction:column;gap:12px;
+  padding:var(--space-8);border-radius:var(--radius-card);background:var(--color-detail)}
+.gantt-kopf{display:grid;grid-template-columns:repeat(var(--spalten,12),1fr);gap:4px;
+  padding-bottom:var(--space-4);border-bottom:1px solid var(--color-border);
+  margin-bottom:var(--space-4);
+  font-size:var(--text-body-s);color:var(--color-text);text-align:center}
+.gantt-zeile{display:grid;grid-template-columns:repeat(var(--spalten,12),1fr);gap:4px;
   align-items:center}
-.gantt-balken{grid-column:var(--von) / calc(var(--bis) + 1);height:28px;border-radius:4px;
-  background:var(--color-border);display:flex;align-items:center;padding-inline:10px;
-  font-size:var(--text-body-s);color:var(--color-main-text);white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;cursor:pointer;appearance:none;border:0;
-  font-family:inherit;text-align:left;
-  transition:background .2s var(--ease),color .2s var(--ease)}
-/* Dunkel-Hervorhebung ist ein HOVER-Zustand, keine feste Anfangsauswahl mehr -
-   frueher stand ein Balken/Meilenstein per .ist-aktuell fest dunkel, obwohl das
-   in Figma nur der Hover/Active-Zustand ist (Video-Feedback 2026-09-17). Hover
-   bzw. Fokus auf einem Balken hebt den passenden Meilenstein rechts hervor
-   (siehe _basis.js "Roadmap Zoom-In"), per Touch uebernimmt ein kurzer
-   "betont"-Zustand dieselbe Klasse. */
+/* Balken: Nummer sitzt im Balken (Figma), Flaeche in der Icon-Rolle statt in
+   einer Linien-/Textrolle - dieselbe Stufung wie beim Chart-Slide. */
+.gantt-balken{grid-column:var(--von) / calc(var(--bis) + 1);height:40px;border-radius:6px;
+  background:var(--color-icon-tertiary);display:flex;align-items:center;padding-inline:14px;
+  font-size:var(--text-body-s);font-weight:600;color:var(--color-main-text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  cursor:pointer;appearance:none;border:0;font-family:inherit;text-align:left;
+  /* Balken fahren beim Reveal aus ihrem linken Rand aus (siehe _basis.js) */
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur-linie) var(--ease-linie),
+             background var(--dur-ui) var(--ease-ui),color var(--dur-ui) var(--ease-ui)}
+.gantt-balken.ist-da{transform:scaleX(1)}
+/* Die Nummer darf die Balken-Skalierung nicht mitmachen, sonst wird sie
+   waehrend des Ausfahrens gestaucht. */
+.gantt-balken .nummer{display:inline-block;transform:scaleX(var(--gegen,1));
+  transform-origin:left}
+/* Dunkel-Hervorhebung ist ein HOVER-Zustand, keine feste Anfangsauswahl
+   (Feedback 2026-09-17) - Figma zeigt in der Referenz genau diesen Zustand.
+   Hover/Fokus hebt zusaetzlich den passenden Meilenstein rechts hervor
+   (siehe _basis.js "Roadmap Zoom-In"). */
 .gantt-balken:hover,.gantt-balken:focus-visible,.gantt-balken.ist-betont{
-  background:var(--color-main-text);color:var(--color-inverse-text)}
-.zoom-meilenstein{display:flex;gap:var(--space-4);padding:var(--space-4);
-  border-top:1px solid var(--color-border);border-radius:var(--radius-card);
-  transition:background .2s var(--ease),border-color .2s var(--ease)}
-.zoom-nummer{flex:none;width:24px;font-size:var(--text-body-s);font-weight:600;
-  color:var(--color-border)}
-.zoom-meilenstein dt{font-size:var(--text-body-s);color:var(--color-main-text)}
-.zoom-meilenstein dd{margin:4px 0 0;font-size:var(--text-body-s);color:var(--color-text);
-  line-height:1.2}
-.zoom-meilenstein.ist-hervorgehoben{background:var(--color-detail);
-  border-top-color:transparent;padding:var(--space-6)}
+  background:var(--color-icon-secondary);color:var(--color-inverse-text)}
+.zoom-liste{margin:0;display:flex;flex-direction:column;gap:var(--space-2)}
+.zoom-meilenstein{display:flex;gap:var(--space-4);padding:var(--space-4) var(--space-6);
+  border-radius:var(--radius-card);
+  transition:background var(--dur-ui) var(--ease-ui)}
+.zoom-nummer{flex:none;width:28px;font-size:var(--text-body-s);font-weight:600;
+  color:var(--color-muted);transition:color var(--dur-ui) var(--ease-ui)}
+.zoom-meilenstein dt{font-size:var(--text-body-ms);font-weight:600;color:var(--color-main-text)}
+.zoom-meilenstein dd{margin:6px 0 0;font-size:var(--text-body-s);color:var(--color-text);
+  line-height:1.3}
+.zoom-meilenstein.ist-hervorgehoben{background:var(--color-detail)}
 .zoom-meilenstein.ist-hervorgehoben .zoom-nummer{color:var(--color-main-text)}
+@media(prefers-reduced-motion:reduce){.gantt-balken{transform:none;transition:none}}
 /* Figma: bricht auf Mobile schnell - dort als vertikale Liste. */
 @media(max-width:900px){
   .roadmap-zoom{grid-template-columns:1fr;gap:var(--space-10)}
@@ -751,23 +950,32 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
    nachgebaut, damit kein Bild-Asset noetig ist. Max. 3 Devices pro Modul. */
 .device-buehne{display:flex;justify-content:center;align-items:flex-end;
   gap:var(--space-10);flex-wrap:wrap;margin-top:var(--space-12)}
-.device{flex:none}
+/* Die Buehne darf den breiteren Sockel nicht abschneiden - deshalb hier
+   bewusst KEIN overflow:hidden und etwas Luft an den Seiten. */
+.device{flex:none;max-width:100%}
 .device .schirm{background:var(--color-detail);overflow:hidden;display:flex;
   align-items:center;justify-content:center;color:var(--color-text);
   font-size:var(--text-body-s)}
 .device .schirm img{width:100%;height:100%;object-fit:cover}
-.device.ist-laptop{width:min(720px,100%)}
-/* Einheitlicher Rahmen (statt Border direkt auf dem Screen) wie ein echtes
-   Unibody-Geraet: oben/seitlich duenner Steg, unten dickerer Sockel mit
-   Scharnier-Kerbe - frueher wirkte der Screen-Border + freistehender Fuss
-   wie zwei separate Teile statt einem Geraet (Figma-Abgleich 2026-09-17). */
+
+/* --- Laptop ---
+   Sockel ist BREITER als der Deckel, so wie bei einem echten Geraet - vorher
+   waren beide exakt gleich breit und der Sockel verschwand dadurch optisch
+   unter dem Deckel (Feedback 2026-09-17: "die Seitenteile wirken
+   abgeschnitten"). Die Ueberbreite laeuft ueber margin-inline ins Negative,
+   deshalb braucht die Buehne oben freien Ueberlauf. */
+.device.ist-laptop{width:min(620px,100%)}
 .device.ist-laptop .rahmen{background:var(--color-main-text);
-  border-radius:14px 14px 4px 4px;padding:12px 12px 6px}
-.device.ist-laptop .schirm{aspect-ratio:16/10;border-radius:3px}
-.device.ist-laptop .fuss{height:12px;background:var(--color-main-text);
-  border-radius:0 0 7px 7px;position:relative}
+  border-radius:12px;padding:10px;
+  /* Etwas Tiefe gegen den flachen Sektionshintergrund. */
+  box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.device.ist-laptop .schirm{aspect-ratio:16/10;border-radius:4px}
+.device.ist-laptop .fuss{height:14px;width:110%;margin-inline:-5%;
+  background:var(--color-main-text);border-radius:0 0 10px 10px;position:relative;
+  box-shadow:0 18px 30px rgba(0,0,0,.22)}
+/* Scharnier-Kerbe mittig im Sockel. */
 .device.ist-laptop .fuss::after{content:"";position:absolute;left:50%;top:0;
-  transform:translateX(-50%);width:14%;height:4px;background:var(--color-bg);
+  transform:translateX(-50%);width:14%;height:5px;background:var(--color-bg);
   border-radius:0 0 4px 4px}
 .device.ist-phone{width:min(220px,100%)}
 .device.ist-phone .schirm{aspect-ratio:9/19.5;border:8px solid var(--color-main-text);
@@ -775,10 +983,12 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 .device.ist-tablet{width:min(420px,100%)}
 .device.ist-tablet .schirm{aspect-ratio:4/3;border:10px solid var(--color-main-text);
   border-radius:18px}
-.device-legende{margin-top:var(--space-8);text-align:center}
-.device-legende h3{font-size:var(--text-body-l);font-weight:600;line-height:1.2;
+/* Kopfzeile steht laut Figma UEBER dem Geraet (Headline + eine Zeile
+   Einordnung), nicht als Bildunterschrift darunter. */
+.device-kopf{text-align:center;max-width:820px;margin-inline:auto}
+.device-kopf h2{font-size:var(--text-display-3);font-weight:600;line-height:1.2;
   color:var(--color-main-text)}
-.device-legende p{margin-top:6px;font-size:var(--text-body-s);line-height:1.2;
+.device-kopf p{margin-top:var(--space-4);font-size:var(--text-body-m);line-height:1.3;
   color:var(--color-text)}
 @media(max-width:900px){.device-buehne{gap:var(--space-8)}}
 
@@ -786,16 +996,19 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 .medien-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-8);
   margin-top:var(--space-10)}
 .medien-grid.ist-dreispaltig{grid-template-columns:repeat(3,minmax(0,1fr))}
-/* Schneller rein, noch schneller wieder raus (Video-Feedback 2026-09-17:
-   "der Hover-Effekt ist etwas zu langsam ... sollte deutlich knackiger sein
-   und nicht so lange aktiv bleiben, nachdem man weg-gehovert hat"). Vorher
-   ein einzelner .2s-Wert fuer beide Richtungen - jetzt kuerzer und beim
-   Verlassen nochmal kuerzer statt symmetrisch. */
+/* Hover: anheben bleibt (gefaellt), aber gefuehrt statt ruckartig. Der erste
+   Anlauf war mit .12s/.08s so kurz, dass die Bewegung sprang - jetzt eine
+   ruhige Kurve in beide Richtungen, beim Verlassen minimal schneller, damit
+   die Karte nicht nachhaengt (Feedback 2026-09-17: "etwas holprig, soll
+   weicher und nicht so unmittelbar sein"). */
 .medien-karte{display:flex;flex-direction:column;border:1px solid var(--color-border);
   border-radius:var(--radius-card);overflow:hidden;text-decoration:none;color:inherit;
-  transition:border-color .12s ease-out,transform .12s ease-out}
-a.medien-karte:hover{border-color:var(--color-main-text);transform:translateY(-2px)}
-a.medien-karte:not(:hover){transition-duration:.08s}
+  transition:border-color .32s var(--ease-ui),transform .32s var(--ease-ui),
+             box-shadow .32s var(--ease-ui);
+  box-shadow:0 0 0 rgba(0,0,0,0)}
+a.medien-karte:hover{border-color:var(--color-main-text);transform:translateY(-4px);
+  box-shadow:0 12px 28px rgba(0,0,0,.10)}
+a.medien-karte:not(:hover){transition-duration:.24s}
 .medien-karte .bild{aspect-ratio:16/9;background:var(--color-detail);display:flex;
   align-items:center;justify-content:center;color:var(--color-text);
   font-size:var(--text-body-s)}
@@ -872,7 +1085,33 @@ a.medien-karte:not(:hover){transition-duration:.08s}
 /* ==== Zitat ==== */
 .quote{background:var(--color-detail);text-align:center}
 .quote blockquote{margin:0 auto;max-width:60ch;font-size:var(--text-body-xl);font-weight:600;line-height:1.4}
+/* Das Zitat wird getippt statt eingeblendet (Feedback 2026-09-17). Damit die
+   Sektion dabei nicht in der Hoehe springt, steht der vollstaendige Satz als
+   unsichtbarer Platzhalter darunter und haelt den Raum frei; getippt wird in
+   einer daruebergelegten Schicht. */
+.quote-typo{position:relative}
+.quote-typo .platzhalter{visibility:hidden}
+.quote-typo .getippt{position:absolute;inset:0}
+/* Cursor blinkt nur, solange getippt wird. */
+.quote-typo .getippt::after{content:"";display:inline-block;width:2px;height:1em;
+  margin-left:2px;vertical-align:-.12em;background:var(--color-action);opacity:0}
+.quote-typo.ist-am-tippen .getippt::after{animation:quote-cursor 1s steps(2,start) infinite}
+@keyframes quote-cursor{0%,50%{opacity:1}50.01%,100%{opacity:0}}
 .quote cite{display:block;margin-top:var(--space-6);font-style:normal;font-size:var(--text-body-s);color:var(--color-text)}
+/* Die Quelle haengt bewusst NICHT an .reveal: der Sektions-Stagger wuerde sie
+   sonst sofort mit einblenden. Sie wartet auf .ist-da, das zitatTippen() erst
+   setzt, wenn der letzte Buchstabe steht. */
+.quote cite.ist-nachzitat{opacity:0;transform:translateY(8px);
+  transition:opacity var(--dur-reveal) var(--ease-reveal),
+             transform var(--dur-reveal) var(--ease-reveal)}
+.quote cite.ist-nachzitat.ist-da{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  /* Ohne Bewegung steht der Satz sofort komplett da - Buchstabe fuer Buchstabe
+     aufzubauen ist genau die Art Bewegung, die hier vermieden werden soll. */
+  .quote-typo .platzhalter{visibility:visible}
+  .quote-typo .getippt{display:none}
+  .quote cite.ist-nachzitat{opacity:1;transform:none;transition:none}
+}
 
 /* ==== Logo-Wand ==== */
 /* Figma: Logos optisch auf gleiche HOEHE bringen, nicht auf gleiche Breite -
@@ -922,17 +1161,18 @@ a.medien-karte:not(:hover){transition-duration:.08s}
    dieses Problem nicht. Breite = gewuenschter Einzug minus den ohnehin
    folgenden .carousel-gap, weil der Flex-gap zwischen Spacer und erster
    Karte den Rest beisteuert.
-   Rechts: padding-right in derselben Groesse, damit der Track auf gleicher
-   Kante wie die Button-Gruppe darunter endet (Ernst, Review Gruppe D) - das
-   Modul haelt sich also doch an den regulaeren Modul-Rand statt bis zum
-   nackten Viewport-Rand zu laufen; padding-right ist hier unproblematisch,
-   der Snap-Ruheposition-Bug betrifft nur die START-Seite eines
-   scroll-snap:mandatory-Containers, nicht das Ende. */
-.carousel{padding-right:max(var(--grid-margin),
-  calc((100% - var(--grid-max)) / 2 + var(--grid-margin)))}
+   Rechts steht ein ZWEITER Spacer statt eines padding-right. Das war der
+   Grund, warum die erste Karte oberhalb von 1440px nicht mehr unter der
+   Headline stand (Feedback 2026-09-17): ein padding-right verkleinert die
+   Content-Box des Tracks, und genau gegen diese Box loest das 100% in der
+   Einzugsformel auf. Bei 1920px rechnete der Spacer dadurch mit 1584px statt
+   1920px und fiel um 168px zu schmal aus. Ohne horizontales Padding stimmt
+   der Bezug wieder, und der Track endet trotzdem auf der Kante der
+   Button-Gruppe. */
 .carousel-spacer{flex:0 0 auto;width:calc(max(var(--grid-margin),
   calc((100% - var(--grid-max)) / 2 + var(--grid-margin))) - var(--space-6));
   scroll-snap-align:start}
+.carousel-spacer.ist-ende{scroll-snap-align:none}
 /* scroll-snap-align auf dem Spacer, nicht nur auf den Karten: bei
    scroll-snap-type:x MANDATORY zwingt der Browser die Ruheposition auf den
    naechsten gueltigen Snap-Punkt - ohne diese Zeile war Position 0 (Spacer)
@@ -1019,17 +1259,6 @@ a.medien-karte:not(:hover){transition-duration:.08s}
   </symbol>
 </svg>
 
-<div class="galerie-intro">
-  <h1 class="h1">Modul-Galerie</h1>
-  <p class="lead" style="margin-top:var(--space-6);max-width:680px">Alle
-  34 Bausteine aus der Figma-Datei
-  <em>DAYONE&nbsp;|&nbsp;AI-ready&nbsp;slides</em>, jeweils einmal mit
-  Platzhalter-Inhalt. Diese Seite ist beides: Pr&uuml;fst&uuml;ck f&uuml;r
-  jede &Auml;nderung am System und Kopiervorlage f&uuml;r neue Seiten.</p>
-  <p class="small" style="margin-top:var(--space-6);color:var(--color-text)">Regeln
-  zu jedem Modul: <code>referenzen/module-katalog.md</code></p>
-</div>
-
 <nav id="chapter-nav" aria-label="Kapitel" data-modul="00 Elemente/01 kapitel-nav">
   <div class="wrap inner">
     <a class="brand-group" href="#hero" aria-label="Zum Seitenanfang">
@@ -1056,21 +1285,25 @@ a.medien-karte:not(:hover){transition-duration:.08s}
            mit Live-Q&A-Link ist, sonst bei diesem einen Badge bleiben oder
            den ganzen <div class="badges"> entfernen. -->
       <div class="badges">
-        <span class="badge">[Badge Title]</span>
+        <span class="badge">QA-Galerie</span>
         <!-- Alternative fuer DAYONE Weeklies mit Live-Q&A:
         <a class="badge accent" href="[LIVE-LINK]">LIVE Q&amp;A</a>
         -->
       </div>
     </div>
-    <div class="reveal">
-      <h1 class="h1">[PROJEKTNAME]<span class="line2">[UNTERTITEL DER SESSION]</span></h1>
-      <p class="lead sub">[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]</p>
+    <!-- Titel, Untertitel und Beschreibung sind drei eigene Reveal-Schritte
+         (Feedback 2026-09-17): der Blick laeuft die Zeilen in derselben
+         Reihenfolge ab, in der man sie liest, statt dass der ganze Block als
+         eine Flaeche erscheint. -->
+    <div>
+      <h1 class="h1"><span class="line1 reveal">Modul-Galerie</span><span class="line2 reveal">DAYONE&nbsp;|&nbsp;AI-ready&nbsp;slides</span></h1>
+      <p class="lead sub reveal">Alle 34 Bausteine, jeweils einmal mit Platzhalter-Inhalt. Diese Seite ist beides: Pr&uuml;fst&uuml;ck f&uuml;r jede &Auml;nderung am System und Kopiervorlage f&uuml;r neue Seiten.</p>
     </div>
     <div class="meta-block">
       <dl class="meta">
-        <div class="reveal"><dt>Datum</dt><dd>[Montag, 1. Januar 2026]</dd></div>
-        <div class="reveal"><dt>Presenter</dt><dd>[Vorname &amp; Vorname]</dd></div>
-        <div class="reveal"><dt>Format</dt><dd>[DAYONE Weekly]</dd></div>
+        <div class="reveal"><dt>Datum</dt><dd>Figma-Stand 2026-09-15</dd></div>
+        <div class="reveal"><dt>Presenter</dt><dd>34 Module</dd></div>
+        <div class="reveal"><dt>Format</dt><dd>referenzen/module-katalog.md</dd></div>
       </dl>
       <div class="rule reveal"></div>
     </div>
@@ -1182,10 +1415,10 @@ a.medien-karte:not(:hover){transition-duration:.08s}
     <h2 class="h2 reveal" style="margin-bottom:var(--space-16)">[Headline]</h2>
     <!-- 3-4 Spalten, etwa gleich lang halten - sonst kippt das Raster optisch. -->
     <div class="textraster">
-      <div class="raster-col reveal"><h3>[Spalten-Titel 1]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
-      <div class="raster-col reveal"><h3>[Spalten-Titel 2]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
-      <div class="raster-col reveal"><h3>[Spalten-Titel 3]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
-      <div class="raster-col reveal"><h3>[Spalten-Titel 4]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 1]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 2]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 3]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 4]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
     </div>
   </div>
 </section>
@@ -1273,11 +1506,11 @@ a.medien-karte:not(:hover){transition-duration:.08s}
       </div>
     </div>
     <div class="stats">
-      <div class="stat reveal"><div class="value" data-count-to="34">0</div>
+      <div class="stat linie-oben reveal"><div class="value" data-count-to="34">0</div>
         <div class="label">[Projekttage]</div><div class="note">[Kurze Einordnung.]</div></div>
-      <div class="stat reveal"><div class="value" data-count-to="21">0</div>
+      <div class="stat linie-oben reveal"><div class="value" data-count-to="21">0</div>
         <div class="label">[Tage/Jahr gespart]</div><div class="note">[Kurze Einordnung.]</div></div>
-      <div class="stat reveal"><div class="value" data-count-to="9">0</div>
+      <div class="stat linie-oben reveal"><div class="value" data-count-to="9">0</div>
         <div class="label">[Aktive Nutzer:innen]</div><div class="note">[Kurze Einordnung.]</div></div>
     </div>
   </div>
@@ -1312,40 +1545,50 @@ a.medien-karte:not(:hover){transition-duration:.08s}
   <div class="wrap">
     <p class="eyebrow reveal">11 — [Einordnung]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
-    <div class="matrix-wrap">
-      <div class="matrix-achse-y reveal">
-        <span>[Achse Y oben]</span>
-        <span class="matrix-achse-y-pfeil"></span>
-        <span>[Achse Y unten]</span>
+    <!-- .matrix-achsen ist der gemeinsame Reveal-Ausloeser fuer Achsen,
+         Achsenlabel UND Quadranteninhalte: erst zeichnen sich die Linien aus
+         der Mitte, dann erscheint alles andere per Opacity. -->
+    <div class="matrix-wrap matrix-achsen reveal ist-nur-opacity">
+      <div class="matrix-achse-y">
+        <span class="achsen-label">[Achse Y oben]</span>
+        <span class="matrix-achse-y-linie"></span>
+        <span class="achsen-label">[Achse Y unten]</span>
       </div>
-      <div class="matrix-main">
-        <div class="matrix-achse-x reveal">
-          <span>[Achse X links]</span>
-          <span class="matrix-achse-x-linie"></span>
-          <span>[Achse X rechts]</span>
-        </div>
-        <div class="matrix-grid">
-          <div class="matrix-quadrant reveal"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant reveal"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant reveal"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant reveal"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-        </div>
+      <div class="matrix-grid">
+        <div class="matrix-quadrant"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+        <div class="matrix-quadrant"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+        <div class="matrix-quadrant"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+        <div class="matrix-quadrant"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+      </div>
+      <div class="matrix-achse-x">
+        <span class="achsen-label">[Achse X links]</span>
+        <span class="matrix-achse-x-linie"></span>
+        <span class="achsen-label">[Achse X rechts]</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 3-5 Stationen, Pfeilrichtung konsequent links nach rechts. -->
-<section data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-modul="04 Daten/04 fluss-diagramm">
+<!-- 3-5 Stationen, Pfeilrichtung konsequent links nach rechts.
+     Erste Station .ist-gefuellt WEGLASSEN (nur Kontur), letzte .ist-ziel,
+     alles dazwischen .ist-gefuellt. -->
+<!-- Reveal: Stationen und Pfeile erscheinen einzeln von links nach rechts
+     (auf Mobile von oben nach unten - dieselbe DOM-Reihenfolge) und
+     ausschliesslich per Opacity, ohne Versatz (Feedback 2026-09-17). Eine
+     Flussrichtung, die sich beim Erscheinen selbst noch bewegt, liest sich
+     doppelt; der Takt allein traegt die Richtung schon. -->
+<section data-chapter="12" data-chapter-title="[Kapitelname]" id="kapitel-12" data-stagger="150" data-modul="04 Daten/04 fluss-diagramm">
   <div class="wrap">
     <p class="eyebrow reveal">12 — [Architektur]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal">[Was fließt von wo nach wo]</h2>
-    <div class="fluss-diagramm reveal">
-      <div class="fluss-station"><span class="name">[Quelle]</span><span class="art">[System / Dienst]</span></div>
-      <span class="fluss-pfeil" aria-hidden="true">→</span>
-      <div class="fluss-station"><span class="name">[Verarbeitung]</span><span class="art">[System / Dienst]</span></div>
-      <span class="fluss-pfeil" aria-hidden="true">→</span>
-      <div class="fluss-station"><span class="name">[Ziel]</span><span class="art">[System / Dienst]</span></div>
+    <div class="fluss-diagramm">
+      <div class="fluss-station reveal ist-nur-opacity"><span class="name">[Quelle]</span><span class="art">[Information]</span></div>
+      <span class="fluss-pfeil reveal ist-nur-opacity" aria-hidden="true">→</span>
+      <div class="fluss-station ist-gefuellt reveal ist-nur-opacity"><span class="name">[Verarbeitung]</span><span class="art">[System]</span></div>
+      <span class="fluss-pfeil reveal ist-nur-opacity" aria-hidden="true">→</span>
+      <div class="fluss-station ist-gefuellt reveal ist-nur-opacity"><span class="name">[Prüfung]</span><span class="art">[Dienst]</span></div>
+      <span class="fluss-pfeil reveal ist-nur-opacity" aria-hidden="true">→</span>
+      <div class="fluss-station ist-ziel reveal ist-nur-opacity"><span class="name">[Ziel]</span><span class="art">[Output]</span></div>
     </div>
   </div>
 </section>
@@ -1389,42 +1632,59 @@ a.medien-karte:not(:hover){transition-duration:.08s}
   </div>
 </section>
 
+<!-- 3-6 Meilensteine. Genau EINER traegt .ist-aktuell (der pulsierende, rote
+     Punkt). Meilensteine, die noch bevorstehen, bekommen .ist-ausblick - die
+     Strecke dorthin wird dann gestrichelt und grau gezeichnet. -->
 <section data-chapter="16" data-chapter-title="[Kapitelname]" id="kapitel-16" data-modul="06 Zeitachse/01 roadmap-timeline">
   <div class="wrap">
-    <p class="eyebrow reveal">16 — [Timeline]<span class="eyebrow-linie" aria-hidden="true"></span></p>
-    <h2 class="h2 reveal" style="margin-bottom:var(--space-20)">[Von wo bis wo?]</h2>
+    <p class="eyebrow is-centered reveal">16 — [Timeline]<span class="eyebrow-linie" aria-hidden="true"></span></p>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-20);text-align:center">[Von wo bis wo?]</h2>
     <div class="timeline">
-      <div class="timeline-progress"></div>
-      <div class="timeline-track">
-        <div class="timeline-item reveal"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 1]</span><span class="timeline-title">[Meilenstein 1]</span></div>
-        <div class="timeline-item reveal"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 2]</span><span class="timeline-title">[Meilenstein 2]</span></div>
-        <div class="timeline-item is-current reveal"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 3]</span><span class="timeline-title">[Meilenstein 3]</span>
-          <span class="timeline-tag">Aktuell</span></div>
-        <div class="timeline-item reveal"><span class="timeline-dot"></span>
-          <span class="timeline-date">[Zeitpunkt 4]</span><span class="timeline-title">[Meilenstein 4]</span></div>
+      <div class="timeline-linien" aria-hidden="true"></div>
+      <div class="timeline-item">
+        <span class="timeline-datum">[Zeitpunkt 1]</span>
+        <span class="timeline-dot"></span>
+        <span class="timeline-titel">[Meilenstein 1]</span>
+      </div>
+      <div class="timeline-item">
+        <span class="timeline-datum">[Zeitpunkt 2]</span>
+        <span class="timeline-dot"></span>
+        <span class="timeline-titel">[Meilenstein 2]</span>
+      </div>
+      <div class="timeline-item ist-aktuell">
+        <span class="timeline-datum">[Zeitpunkt 3]</span>
+        <span class="timeline-dot"></span>
+        <span class="timeline-titel">[Meilenstein 3]</span>
+        <span class="timeline-badge">Aktuell</span>
+      </div>
+      <div class="timeline-item ist-ausblick">
+        <span class="timeline-datum">[Zeitpunkt 4]</span>
+        <span class="timeline-dot"></span>
+        <span class="timeline-titel">[Meilenstein 4]</span>
       </div>
     </div>
   </div>
 </section>
 
+<!-- Max. 6 Arbeitspakete. Jeder Balken traegt data-verweis="N" und zeigt damit
+     auf den Meilenstein mit demselben data-verweis. -->
 <section class="dark" data-chapter="17" data-chapter-title="[Kapitelname]" id="kapitel-17" data-modul="06 Zeitachse/02 roadmap-zoom-in">
   <div class="wrap roadmap-zoom">
     <div>
       <p class="eyebrow reveal">17 — [Planung]<span class="eyebrow-linie" aria-hidden="true"></span></p>
       <h2 class="h2 reveal">[Wie die Phasen liegen]</h2>
-      <div class="gantt" style="--spalten:6">
+      <div class="gantt reveal ist-nur-opacity" style="--spalten:12">
         <div class="gantt-kopf">
-          <span>[Q1]</span><span>[Q2]</span><span>[Q3]</span><span>[Q4]</span><span>[Q1]</span><span>[Q2]</span>
+          <span>[Jan]</span><span>[Feb]</span><span>[Mär]</span><span>[Apr]</span>
+          <span>[Mai]</span><span>[Jun]</span><span>[Jul]</span><span>[Aug]</span>
+          <span>[Sep]</span><span>[Okt]</span><span>[Nov]</span><span>[Dez]</span>
         </div>
-        <div class="gantt-zeile"><button type="button" class="gantt-balken" data-verweis="1" style="--von:1;--bis:2">[Arbeitspaket 1]</button></div>
-        <div class="gantt-zeile"><button type="button" class="gantt-balken" data-verweis="2" style="--von:2;--bis:4">[Arbeitspaket 2]</button></div>
-        <div class="gantt-zeile"><button type="button" class="gantt-balken" data-verweis="3" style="--von:4;--bis:6">[Arbeitspaket 3]</button></div>
+        <div class="gantt-zeile"><button type="button" class="gantt-balken" data-verweis="1" style="--von:3;--bis:5"><span class="nummer">01</span></button></div>
+        <div class="gantt-zeile"><button type="button" class="gantt-balken" data-verweis="2" style="--von:4;--bis:7"><span class="nummer">02</span></button></div>
+        <div class="gantt-zeile"><button type="button" class="gantt-balken" data-verweis="3" style="--von:5;--bis:9"><span class="nummer">03</span></button></div>
       </div>
     </div>
-    <dl style="margin:0">
+    <dl class="zoom-liste">
       <p class="lead reveal" style="margin-bottom:var(--space-4)">[Meilensteine]</p>
       <div class="zoom-meilenstein reveal" data-verweis="1"><span class="zoom-nummer">01</span>
         <div><dt>[Meilenstein 1]</dt><dd>[Was in dieser Phase erreicht wird.]</dd></div></div>
@@ -1464,15 +1724,15 @@ a.medien-karte:not(:hover){transition-duration:.08s}
   <div class="wrap">
     <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "19" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
     <p class="eyebrow is-centered reveal">19 — [Prototyp]<span class="eyebrow-linie" aria-hidden="true"></span></p>
+    <div class="device-kopf">
+      <h2 class="reveal">[Prototyp im Device]</h2>
+      <p class="reveal">[Ein Satz, warum die Plattform Teil der Aussage ist.]</p>
+    </div>
     <!-- Beispiel: einzelner Laptop. Alternativen: <div class="device ist-tablet">
          oder ein/mehrere <div class="device ist-phone"> - je nach Kontext waehlen,
          nicht zwingend kombinieren. -->
     <div class="device-buehne reveal">
       <div class="device ist-laptop"><div class="rahmen"><div class="schirm">[Screen]</div></div><div class="fuss"></div></div>
-    </div>
-    <div class="device-legende reveal">
-      <h3>[Prototyp im Device]</h3>
-      <p>[Ein Satz, warum die Plattform Teil der Aussage ist.]</p>
     </div>
   </div>
 </section>
@@ -1548,10 +1808,16 @@ a.medien-karte:not(:hover){transition-duration:.08s}
   </div>
 </section>
 
+<!-- Ohne Namensnennung? Dann stattdessen big-statement nehmen.
+     Das Zitat wird per _basis.js (Abschnitt 9b) getippt, die Quelle blendet
+     erst danach auf - sie ist die Auflösung, nicht der Anfang. -->
 <section class="quote" data-modul="08 Menschen/03 quote-block">
-  <div class="wrap reveal">
-    <blockquote>„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</blockquote>
-    <cite>[Name Nachname, Rolle]</cite>
+  <div class="wrap">
+    <blockquote class="quote-typo reveal">
+      <span class="platzhalter">„[Ein prägnantes Zitat, ein bis zwei Sätze.]“</span>
+      <span class="getippt" aria-hidden="true"></span>
+    </blockquote>
+    <cite class="ist-nachzitat">[Name Nachname, Rolle]</cite>
   </div>
 </section>
 
@@ -1629,8 +1895,12 @@ a.medien-karte:not(:hover){transition-duration:.08s}
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
       <div class="card reveal"><span class="num">04</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
+      <div class="carousel-spacer ist-ende" aria-hidden="true"></div>
     </div>
   </div>
+  <!-- Standard-Karussell: startet links buendig mit der Headline darueber
+       (dafuer sorgt .carousel-spacer + scroll-snap:start, siehe oben) und
+       springt pro Klick um genau eine Kartenbreite. -->
   <div class="wrap carousel-controls reveal">
     <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">
       <svg aria-hidden="true"><use href="#icon-pfeil-links"></use></svg>
@@ -1649,8 +1919,10 @@ a.medien-karte:not(:hover){transition-duration:.08s}
       <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "28" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
       <p class="eyebrow reveal">28 — [Ausprobieren]<span class="eyebrow-linie" aria-hidden="true"></span></p>
       <h2 class="h2 reveal">[Unsere interne Toolbox]</h2>
-      <div class="qr-code">[QR-Code]</div>
-      <p class="qr-url">Scannen oder öffnen: <a href="[URL]">[url.dayone.de/tool]</a></p>
+      <!-- Code und Link-Zeile sind eigene Reveal-Schritte (Feedback
+           2026-09-17): erst die Aussage, dann der Code, dann der Weg dorthin. -->
+      <div class="qr-code reveal">[QR-Code]</div>
+      <p class="qr-url reveal">Scannen oder öffnen: <a href="[URL]">[url.dayone.de/tool]</a></p>
     </div>
     <div class="qr-screenshot reveal">[Screenshot: was hinter dem Code wartet]</div>
   </div>
@@ -1809,7 +2081,7 @@ a.medien-karte:not(:hover){transition-duration:.08s}
      kommen. Die Verzögerung pro Element wird per data-Attribut auf jeder Sektion
      gesteuert, nicht global — dadurch bleibt eine 3-Item-Section knackig und eine
      8-Item-Section trotzdem lesbar gestaffelt statt trödelnd. ---- */
-  var STAGGER_MS = 220, STAGGER_MAX_MS = 960;
+  var STAGGER_MS = 130, STAGGER_MAX_MS = 900;
   function stageReveal(container) {
     var items = container.classList && container.classList.contains("reveal")
       ? [container] : container.querySelectorAll(".reveal");
@@ -1823,17 +2095,23 @@ a.medien-karte:not(:hover){transition-duration:.08s}
       if (!isNaN(eigen)) takt = eigen;
     }
     items.forEach(function (el, i) {
-      el.style.transitionDelay = Math.min(i * takt, STAGGER_MAX_MS) + "ms";
+      // --reveal-delay statt inline transition-delay: Pseudo-Elemente (die
+      // Linien in .linie-oben/.raster-col/.stat) erben die Property und laufen
+      // dadurch synchron mit ihrem Element ein. Siehe _basis.css, Reveal-Block.
+      el.style.setProperty("--reveal-delay", Math.min(i * takt, STAGGER_MAX_MS) + "ms");
       el.classList.add("in");
     });
   }
+  /* Auch der Hero laeuft ueber denselben Beobachter statt sofort beim Laden:
+     auf einem echten Onepager steht er ohnehin im Viewport und startet damit
+     praktisch gleichzeitig - in der Galerie (und bei jedem Direktsprung per
+     Anker) sieht man ihn dagegen genau dann, wenn man ihn erreicht. Vorher
+     spielte er blind beim Laden, unabhaengig davon, wo man gerade steht
+     (Feedback 2026-09-17: "nur beim Reinscrollen, nicht initial fuer alle"). */
   var heroEl = document.getElementById("hero");
-  if (heroEl) {
-    if (reduceMotion()) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
-    else { stageReveal(heroEl); }
-  }
-  var revealSections = Array.prototype.slice.call(document.querySelectorAll("section, footer"))
-    .filter(function (s) { return s !== heroEl && s.querySelector(".reveal"); });
+  var revealSections = Array.prototype.slice.call(
+      document.querySelectorAll("section, header.hero, footer"))
+    .filter(function (s) { return s.querySelector(".reveal") || s.classList.contains("reveal"); });
   if (reduceMotion() || !("IntersectionObserver" in window)) {
     revealSections.forEach(function (s) { stageReveal(s); });
   } else {
@@ -1870,10 +2148,24 @@ a.medien-karte:not(:hover){transition-duration:.08s}
     }
     requestAnimationFrame(step);
   }
+  // Der Zaehler startet um genau die Staffel-Verzoegerung seiner eigenen
+  // .reveal-Huelle versetzt: er laeuft dadurch WAEHREND die Kennzahl hochkommt
+  // und die Linie einlaeuft, nicht schon vorher im noch unsichtbaren Element
+  // (Feedback 2026-09-17).
+  function revealVerzoegerung(el) {
+    var huelle = el.closest ? el.closest(".reveal") : null;
+    if (!huelle) return 0;
+    var wert = parseFloat(huelle.style.getPropertyValue("--reveal-delay"));
+    return isNaN(wert) ? 0 : wert;
+  }
   if ("IntersectionObserver" in window) {
     var cObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { countUp(e.target); cObs.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        cObs.unobserve(e.target);
+        var warten = revealVerzoegerung(e.target);
+        if (warten > 0) setTimeout(function () { countUp(e.target); }, warten);
+        else countUp(e.target);
       });
     }, { threshold: 0.5 });
     counters.forEach(function (el) { cObs.observe(el); });
@@ -1892,6 +2184,7 @@ a.medien-karte:not(:hover){transition-duration:.08s}
     if (reduceMotion()) {
       balken.forEach(function (b) {
         b.style.setProperty("--wert", b.dataset.wert);
+        b.classList.add("ist-gewachsen");
         var wert = b.querySelector(".chart-wert");
         if (wert) wert.textContent = wert.dataset.countTo;
       });
@@ -1902,6 +2195,9 @@ a.medien-karte:not(:hover){transition-duration:.08s}
     balken.forEach(function (b, i) {
       setTimeout(function () {
         b.style.setProperty("--wert", b.dataset.wert);
+        // Blendet den Wert ein (CSS .ist-gewachsen .chart-wert) - der Zaehler
+        // laeuft dann sichtbar mit der Saeule nach oben statt davor.
+        b.classList.add("ist-gewachsen");
         var wert = b.querySelector(".chart-wert");
         if (wert) countUp(wert);
       }, i * STAGGER);
@@ -1949,67 +2245,127 @@ a.medien-karte:not(:hover){transition-duration:.08s}
     }, { passive: true });
   });
 
-  /* ---- 7) Roadmap-Timeline: farbige Linie bis zum aktuellen Punkt ----
-     Breite = Position des .is-current-Punkts im Track (Dots sitzen am linken Rand
-     jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
-     Zielbreite animieren (transition auf .timeline-progress erledigt das optisch),
-     damit die Linie sich sichtbar "auffüllt" statt einfach dazustehen. */
-  // Ausgelagert (statt Inline in der forEach unten), weil Abschnitt 10
-  // (replayTimeline) dieselbe Berechnung fuer den Replay-Control braucht -
-  // eine Kopie der Formel haette bei einer spaeteren Aenderung leicht
-  // auseinanderlaufen koennen.
-  function timelineZielProzent(tl) {
+  /* ---- 7) Roadmap-Timeline: chronologisch aufgebaute Zeitachse ----
+     Reihenfolge (Figma node 9-9, Feedback 2026-09-17):
+       Punkt skaliert ein -> sein Datum/Meilenstein blendet auf ->
+       die Linie waechst aus dem Punkt heraus zum naechsten -> von vorn.
+     Der aktuelle Punkt pulsiert danach dauerhaft weiter, die Strecke zu
+     kuenftigen Meilensteinen wird gestrichelt und grau gezogen.
+
+     Die Segmentgeometrie kommt aus den echten Dot-Positionen statt aus einer
+     Prozentformel: sie stimmt damit bei jeder Anzahl Meilensteine, bei
+     unterschiedlich breiten Beschriftungen und nach jedem Resize. */
+  var TL_DOT = 300,     // Punkt setzt sich
+      TL_TEXT = 150,    // danach Beschriftung
+      TL_LINIE = 430;   // danach Linie zum naechsten Punkt
+
+  function timelineWaagerecht(tl) {
+    // Mobile stapelt die Punkte untereinander (siehe Media-Query im Modul) -
+    // dann traegt die waagerechte Linienebene nichts und bleibt leer.
     var items = tl.querySelectorAll(".timeline-item");
-    if (!items.length) return null;
-    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
-      return it.classList.contains("is-current");
-    });
-    if (currentIndex < 0) return null; // kein aktueller Punkt markiert -> keine Linie zeichnen
-    return (currentIndex / items.length) * 100 + "%";
+    if (items.length < 2) return false;
+    return items[0].offsetTop === items[1].offsetTop;
   }
-  var TIMELINE_DAUER = 1100; // deckt sich mit der width-transition auf .timeline-progress
-  // Dots skalieren erst ein, wenn die rote Linie sie "erreicht" hat - zeitlich
-  // proportional zur Laufzeit/Position der width-Transition, nicht mehr Teil
-  // des generischen .reveal-Fades. Der Ring am aktuellen Punkt folgt nochmal
-  // verzoegert danach (Video-Feedback 2026-09-17).
-  function timelineDotsAnimieren(tl) {
-    var items = tl.querySelectorAll(".timeline-item");
-    if (!items.length) return;
-    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
-      return it.classList.contains("is-current");
-    });
-    var nenner = currentIndex >= 0 ? currentIndex : items.length - 1;
-    items.forEach(function (it, i) {
+
+  // Legt pro Luecke zwischen zwei Punkten ein Segment an und setzt es exakt
+  // von Dot-Mitte zu Dot-Mitte. Laeuft auch bei Resize erneut.
+  function timelineSegmenteBauen(tl) {
+    var ebene = tl.querySelector(".timeline-linien");
+    if (!ebene) return [];
+    var items = Array.prototype.slice.call(tl.querySelectorAll(".timeline-item"));
+    if (items.length < 2 || !timelineWaagerecht(tl)) { ebene.innerHTML = ""; return []; }
+    var basis = ebene.getBoundingClientRect();
+    var mitten = items.map(function (it) {
       var dot = it.querySelector(".timeline-dot");
-      if (!dot) return;
-      dot.classList.remove("ist-sichtbar", "ist-ring-sichtbar");
-      if (reduceMotion()) { dot.classList.add("ist-sichtbar"); if (it.classList.contains("is-current")) dot.classList.add("ist-ring-sichtbar"); return; }
-      var anteil = nenner > 0 ? Math.min(i, nenner) / nenner : 0;
-      var verzoegerung = i <= nenner ? anteil * TIMELINE_DAUER : TIMELINE_DAUER;
-      setTimeout(function () {
-        dot.classList.add("ist-sichtbar");
-        if (it.classList.contains("is-current")) {
-          setTimeout(function () { dot.classList.add("ist-ring-sichtbar"); }, 300);
-        }
-      }, verzoegerung);
+      var r = (dot || it).getBoundingClientRect();
+      return r.left + r.width / 2 - basis.left;
+    });
+    var vorhandene = ebene.querySelectorAll(".timeline-seg");
+    if (vorhandene.length !== items.length - 1) {
+      ebene.innerHTML = "";
+      for (var k = 0; k < items.length - 1; k++) {
+        ebene.appendChild(document.createElement("span")).className = "timeline-seg";
+      }
+    }
+    var segmente = Array.prototype.slice.call(ebene.querySelectorAll(".timeline-seg"));
+    segmente.forEach(function (seg, i) {
+      seg.style.left = mitten[i] + "px";
+      // Ein Segment gilt als Ausblick, sobald der Punkt an seinem RECHTEN Ende
+      // noch bevorsteht - dann gestrichelt/grau statt durchgezogen rot.
+      seg.classList.toggle("ist-ausblick", items[i + 1].classList.contains("ist-ausblick"));
+      seg.dataset.ziel = Math.max(0, mitten[i + 1] - mitten[i]);
+      // Bereits ausgefahrene Segmente muessen beim Resize mitwandern.
+      if (seg.dataset.offen === "1") seg.style.width = seg.dataset.ziel + "px";
+    });
+    return segmente;
+  }
+
+  function timelineZuruecksetzen(tl) {
+    tl.querySelectorAll(".timeline-item").forEach(function (it) {
+      it.classList.remove("ist-beschriftet");
+      var dot = it.querySelector(".timeline-dot");
+      if (dot) dot.classList.remove("ist-da", "ist-aktuell");
+    });
+    tl.querySelectorAll(".timeline-seg").forEach(function (seg) {
+      seg.style.transition = "none";
+      seg.style.width = "0px";
+      seg.dataset.offen = "0";
+      void seg.offsetWidth;
+      seg.style.transition = "";
     });
   }
+
+  function timelineAbspielen(tl) {
+    var items = Array.prototype.slice.call(tl.querySelectorAll(".timeline-item"));
+    if (!items.length) return;
+    var segmente = timelineSegmenteBauen(tl);
+
+    function punktZeigen(i) {
+      var it = items[i];
+      var dot = it.querySelector(".timeline-dot");
+      if (dot) {
+        dot.classList.add("ist-da");
+        // Der Dauerpuls haengt am Dot, nicht am Item: er darf erst starten,
+        // wenn der Punkt wirklich gesetzt ist.
+        if (it.classList.contains("ist-aktuell")) dot.classList.add("ist-aktuell");
+      }
+      it.classList.add("ist-beschriftet");
+    }
+
+    if (reduceMotion()) {
+      items.forEach(function (_, i) { punktZeigen(i); });
+      segmente.forEach(function (seg) { seg.style.width = seg.dataset.ziel + "px"; seg.dataset.offen = "1"; });
+      return;
+    }
+
+    var t = 0;
+    items.forEach(function (_, i) {
+      setTimeout(function () { punktZeigen(i); }, t);
+      t += TL_DOT + TL_TEXT;
+      var seg = segmente[i];
+      if (seg) {
+        setTimeout(function () {
+          seg.style.width = seg.dataset.ziel + "px";
+          seg.dataset.offen = "1";
+        }, t);
+        t += TL_LINIE;
+      }
+    });
+  }
+
   document.querySelectorAll(".timeline").forEach(function (tl) {
-    var progress = tl.querySelector(".timeline-progress");
-    if (!progress) return;
-    var targetPct = timelineZielProzent(tl);
-    if (targetPct === null) return;
-    if (reduceMotion()) { progress.style.width = targetPct; timelineDotsAnimieren(tl); return; }
-    if ("IntersectionObserver" in window) {
+    timelineSegmenteBauen(tl);
+    var gelaufen = false;
+    function los() { if (gelaufen) return; gelaufen = true; timelineAbspielen(tl); }
+    if (reduceMotion() || !("IntersectionObserver" in window)) { los(); }
+    else {
       new IntersectionObserver(function (entries, obs) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { progress.style.width = targetPct; timelineDotsAnimieren(tl); obs.unobserve(e.target); }
+          if (e.isIntersecting) { los(); obs.unobserve(e.target); }
         });
-      }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 }).observe(tl);
-    } else {
-      progress.style.width = targetPct;
-      timelineDotsAnimieren(tl);
+      }, { rootMargin: "-40% 0px -40% 0px", threshold: 0 }).observe(tl);
     }
+    window.addEventListener("resize", function () { timelineSegmenteBauen(tl); });
   });
 
   /* ---- 7b) Roadmap Zoom-In: Balken<->Meilenstein-Kopplung ----
@@ -2018,6 +2374,24 @@ a.medien-karte:not(:hover){transition-duration:.08s}
      (.ist-aktuell), sondern ein reiner Hover-Zustand (Video-Feedback
      2026-09-17). Touch simuliert denselben Zustand kurzzeitig, wie beim
      Chart-Slide (Abschnitt 6b). */
+  // Balken fahren nacheinander von links auf, sobald das Gantt sichtbar ist -
+  // dieselbe Leserichtung wie beim Fluss-Diagramm und der Zeitachse.
+  function ganttAusfahren(gantt) {
+    var balken = Array.prototype.slice.call(gantt.querySelectorAll(".gantt-balken"));
+    if (reduceMotion()) { balken.forEach(function (b) { b.classList.add("ist-da"); }); return; }
+    balken.forEach(function (b, i) {
+      setTimeout(function () { b.classList.add("ist-da"); }, i * 180);
+    });
+  }
+  document.querySelectorAll(".gantt").forEach(function (gantt) {
+    if (reduceMotion() || !("IntersectionObserver" in window)) { ganttAusfahren(gantt); return; }
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { ganttAusfahren(gantt); obs.unobserve(e.target); }
+      });
+    }, { rootMargin: "-35% 0px -35% 0px", threshold: 0 }).observe(gantt);
+  });
+
   document.querySelectorAll(".roadmap-zoom").forEach(function (zoom) {
     var balken = zoom.querySelectorAll(".gantt-balken");
     function setzen(ref, an) {
@@ -2035,6 +2409,58 @@ a.medien-karte:not(:hover){transition-duration:.08s}
         setTimeout(function () { b.classList.remove("ist-betont"); setzen(ref, false); }, 1200);
       }, { passive: true });
     });
+  });
+
+  /* ---- 7c) Zitat: Schreibmaschinen-Effekt ----
+     Der Satz wird Zeichen fuer Zeichen gesetzt, die Quelle blendet erst auf,
+     wenn er fertig ist (Feedback 2026-09-17). Der volle Satz steht als
+     unsichtbarer Platzhalter im DOM und haelt die Hoehe - dadurch springt
+     weder das Layout noch die Sektionsmitte, und Screenreader lesen den
+     vollstaendigen Text (die getippte Schicht ist aria-hidden). */
+  var TIPP_MS = 26; // Zeichenabstand; ~40 Anschlaege/Sekunde, ruhig lesbar
+  function zitatTippen(block) {
+    var platzhalter = block.querySelector(".platzhalter");
+    var ziel = block.querySelector(".getippt");
+    var quelle = block.parentNode ? block.parentNode.querySelector("cite") : null;
+    if (!platzhalter || !ziel) return;
+    var text = platzhalter.textContent;
+    if (reduceMotion()) {
+      ziel.textContent = text;
+      if (quelle) quelle.classList.add("ist-da");
+      return;
+    }
+    ziel.textContent = "";
+    block.classList.add("ist-am-tippen");
+    var i = 0, letzte = 0;
+    // Ueber rAF statt setInterval: der Text laeuft dadurch im Takt der
+    // Bildwiederholrate und stockt nicht, wenn der Tab kurz ausgelastet ist.
+    function schritt(jetzt) {
+      if (!letzte) letzte = jetzt;
+      if (jetzt - letzte >= TIPP_MS) {
+        letzte = jetzt;
+        i += 1;
+        ziel.textContent = text.slice(0, i);
+      }
+      if (i < text.length) { requestAnimationFrame(schritt); }
+      else {
+        block.classList.remove("ist-am-tippen");
+        if (quelle) quelle.classList.add("ist-da");
+      }
+    }
+    requestAnimationFrame(schritt);
+  }
+  document.querySelectorAll(".quote-typo").forEach(function (block) {
+    // Getippt wird erst, wenn das Zitat selbst eingeblendet ist.
+    if (reduceMotion() || !("IntersectionObserver" in window)) { zitatTippen(block); return; }
+    var gestartet = false;
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting || gestartet) return;
+        gestartet = true;
+        obs.unobserve(e.target);
+        setTimeout(function () { zitatTippen(block); }, 450);
+      });
+    }, { rootMargin: "-40% 0px -40% 0px", threshold: 0 }).observe(block);
   });
 
   /* ---- 8) Karussell ---- */
@@ -2126,6 +2552,7 @@ a.medien-karte:not(:hover){transition-duration:.08s}
       el.style.transition = "none";
       el.classList.remove("in");
       el.style.transitionDelay = "";
+      el.style.removeProperty("--reveal-delay");
     });
     void root.offsetWidth;
     alle.forEach(function (el) { el.style.transition = ""; });
@@ -2142,18 +2569,32 @@ a.medien-karte:not(:hover){transition-duration:.08s}
     var timelines = root.classList && root.classList.contains("timeline")
       ? [root] : (root.querySelectorAll ? root.querySelectorAll(".timeline") : []);
     Array.prototype.forEach.call(timelines, function (tl) {
-      var progress = tl.querySelector(".timeline-progress");
-      if (!progress) return;
-      var targetPct = timelineZielProzent(tl);
-      if (targetPct === null) return;
-      // Breite ohne Transition auf 0 zuruecksetzen, Reflow erzwingen, dann
-      // Transition wieder zulassen und den Zielwert setzen - sonst faehrt
-      // die Linie nur von der aktuellen Breite ab statt sichtbar neu von 0.
-      progress.style.transition = "none";
-      progress.style.width = "0%";
-      void progress.offsetWidth;
-      progress.style.transition = "";
-      requestAnimationFrame(function () { progress.style.width = targetPct; timelineDotsAnimieren(tl); });
+      timelineZuruecksetzen(tl);
+      requestAnimationFrame(function () { timelineAbspielen(tl); });
+    });
+  }
+
+  function replayGantt(root) {
+    var gantts = root.classList && root.classList.contains("gantt")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".gantt") : []);
+    Array.prototype.forEach.call(gantts, function (gantt) {
+      gantt.querySelectorAll(".gantt-balken").forEach(function (b) {
+        b.style.transition = "none";
+        b.classList.remove("ist-da", "ist-betont");
+        void b.offsetWidth;
+        b.style.transition = "";
+      });
+      requestAnimationFrame(function () { ganttAusfahren(gantt); });
+    });
+  }
+
+  function replayZitat(root) {
+    var bloecke = root.classList && root.classList.contains("quote-typo")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".quote-typo") : []);
+    Array.prototype.forEach.call(bloecke, function (block) {
+      var quelle = block.parentNode ? block.parentNode.querySelector("cite") : null;
+      if (quelle) quelle.classList.remove("ist-da");
+      zitatTippen(block);
     });
   }
 
@@ -2179,7 +2620,7 @@ a.medien-karte:not(:hover){transition-duration:.08s}
       ? [root] : (root.querySelectorAll ? root.querySelectorAll(".chart-body") : []);
     Array.prototype.forEach.call(charts, function (chart) {
       chart.querySelectorAll(".chart-balken").forEach(function (b) {
-        b.classList.remove("ist-betont");
+        b.classList.remove("ist-betont", "ist-gewachsen");
         b.style.setProperty("--wert", 0);
         var wert = b.querySelector(".chart-wert");
         if (wert) { wert.textContent = "0"; }
@@ -2200,6 +2641,8 @@ a.medien-karte:not(:hover){transition-duration:.08s}
     replayCarousel(root);
     replayStepper(root);
     replayChart(root);
+    replayGantt(root);
+    replayZitat(root);
   }
 
   function replayAll() {
@@ -2344,9 +2787,13 @@ body.galerie{padding-bottom:64px}
     }
   });
 
-  /* ---- Alle Animationen einmal direkt beim Laden anstossen, damit man sie
-     sieht, ohne erst scrollen zu muessen (Kernziel aus dem Testkonzept). ---- */
-  requestAnimationFrame(function () { window.DAYONE_QA.replayAll(); });
+  /* Frueher lief hier beim Laden EINMAL replayAll() - gut gemeint (man sah jede
+     Animation ohne Scrollen), aber es hat genau das kaputt gemacht, was die
+     Galerie pruefen soll: jede Sektion war schon durchanimiert, bevor man sie
+     erreichte, und beim Runterscrollen stand alles fertig da (Feedback
+     2026-09-17). Die Module laufen jetzt wie auf einem echten Onepager erst
+     beim Reinscrollen. Wer eine Animation nochmal sehen will, nimmt "Replay
+     current" bzw. "Replay all" in der Leiste - dafuer sind die Knoepfe da. */
 })();
 </script>
 <!-- QA-ONLY:END -->

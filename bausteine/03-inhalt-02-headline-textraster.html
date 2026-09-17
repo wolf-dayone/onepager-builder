@@ -3,11 +3,12 @@
 /* Gleichrangige Aspekte ohne Karten-Optik: Hairline statt Flaeche. */
 .textraster{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-8)}
 .textraster.ist-dreispaltig{grid-template-columns:repeat(3,minmax(0,1fr))}
-.raster-col{position:relative;padding-top:var(--space-6)}
-.raster-col::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;background:var(--color-main-text);
-  transform:scaleX(0);transform-origin:left;transition:transform .8s var(--ease) .2s}
-.raster-col.in::before{transform:scaleX(1)}
-@media(prefers-reduced-motion:reduce){.raster-col::before{transform:scaleX(1);transition:none}}
+/* Linie kommt aus der gemeinsamen .linie-oben-Rolle (_basis.css): sie erbt
+   ueber --reveal-delay die Staffel-Verzoegerung ihrer Spalte und zeichnet sich
+   daher WAEHREND die Spalte hochkommt. Vorher lief sie mit fester eigener
+   Verzoegerung - die vierte Spalte schob sich mit fertiger Linie ins Bild
+   (Feedback 2026-09-17). */
+.raster-col{padding-top:var(--space-6);--linie-farbe:var(--color-main-text)}
 .raster-col h3{font-size:var(--text-body-ms);font-weight:600;line-height:1;
   color:var(--color-main-text)}
 .raster-col p{margin-top:var(--space-4);font-size:var(--text-body-s);line-height:1.2;
@@ -23,10 +24,10 @@
     <h2 class="h2 reveal" style="margin-bottom:var(--space-16)">[Headline]</h2>
     <!-- 3-4 Spalten, etwa gleich lang halten - sonst kippt das Raster optisch. -->
     <div class="textraster">
-      <div class="raster-col reveal"><h3>[Spalten-Titel 1]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
-      <div class="raster-col reveal"><h3>[Spalten-Titel 2]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
-      <div class="raster-col reveal"><h3>[Spalten-Titel 3]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
-      <div class="raster-col reveal"><h3>[Spalten-Titel 4]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 1]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 2]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 3]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
+      <div class="raster-col linie-oben reveal"><h3>[Spalten-Titel 4]</h3><p>[Kurzer Text, 2–3 Zeilen.]</p></div>
     </div>
   </div>
 </section>

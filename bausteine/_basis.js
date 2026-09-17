@@ -126,7 +126,7 @@
      kommen. Die Verzögerung pro Element wird per data-Attribut auf jeder Sektion
      gesteuert, nicht global — dadurch bleibt eine 3-Item-Section knackig und eine
      8-Item-Section trotzdem lesbar gestaffelt statt trödelnd. ---- */
-  var STAGGER_MS = 220, STAGGER_MAX_MS = 960;
+  var STAGGER_MS = 130, STAGGER_MAX_MS = 900;
   function stageReveal(container) {
     var items = container.classList && container.classList.contains("reveal")
       ? [container] : container.querySelectorAll(".reveal");
@@ -140,17 +140,23 @@
       if (!isNaN(eigen)) takt = eigen;
     }
     items.forEach(function (el, i) {
-      el.style.transitionDelay = Math.min(i * takt, STAGGER_MAX_MS) + "ms";
+      // --reveal-delay statt inline transition-delay: Pseudo-Elemente (die
+      // Linien in .linie-oben/.raster-col/.stat) erben die Property und laufen
+      // dadurch synchron mit ihrem Element ein. Siehe _basis.css, Reveal-Block.
+      el.style.setProperty("--reveal-delay", Math.min(i * takt, STAGGER_MAX_MS) + "ms");
       el.classList.add("in");
     });
   }
+  /* Auch der Hero laeuft ueber denselben Beobachter statt sofort beim Laden:
+     auf einem echten Onepager steht er ohnehin im Viewport und startet damit
+     praktisch gleichzeitig - in der Galerie (und bei jedem Direktsprung per
+     Anker) sieht man ihn dagegen genau dann, wenn man ihn erreicht. Vorher
+     spielte er blind beim Laden, unabhaengig davon, wo man gerade steht
+     (Feedback 2026-09-17: "nur beim Reinscrollen, nicht initial fuer alle"). */
   var heroEl = document.getElementById("hero");
-  if (heroEl) {
-    if (reduceMotion()) { heroEl.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); }); }
-    else { stageReveal(heroEl); }
-  }
-  var revealSections = Array.prototype.slice.call(document.querySelectorAll("section, footer"))
-    .filter(function (s) { return s !== heroEl && s.querySelector(".reveal"); });
+  var revealSections = Array.prototype.slice.call(
+      document.querySelectorAll("section, header.hero, footer"))
+    .filter(function (s) { return s.querySelector(".reveal") || s.classList.contains("reveal"); });
   if (reduceMotion() || !("IntersectionObserver" in window)) {
     revealSections.forEach(function (s) { stageReveal(s); });
   } else {
@@ -187,10 +193,24 @@
     }
     requestAnimationFrame(step);
   }
+  // Der Zaehler startet um genau die Staffel-Verzoegerung seiner eigenen
+  // .reveal-Huelle versetzt: er laeuft dadurch WAEHREND die Kennzahl hochkommt
+  // und die Linie einlaeuft, nicht schon vorher im noch unsichtbaren Element
+  // (Feedback 2026-09-17).
+  function revealVerzoegerung(el) {
+    var huelle = el.closest ? el.closest(".reveal") : null;
+    if (!huelle) return 0;
+    var wert = parseFloat(huelle.style.getPropertyValue("--reveal-delay"));
+    return isNaN(wert) ? 0 : wert;
+  }
   if ("IntersectionObserver" in window) {
     var cObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { countUp(e.target); cObs.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        cObs.unobserve(e.target);
+        var warten = revealVerzoegerung(e.target);
+        if (warten > 0) setTimeout(function () { countUp(e.target); }, warten);
+        else countUp(e.target);
       });
     }, { threshold: 0.5 });
     counters.forEach(function (el) { cObs.observe(el); });
@@ -209,6 +229,7 @@
     if (reduceMotion()) {
       balken.forEach(function (b) {
         b.style.setProperty("--wert", b.dataset.wert);
+        b.classList.add("ist-gewachsen");
         var wert = b.querySelector(".chart-wert");
         if (wert) wert.textContent = wert.dataset.countTo;
       });
@@ -219,6 +240,9 @@
     balken.forEach(function (b, i) {
       setTimeout(function () {
         b.style.setProperty("--wert", b.dataset.wert);
+        // Blendet den Wert ein (CSS .ist-gewachsen .chart-wert) - der Zaehler
+        // laeuft dann sichtbar mit der Saeule nach oben statt davor.
+        b.classList.add("ist-gewachsen");
         var wert = b.querySelector(".chart-wert");
         if (wert) countUp(wert);
       }, i * STAGGER);
@@ -266,67 +290,127 @@
     }, { passive: true });
   });
 
-  /* ---- 7) Roadmap-Timeline: farbige Linie bis zum aktuellen Punkt ----
-     Breite = Position des .is-current-Punkts im Track (Dots sitzen am linken Rand
-     jedes flex:1-Items, siehe .timeline-dot). Erst beim Sichtbarwerden auf die
-     Zielbreite animieren (transition auf .timeline-progress erledigt das optisch),
-     damit die Linie sich sichtbar "auffüllt" statt einfach dazustehen. */
-  // Ausgelagert (statt Inline in der forEach unten), weil Abschnitt 10
-  // (replayTimeline) dieselbe Berechnung fuer den Replay-Control braucht -
-  // eine Kopie der Formel haette bei einer spaeteren Aenderung leicht
-  // auseinanderlaufen koennen.
-  function timelineZielProzent(tl) {
+  /* ---- 7) Roadmap-Timeline: chronologisch aufgebaute Zeitachse ----
+     Reihenfolge (Figma node 9-9, Feedback 2026-09-17):
+       Punkt skaliert ein -> sein Datum/Meilenstein blendet auf ->
+       die Linie waechst aus dem Punkt heraus zum naechsten -> von vorn.
+     Der aktuelle Punkt pulsiert danach dauerhaft weiter, die Strecke zu
+     kuenftigen Meilensteinen wird gestrichelt und grau gezogen.
+
+     Die Segmentgeometrie kommt aus den echten Dot-Positionen statt aus einer
+     Prozentformel: sie stimmt damit bei jeder Anzahl Meilensteine, bei
+     unterschiedlich breiten Beschriftungen und nach jedem Resize. */
+  var TL_DOT = 300,     // Punkt setzt sich
+      TL_TEXT = 150,    // danach Beschriftung
+      TL_LINIE = 430;   // danach Linie zum naechsten Punkt
+
+  function timelineWaagerecht(tl) {
+    // Mobile stapelt die Punkte untereinander (siehe Media-Query im Modul) -
+    // dann traegt die waagerechte Linienebene nichts und bleibt leer.
     var items = tl.querySelectorAll(".timeline-item");
-    if (!items.length) return null;
-    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
-      return it.classList.contains("is-current");
-    });
-    if (currentIndex < 0) return null; // kein aktueller Punkt markiert -> keine Linie zeichnen
-    return (currentIndex / items.length) * 100 + "%";
+    if (items.length < 2) return false;
+    return items[0].offsetTop === items[1].offsetTop;
   }
-  var TIMELINE_DAUER = 1100; // deckt sich mit der width-transition auf .timeline-progress
-  // Dots skalieren erst ein, wenn die rote Linie sie "erreicht" hat - zeitlich
-  // proportional zur Laufzeit/Position der width-Transition, nicht mehr Teil
-  // des generischen .reveal-Fades. Der Ring am aktuellen Punkt folgt nochmal
-  // verzoegert danach (Video-Feedback 2026-09-17).
-  function timelineDotsAnimieren(tl) {
-    var items = tl.querySelectorAll(".timeline-item");
-    if (!items.length) return;
-    var currentIndex = Array.prototype.findIndex.call(items, function (it) {
-      return it.classList.contains("is-current");
-    });
-    var nenner = currentIndex >= 0 ? currentIndex : items.length - 1;
-    items.forEach(function (it, i) {
+
+  // Legt pro Luecke zwischen zwei Punkten ein Segment an und setzt es exakt
+  // von Dot-Mitte zu Dot-Mitte. Laeuft auch bei Resize erneut.
+  function timelineSegmenteBauen(tl) {
+    var ebene = tl.querySelector(".timeline-linien");
+    if (!ebene) return [];
+    var items = Array.prototype.slice.call(tl.querySelectorAll(".timeline-item"));
+    if (items.length < 2 || !timelineWaagerecht(tl)) { ebene.innerHTML = ""; return []; }
+    var basis = ebene.getBoundingClientRect();
+    var mitten = items.map(function (it) {
       var dot = it.querySelector(".timeline-dot");
-      if (!dot) return;
-      dot.classList.remove("ist-sichtbar", "ist-ring-sichtbar");
-      if (reduceMotion()) { dot.classList.add("ist-sichtbar"); if (it.classList.contains("is-current")) dot.classList.add("ist-ring-sichtbar"); return; }
-      var anteil = nenner > 0 ? Math.min(i, nenner) / nenner : 0;
-      var verzoegerung = i <= nenner ? anteil * TIMELINE_DAUER : TIMELINE_DAUER;
-      setTimeout(function () {
-        dot.classList.add("ist-sichtbar");
-        if (it.classList.contains("is-current")) {
-          setTimeout(function () { dot.classList.add("ist-ring-sichtbar"); }, 300);
-        }
-      }, verzoegerung);
+      var r = (dot || it).getBoundingClientRect();
+      return r.left + r.width / 2 - basis.left;
+    });
+    var vorhandene = ebene.querySelectorAll(".timeline-seg");
+    if (vorhandene.length !== items.length - 1) {
+      ebene.innerHTML = "";
+      for (var k = 0; k < items.length - 1; k++) {
+        ebene.appendChild(document.createElement("span")).className = "timeline-seg";
+      }
+    }
+    var segmente = Array.prototype.slice.call(ebene.querySelectorAll(".timeline-seg"));
+    segmente.forEach(function (seg, i) {
+      seg.style.left = mitten[i] + "px";
+      // Ein Segment gilt als Ausblick, sobald der Punkt an seinem RECHTEN Ende
+      // noch bevorsteht - dann gestrichelt/grau statt durchgezogen rot.
+      seg.classList.toggle("ist-ausblick", items[i + 1].classList.contains("ist-ausblick"));
+      seg.dataset.ziel = Math.max(0, mitten[i + 1] - mitten[i]);
+      // Bereits ausgefahrene Segmente muessen beim Resize mitwandern.
+      if (seg.dataset.offen === "1") seg.style.width = seg.dataset.ziel + "px";
+    });
+    return segmente;
+  }
+
+  function timelineZuruecksetzen(tl) {
+    tl.querySelectorAll(".timeline-item").forEach(function (it) {
+      it.classList.remove("ist-beschriftet");
+      var dot = it.querySelector(".timeline-dot");
+      if (dot) dot.classList.remove("ist-da", "ist-aktuell");
+    });
+    tl.querySelectorAll(".timeline-seg").forEach(function (seg) {
+      seg.style.transition = "none";
+      seg.style.width = "0px";
+      seg.dataset.offen = "0";
+      void seg.offsetWidth;
+      seg.style.transition = "";
     });
   }
+
+  function timelineAbspielen(tl) {
+    var items = Array.prototype.slice.call(tl.querySelectorAll(".timeline-item"));
+    if (!items.length) return;
+    var segmente = timelineSegmenteBauen(tl);
+
+    function punktZeigen(i) {
+      var it = items[i];
+      var dot = it.querySelector(".timeline-dot");
+      if (dot) {
+        dot.classList.add("ist-da");
+        // Der Dauerpuls haengt am Dot, nicht am Item: er darf erst starten,
+        // wenn der Punkt wirklich gesetzt ist.
+        if (it.classList.contains("ist-aktuell")) dot.classList.add("ist-aktuell");
+      }
+      it.classList.add("ist-beschriftet");
+    }
+
+    if (reduceMotion()) {
+      items.forEach(function (_, i) { punktZeigen(i); });
+      segmente.forEach(function (seg) { seg.style.width = seg.dataset.ziel + "px"; seg.dataset.offen = "1"; });
+      return;
+    }
+
+    var t = 0;
+    items.forEach(function (_, i) {
+      setTimeout(function () { punktZeigen(i); }, t);
+      t += TL_DOT + TL_TEXT;
+      var seg = segmente[i];
+      if (seg) {
+        setTimeout(function () {
+          seg.style.width = seg.dataset.ziel + "px";
+          seg.dataset.offen = "1";
+        }, t);
+        t += TL_LINIE;
+      }
+    });
+  }
+
   document.querySelectorAll(".timeline").forEach(function (tl) {
-    var progress = tl.querySelector(".timeline-progress");
-    if (!progress) return;
-    var targetPct = timelineZielProzent(tl);
-    if (targetPct === null) return;
-    if (reduceMotion()) { progress.style.width = targetPct; timelineDotsAnimieren(tl); return; }
-    if ("IntersectionObserver" in window) {
+    timelineSegmenteBauen(tl);
+    var gelaufen = false;
+    function los() { if (gelaufen) return; gelaufen = true; timelineAbspielen(tl); }
+    if (reduceMotion() || !("IntersectionObserver" in window)) { los(); }
+    else {
       new IntersectionObserver(function (entries, obs) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) { progress.style.width = targetPct; timelineDotsAnimieren(tl); obs.unobserve(e.target); }
+          if (e.isIntersecting) { los(); obs.unobserve(e.target); }
         });
-      }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 }).observe(tl);
-    } else {
-      progress.style.width = targetPct;
-      timelineDotsAnimieren(tl);
+      }, { rootMargin: "-40% 0px -40% 0px", threshold: 0 }).observe(tl);
     }
+    window.addEventListener("resize", function () { timelineSegmenteBauen(tl); });
   });
 
   /* ---- 7b) Roadmap Zoom-In: Balken<->Meilenstein-Kopplung ----
@@ -335,6 +419,24 @@
      (.ist-aktuell), sondern ein reiner Hover-Zustand (Video-Feedback
      2026-09-17). Touch simuliert denselben Zustand kurzzeitig, wie beim
      Chart-Slide (Abschnitt 6b). */
+  // Balken fahren nacheinander von links auf, sobald das Gantt sichtbar ist -
+  // dieselbe Leserichtung wie beim Fluss-Diagramm und der Zeitachse.
+  function ganttAusfahren(gantt) {
+    var balken = Array.prototype.slice.call(gantt.querySelectorAll(".gantt-balken"));
+    if (reduceMotion()) { balken.forEach(function (b) { b.classList.add("ist-da"); }); return; }
+    balken.forEach(function (b, i) {
+      setTimeout(function () { b.classList.add("ist-da"); }, i * 180);
+    });
+  }
+  document.querySelectorAll(".gantt").forEach(function (gantt) {
+    if (reduceMotion() || !("IntersectionObserver" in window)) { ganttAusfahren(gantt); return; }
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { ganttAusfahren(gantt); obs.unobserve(e.target); }
+      });
+    }, { rootMargin: "-35% 0px -35% 0px", threshold: 0 }).observe(gantt);
+  });
+
   document.querySelectorAll(".roadmap-zoom").forEach(function (zoom) {
     var balken = zoom.querySelectorAll(".gantt-balken");
     function setzen(ref, an) {
@@ -352,6 +454,58 @@
         setTimeout(function () { b.classList.remove("ist-betont"); setzen(ref, false); }, 1200);
       }, { passive: true });
     });
+  });
+
+  /* ---- 7c) Zitat: Schreibmaschinen-Effekt ----
+     Der Satz wird Zeichen fuer Zeichen gesetzt, die Quelle blendet erst auf,
+     wenn er fertig ist (Feedback 2026-09-17). Der volle Satz steht als
+     unsichtbarer Platzhalter im DOM und haelt die Hoehe - dadurch springt
+     weder das Layout noch die Sektionsmitte, und Screenreader lesen den
+     vollstaendigen Text (die getippte Schicht ist aria-hidden). */
+  var TIPP_MS = 26; // Zeichenabstand; ~40 Anschlaege/Sekunde, ruhig lesbar
+  function zitatTippen(block) {
+    var platzhalter = block.querySelector(".platzhalter");
+    var ziel = block.querySelector(".getippt");
+    var quelle = block.parentNode ? block.parentNode.querySelector("cite") : null;
+    if (!platzhalter || !ziel) return;
+    var text = platzhalter.textContent;
+    if (reduceMotion()) {
+      ziel.textContent = text;
+      if (quelle) quelle.classList.add("ist-da");
+      return;
+    }
+    ziel.textContent = "";
+    block.classList.add("ist-am-tippen");
+    var i = 0, letzte = 0;
+    // Ueber rAF statt setInterval: der Text laeuft dadurch im Takt der
+    // Bildwiederholrate und stockt nicht, wenn der Tab kurz ausgelastet ist.
+    function schritt(jetzt) {
+      if (!letzte) letzte = jetzt;
+      if (jetzt - letzte >= TIPP_MS) {
+        letzte = jetzt;
+        i += 1;
+        ziel.textContent = text.slice(0, i);
+      }
+      if (i < text.length) { requestAnimationFrame(schritt); }
+      else {
+        block.classList.remove("ist-am-tippen");
+        if (quelle) quelle.classList.add("ist-da");
+      }
+    }
+    requestAnimationFrame(schritt);
+  }
+  document.querySelectorAll(".quote-typo").forEach(function (block) {
+    // Getippt wird erst, wenn das Zitat selbst eingeblendet ist.
+    if (reduceMotion() || !("IntersectionObserver" in window)) { zitatTippen(block); return; }
+    var gestartet = false;
+    new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting || gestartet) return;
+        gestartet = true;
+        obs.unobserve(e.target);
+        setTimeout(function () { zitatTippen(block); }, 450);
+      });
+    }, { rootMargin: "-40% 0px -40% 0px", threshold: 0 }).observe(block);
   });
 
   /* ---- 8) Karussell ---- */
@@ -443,6 +597,7 @@
       el.style.transition = "none";
       el.classList.remove("in");
       el.style.transitionDelay = "";
+      el.style.removeProperty("--reveal-delay");
     });
     void root.offsetWidth;
     alle.forEach(function (el) { el.style.transition = ""; });
@@ -459,18 +614,32 @@
     var timelines = root.classList && root.classList.contains("timeline")
       ? [root] : (root.querySelectorAll ? root.querySelectorAll(".timeline") : []);
     Array.prototype.forEach.call(timelines, function (tl) {
-      var progress = tl.querySelector(".timeline-progress");
-      if (!progress) return;
-      var targetPct = timelineZielProzent(tl);
-      if (targetPct === null) return;
-      // Breite ohne Transition auf 0 zuruecksetzen, Reflow erzwingen, dann
-      // Transition wieder zulassen und den Zielwert setzen - sonst faehrt
-      // die Linie nur von der aktuellen Breite ab statt sichtbar neu von 0.
-      progress.style.transition = "none";
-      progress.style.width = "0%";
-      void progress.offsetWidth;
-      progress.style.transition = "";
-      requestAnimationFrame(function () { progress.style.width = targetPct; timelineDotsAnimieren(tl); });
+      timelineZuruecksetzen(tl);
+      requestAnimationFrame(function () { timelineAbspielen(tl); });
+    });
+  }
+
+  function replayGantt(root) {
+    var gantts = root.classList && root.classList.contains("gantt")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".gantt") : []);
+    Array.prototype.forEach.call(gantts, function (gantt) {
+      gantt.querySelectorAll(".gantt-balken").forEach(function (b) {
+        b.style.transition = "none";
+        b.classList.remove("ist-da", "ist-betont");
+        void b.offsetWidth;
+        b.style.transition = "";
+      });
+      requestAnimationFrame(function () { ganttAusfahren(gantt); });
+    });
+  }
+
+  function replayZitat(root) {
+    var bloecke = root.classList && root.classList.contains("quote-typo")
+      ? [root] : (root.querySelectorAll ? root.querySelectorAll(".quote-typo") : []);
+    Array.prototype.forEach.call(bloecke, function (block) {
+      var quelle = block.parentNode ? block.parentNode.querySelector("cite") : null;
+      if (quelle) quelle.classList.remove("ist-da");
+      zitatTippen(block);
     });
   }
 
@@ -496,7 +665,7 @@
       ? [root] : (root.querySelectorAll ? root.querySelectorAll(".chart-body") : []);
     Array.prototype.forEach.call(charts, function (chart) {
       chart.querySelectorAll(".chart-balken").forEach(function (b) {
-        b.classList.remove("ist-betont");
+        b.classList.remove("ist-betont", "ist-gewachsen");
         b.style.setProperty("--wert", 0);
         var wert = b.querySelector(".chart-wert");
         if (wert) { wert.textContent = "0"; }
@@ -517,6 +686,8 @@
     replayCarousel(root);
     replayStepper(root);
     replayChart(root);
+    replayGantt(root);
+    replayZitat(root);
   }
 
   function replayAll() {

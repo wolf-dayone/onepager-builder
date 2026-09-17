@@ -6,7 +6,10 @@
    generischen .section-head nebeneinander in zwei Spalten) - Kopf-Container
    max. 930px breit. Verifiziert 2026-09-16 (Ernst, Screenshot + erneuter
    Abgleich gegen Node 28:2). Deshalb eigene Klasse statt .section-head. */
-.kartenraster-kopf{max-width:930px}
+/* 80px Abstand zur Kartenreihe - stand nur als Figma-Wert fest, war im Code
+   nie gesetzt (Feedback 2026-09-17). Margin sitzt am Kopf, nicht an .cards:
+   .cards wird auch ohne Kopf verwendet. */
+.kartenraster-kopf{max-width:930px;margin-bottom:var(--space-20)}
 .kartenraster-kopf .intro{margin-top:var(--space-6)}
 </style>
 

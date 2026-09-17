@@ -22,7 +22,7 @@
    .chart basiert) leicht auseinander. */
 .chart-gitter{position:absolute;left:0;right:0;top:0;bottom:28px;pointer-events:none}
 .chart-gitter span{position:absolute;left:0;right:0;height:1px;background:var(--color-border);
-  transform:scaleX(0);transform-origin:left;transition:transform 1s var(--ease)}
+  transform:scaleX(0);transform-origin:left;transition:transform 1s var(--ease-linie)}
 .chart-gitter span:nth-child(1){bottom:0}
 .chart-gitter span:nth-child(2){bottom:25%}
 .chart-gitter span:nth-child(3){bottom:50%}
@@ -35,8 +35,13 @@
    den echten Wert per style.setProperty, sobald das leere Diagramm fertig
    eingeblendet ist. Dadurch "waechst" die Saeule wirklich, statt schon fertig
    dazustehen, wenn die Sektion in den Viewport kommt. */
-.chart-balken .saeule{width:100%;border-radius:4px 4px 0 0;background:var(--color-border);
-  height:calc(var(--wert,0) * 100%);transition:height .8s var(--ease),background .25s var(--ease);
+/* Farben aus den Figma-Icon-Rollen: icon/tertiary ruhend, icon/secondary im
+   Hover (2026-09-17). Vorher griff das Modul zu --color-border (eine
+   Linienrolle) und --color-main-text (eine Textrolle) - optisch aehnlich,
+   semantisch aber die falsche Ebene, und im Dunkelmodus dadurch zu hart. */
+.chart-balken .saeule{width:100%;border-radius:4px 4px 0 0;background:var(--color-icon-tertiary);
+  height:calc(var(--wert,0) * 100%);
+  transition:height var(--dur-linie) var(--ease-linie),background var(--dur-ui) var(--ease-ui);
   position:relative}
 /* .ist-betont simuliert (per JS, einmalig nach dem Einwachsen) genau den
    Zustand, den echtes Hover/Tap ohnehin ausloest - siehe :hover/:focus-visible
@@ -45,10 +50,22 @@
    2026-09-xx: "the darker column is supposed to be a simulation of a hovered
    or tapped state, so not the initial view"). */
 .chart-balken.ist-betont .saeule,.chart-balken:hover .saeule,.chart-balken:focus-visible .saeule{
-  background:var(--color-main-text)}
+  background:var(--color-icon-secondary)}
+/* Der Wert steht 8px UEBER der Saeule (Figma-Mass) und erscheint erst, wenn
+   die Saeule zu wachsen beginnt - vorher klebte eine Reihe fertiger Zahlen
+   ueber einem leeren Diagramm und nahm dem Wachsen die Pointe (2026-09-17).
+   .ist-gewachsen setzt growChart() in _basis.js zusammen mit --wert. */
+/* bottom:100% = Oberkante der Saeule, +8px Abstand darueber. Vorher stand hier
+   calc(var(--wert) * 100% + 8px) - der Prozentwert loeste aber gegen die
+   SAEULE auf (dort haengt das Element), nicht gegen die volle Balkenhoehe,
+   wodurch die Zahl im Balken landete statt darueber. Ueber bottom:100% wandert
+   sie automatisch mit, waehrend die Saeule waechst - ganz ohne --wert. */
 .chart-wert{position:absolute;left:50%;transform:translateX(-50%);
-  bottom:calc(var(--wert,0) * 100% + 10px);
-  font-size:var(--text-body-s);color:var(--color-text);transition:bottom .8s var(--ease),color .25s var(--ease)}
+  bottom:calc(100% + 8px);
+  font-size:var(--text-body-s);color:var(--color-text);opacity:0;
+  transition:color var(--dur-ui) var(--ease-ui),
+             opacity .45s var(--ease-reveal) .2s}
+.chart-balken.ist-gewachsen .chart-wert{opacity:1}
 .chart-balken.ist-betont .chart-wert,.chart-balken:hover .chart-wert,.chart-balken:focus-visible .chart-wert{
   color:var(--color-main-text);font-weight:600}
 .chart-balken .achse{position:absolute;bottom:-28px;left:0;right:0;text-align:center;
@@ -60,6 +77,7 @@
 @media(prefers-reduced-motion:reduce){
   .chart-balken .saeule,.chart-wert{transition:none}
   .chart-gitter span{transition:none}
+  .chart-balken .chart-wert{opacity:1}
 }
 @media(max-width:900px){.chart-slide .chart{min-height:180px;gap:var(--space-4)}}
 </style>

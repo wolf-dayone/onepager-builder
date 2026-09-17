@@ -25,8 +25,10 @@
       <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
       <p class="eyebrow reveal">[NN] — [Ausprobieren]<span class="eyebrow-linie" aria-hidden="true"></span></p>
       <h2 class="h2 reveal">[Unsere interne Toolbox]</h2>
-      <div class="qr-code">[QR-Code]</div>
-      <p class="qr-url">Scannen oder öffnen: <a href="[URL]">[url.dayone.de/tool]</a></p>
+      <!-- Code und Link-Zeile sind eigene Reveal-Schritte (Feedback
+           2026-09-17): erst die Aussage, dann der Code, dann der Weg dorthin. -->
+      <div class="qr-code reveal">[QR-Code]</div>
+      <p class="qr-url reveal">Scannen oder öffnen: <a href="[URL]">[url.dayone.de/tool]</a></p>
     </div>
     <div class="qr-screenshot reveal">[Screenshot: was hinter dem Code wartet]</div>
   </div>

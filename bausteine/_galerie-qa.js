@@ -93,7 +93,11 @@
     }
   });
 
-  /* ---- Alle Animationen einmal direkt beim Laden anstossen, damit man sie
-     sieht, ohne erst scrollen zu muessen (Kernziel aus dem Testkonzept). ---- */
-  requestAnimationFrame(function () { window.DAYONE_QA.replayAll(); });
+  /* Frueher lief hier beim Laden EINMAL replayAll() - gut gemeint (man sah jede
+     Animation ohne Scrollen), aber es hat genau das kaputt gemacht, was die
+     Galerie pruefen soll: jede Sektion war schon durchanimiert, bevor man sie
+     erreichte, und beim Runterscrollen stand alles fertig da (Feedback
+     2026-09-17). Die Module laufen jetzt wie auf einem echten Onepager erst
+     beim Reinscrollen. Wer eine Animation nochmal sehen will, nimmt "Replay
+     current" bzw. "Replay all" in der Leiste - dafuer sind die Knoepfe da. */
 })();

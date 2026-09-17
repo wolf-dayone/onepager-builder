@@ -3,16 +3,19 @@
 .medien-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-8);
   margin-top:var(--space-10)}
 .medien-grid.ist-dreispaltig{grid-template-columns:repeat(3,minmax(0,1fr))}
-/* Schneller rein, noch schneller wieder raus (Video-Feedback 2026-09-17:
-   "der Hover-Effekt ist etwas zu langsam ... sollte deutlich knackiger sein
-   und nicht so lange aktiv bleiben, nachdem man weg-gehovert hat"). Vorher
-   ein einzelner .2s-Wert fuer beide Richtungen - jetzt kuerzer und beim
-   Verlassen nochmal kuerzer statt symmetrisch. */
+/* Hover: anheben bleibt (gefaellt), aber gefuehrt statt ruckartig. Der erste
+   Anlauf war mit .12s/.08s so kurz, dass die Bewegung sprang - jetzt eine
+   ruhige Kurve in beide Richtungen, beim Verlassen minimal schneller, damit
+   die Karte nicht nachhaengt (Feedback 2026-09-17: "etwas holprig, soll
+   weicher und nicht so unmittelbar sein"). */
 .medien-karte{display:flex;flex-direction:column;border:1px solid var(--color-border);
   border-radius:var(--radius-card);overflow:hidden;text-decoration:none;color:inherit;
-  transition:border-color .12s ease-out,transform .12s ease-out}
-a.medien-karte:hover{border-color:var(--color-main-text);transform:translateY(-2px)}
-a.medien-karte:not(:hover){transition-duration:.08s}
+  transition:border-color .32s var(--ease-ui),transform .32s var(--ease-ui),
+             box-shadow .32s var(--ease-ui);
+  box-shadow:0 0 0 rgba(0,0,0,0)}
+a.medien-karte:hover{border-color:var(--color-main-text);transform:translateY(-4px);
+  box-shadow:0 12px 28px rgba(0,0,0,.10)}
+a.medien-karte:not(:hover){transition-duration:.24s}
 .medien-karte .bild{aspect-ratio:16/9;background:var(--color-detail);display:flex;
   align-items:center;justify-content:center;color:var(--color-text);
   font-size:var(--text-body-s)}

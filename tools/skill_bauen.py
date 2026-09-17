@@ -28,6 +28,7 @@ INHALT = {
     "skill/SKILL.md": "SKILL.md",
     "referenzen/module-katalog.md": "references/module-katalog.md",
     "referenzen/scroll-patterns.md": "references/scroll-patterns.md",
+    "referenzen/animationen.md": "references/animationen.md",
     "referenzen/ausliefern.md": "references/ausliefern.md",
     "referenzen/tokens.css": "assets/tokens.css",
     "starter.html": "assets/starter.html",

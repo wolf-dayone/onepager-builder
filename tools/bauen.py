@@ -209,7 +209,6 @@ GALERIE_CSS = """/* ==== Galerie-Rahmen (nur in modul-galerie.html) ==== */
    soll (z. B. vertikale Zentrierung, Whitespace bei kurzem Inhalt). Macht
    die Galerie deutlich laenger (34 Module x mind. 1 Viewporthoehe) - das ist
    der akzeptierte Tradeoff. */
-.galerie-intro{padding:var(--space-24) var(--grid-margin)}
 .galerie-baustein{padding:var(--space-16) var(--grid-margin)}"""
 
 # ---- QA-Leiste: NUR in modul-galerie.html, wird beim Skill-Bauen entfernt ----
@@ -255,21 +254,34 @@ def _qa_leiste_block():
     )
 
 
+def galerie_hero_fuellen(markup, anzahl, stand):
+    """Platzhalter des Hero-Bausteins mit dem Galerie-Titeltext belegen.
+
+    Bewusst hier und nicht im Baustein: bausteine/01-einstieg-01-cover-hero.html
+    bleibt die neutrale Kopiervorlage mit Platzhaltern, die Galerie ist nur
+    einer von mehreren Abnehmern.
+    """
+    ersetzungen = {
+        "[PROJEKTNAME]": "Modul-Galerie",
+        "[UNTERTITEL DER SESSION]": "DAYONE&nbsp;|&nbsp;AI-ready&nbsp;slides",
+        "[Ein bis zwei Zeilen, die erklären, worum es geht und warum es jetzt relevant ist.]":
+            f"Alle {anzahl} Bausteine, jeweils einmal mit Platzhalter-Inhalt. "
+            "Diese Seite ist beides: Pr&uuml;fst&uuml;ck f&uuml;r jede "
+            "&Auml;nderung am System und Kopiervorlage f&uuml;r neue Seiten.",
+        "[Badge Title]": "QA-Galerie",
+        "[Montag, 1. Januar 2026]": f"Figma-Stand {stand}",
+        "[Vorname &amp; Vorname]": f"{anzahl} Module",
+        "[DAYONE Weekly]": "referenzen/module-katalog.md",
+    }
+    for platzhalter, text in ersetzungen.items():
+        markup = markup.replace(platzhalter, text)
+    return markup
+
+
 def galerie_bauen(daten):
     teile = [([GALERIE_CSS], "")]
     zuordnung = json.loads(
         (WURZEL / "data" / "modul-zuordnung.json").read_text())["module"]
-
-    teile.append(([], f"""<div class="galerie-intro">
-  <h1 class="h1">Modul-Galerie</h1>
-  <p class="lead" style="margin-top:var(--space-6);max-width:680px">Alle
-  {len(daten['komponenten'])} Bausteine aus der Figma-Datei
-  <em>DAYONE&nbsp;|&nbsp;AI-ready&nbsp;slides</em>, jeweils einmal mit
-  Platzhalter-Inhalt. Diese Seite ist beides: Pr&uuml;fst&uuml;ck f&uuml;r
-  jede &Auml;nderung am System und Kopiervorlage f&uuml;r neue Seiten.</p>
-  <p class="small" style="margin-top:var(--space-6);color:var(--color-text)">Regeln
-  zu jedem Modul: <code>referenzen/module-katalog.md</code></p>
-</div>"""))
 
     kapitel = 0
     for i, eintrag in enumerate(daten["komponenten"]):
@@ -280,6 +292,16 @@ def galerie_bauen(daten):
         if "[NN]" in markup:
             kapitel += 1
             markup = nummerieren(markup, f"{kapitel:02d}")
+
+        # Der Hero IST der Titel der Galerie. Frueher stand eine eigene
+        # .galerie-intro-Sektion davor - eine zweite Titelflaeche direkt vor
+        # dem Titelmodul, die auf der echten Seite kein Gegenstueck hat
+        # (Feedback 2026-09-17: "die Sektion vor dem Hero soll weg, ihr Text
+        # kann in den Hero"). Der Text wandert deshalb in die Platzhalter des
+        # Hero-Bausteins; der Baustein selbst bleibt unveraendert.
+        if name == "01 Einstieg/01 cover-hero":
+            markup = galerie_hero_fuellen(
+                markup, len(daten["komponenten"]), daten["stand"])
 
         # Jedes Modul ein anderer Farbmodus als sein Vorgaenger (Ernst,
         # 2026-09-17) - die Galerie zeigt alle Module direkt hintereinander,

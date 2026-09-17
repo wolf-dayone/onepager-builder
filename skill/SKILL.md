@@ -126,6 +126,7 @@ Dann:
 - **Alle `[Platzhalter]` ersetzen.**
 
 Für Scroll-Effekte über das Enthaltene hinaus: `references/scroll-patterns.md`.
+Wie sich das System bewegt (Reveal-Rollen, Motion-Tokens, Choreografien, Reduced Motion): `references/animationen.md` — vor jeder neuen `transition` lesen.
 Dort steht auch, warum zwei bis drei Effekte pro Seite genug sind.
 
 Farben, Schriftgrößen und Abstände kommen aus den Tokens (`assets/tokens.css`, im Template
@@ -307,6 +308,7 @@ Viewports mitschreiben. Der Qualitäts-Check meldet mehrspaltige Raster ohne sol
 |---|---|
 | `references/module-katalog.md` | Immer vor der Modulauswahl — alle 34 Bausteine mit Zweck, Füllregeln, Abgrenzung und erprobten Abfolgen. Generiert aus Figma. |
 | `references/scroll-patterns.md` | Wenn Scroll-Effekte über das Template hinaus gebraucht werden |
+| `references/animationen.md` | Wenn etwas animiert wird: Tokens, Reveal-Rollen, Choreografien |
 | `references/ausliefern.md` | Wenn die Seite eine eigene URL braucht oder Bilder/Schrift/Zugriffsschutz zu klären sind |
 | `assets/starter.html` | Immer — Grundlage jeder neuen Seite (Weekly-Abfolge) |
 | `assets/modul-galerie.html` | Sobald ein Modul gebraucht wird, das nicht im Starter steht — alle 34 zum Herauskopieren |

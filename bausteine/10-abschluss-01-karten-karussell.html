@@ -12,17 +12,18 @@
    dieses Problem nicht. Breite = gewuenschter Einzug minus den ohnehin
    folgenden .carousel-gap, weil der Flex-gap zwischen Spacer und erster
    Karte den Rest beisteuert.
-   Rechts: padding-right in derselben Groesse, damit der Track auf gleicher
-   Kante wie die Button-Gruppe darunter endet (Ernst, Review Gruppe D) - das
-   Modul haelt sich also doch an den regulaeren Modul-Rand statt bis zum
-   nackten Viewport-Rand zu laufen; padding-right ist hier unproblematisch,
-   der Snap-Ruheposition-Bug betrifft nur die START-Seite eines
-   scroll-snap:mandatory-Containers, nicht das Ende. */
-.carousel{padding-right:max(var(--grid-margin),
-  calc((100% - var(--grid-max)) / 2 + var(--grid-margin)))}
+   Rechts steht ein ZWEITER Spacer statt eines padding-right. Das war der
+   Grund, warum die erste Karte oberhalb von 1440px nicht mehr unter der
+   Headline stand (Feedback 2026-09-17): ein padding-right verkleinert die
+   Content-Box des Tracks, und genau gegen diese Box loest das 100% in der
+   Einzugsformel auf. Bei 1920px rechnete der Spacer dadurch mit 1584px statt
+   1920px und fiel um 168px zu schmal aus. Ohne horizontales Padding stimmt
+   der Bezug wieder, und der Track endet trotzdem auf der Kante der
+   Button-Gruppe. */
 .carousel-spacer{flex:0 0 auto;width:calc(max(var(--grid-margin),
   calc((100% - var(--grid-max)) / 2 + var(--grid-margin))) - var(--space-6));
   scroll-snap-align:start}
+.carousel-spacer.ist-ende{scroll-snap-align:none}
 /* scroll-snap-align auf dem Spacer, nicht nur auf den Karten: bei
    scroll-snap-type:x MANDATORY zwingt der Browser die Ruheposition auf den
    naechsten gueltigen Snap-Punkt - ohne diese Zeile war Position 0 (Spacer)
@@ -70,8 +71,12 @@
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
       <div class="card reveal"><span class="num">04</span>
         <div class="card-copy"><h3 class="h3">[Merksatz]</h3><p class="body">[2–3 Sätze.]</p></div></div>
+      <div class="carousel-spacer ist-ende" aria-hidden="true"></div>
     </div>
   </div>
+  <!-- Standard-Karussell: startet links buendig mit der Headline darueber
+       (dafuer sorgt .carousel-spacer + scroll-snap:start, siehe oben) und
+       springt pro Klick um genau eine Kartenbreite. -->
   <div class="wrap carousel-controls reveal">
     <button type="button" data-carousel="karten-karussell" data-dir="-1" aria-label="Zurück">
       <svg aria-hidden="true"><use href="#icon-pfeil-links"></use></svg>

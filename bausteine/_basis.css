@@ -71,8 +71,15 @@ footer.cta{padding-block:var(--space-20)}
    von links (Standard) bzw. von der Mitte aus (is-centered) - Video-Feedback
    2026-09-17. Aktiviert ueber dieselbe .reveal/.in-Mechanik wie der Rest: die
    Eyebrow ist jetzt selbst ein eigener .reveal-Schritt (siehe Modul-HTML). */
+/* Kapitelmarker bewegen sich NICHT mehr mit nach oben (Feedback 2026-09-17):
+   sie blenden rein auf und lassen die Linie einlaufen. Der Marker ist ein
+   ruhender Anker - wandert er mit, konkurriert er mit der Headline darunter,
+   die genau diese Aufwaertsbewegung als eigenen Akzent braucht. */
+.reveal.eyebrow{transform:none}
 .eyebrow-linie{width:68px;height:1px;background:currentColor;flex:none;
-  transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease) .25s}
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur-linie) var(--ease-linie);
+  transition-delay:calc(var(--reveal-delay,0ms) + 150ms)}
 .eyebrow.in .eyebrow-linie,.reveal.in.eyebrow .eyebrow-linie{transform:scaleX(1)}
 /* Bei zentriertem Inhalt (divider, big-statement, quote) mitzentrieren */
 .eyebrow.is-centered{align-items:center;text-align:center}
@@ -85,9 +92,21 @@ footer.cta{padding-block:var(--space-20)}
    projektweit Rot, nicht Blau - gilt fuer alle inline Textlinks. Buttons/Badges
    mit eigener main-text/border-Farbe (btn-primary/-secondary, .badge) sind
    bewusst ausgenommen, die sind keine Textlinks. */
-a{color:var(--color-action);text-decoration-color:currentColor;text-underline-offset:2px}
-a:hover{opacity:.8}
-a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
+/* Fliesstext-Links: fett + unterstrichen in der normalen Textfarbe, Rot ist
+   die HOVER-Farbe (Feedback 2026-09-17). Dauerhaftes Rot zieht sonst mehr
+   Aufmerksamkeit als die Aussage, in der der Link steht. Gewicht und
+   Unterstrich tragen die Erkennbarkeit auch ohne Farbe - und damit auch bei
+   Farbfehlsichtigkeit. Buttons/Badges/Karten-Links mit eigener Farbe sind
+   ausgenommen (.btn, .badge, .medien-karte, .brand-group, .nav-*). */
+a{color:inherit;font-weight:600;text-decoration:underline;
+  text-decoration-thickness:1px;text-underline-offset:3px;
+  transition:color var(--dur-ui) var(--ease-ui),
+             text-decoration-color var(--dur-ui) var(--ease-ui)}
+a:hover{color:var(--color-action)}
+a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-radius:2px}
+.btn,.badge,.medien-karte,.brand-group,#chapter-nav a,.gantt-balken{
+  font-weight:inherit;text-decoration:none}
+.btn:hover,.badge:hover,.medien-karte:hover,.brand-group:hover,#chapter-nav a:hover{color:inherit}
 
 /* ==== Typo-Rollen ==== */
 /* overflow-wrap: ein einzelnes langes Wort (Produktname, Kompositum) darf
@@ -102,11 +121,38 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:2px}
 .small{font-size:var(--text-body-s)}
 
 /* ==== Reveal on scroll ==== */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 1.4s var(--ease),transform 1.4s var(--ease)}
+/* Die Staffel-Verzoegerung liegt als Custom Property auf dem Element, nicht
+   als transition-delay (_basis.js stageReveal setzt --reveal-delay). Grund:
+   ein inline transition-delay erreicht KEINE Pseudo-Elemente - die Linien in
+   .raster-col/.stat starteten dadurch alle gleichzeitig, waehrend die Bloecke
+   selbst gestaffelt hochkamen. Der vierte Block schob sich so mit einer
+   laengst fertig gezeichneten Linie ins Bild (Feedback 2026-09-17). Ueber die
+   Property erben ::before/::after dieselbe Verzoegerung und laufen synchron
+   mit ihrem Element. */
+.reveal{opacity:0;transform:translateY(24px);
+  transition:opacity var(--dur-reveal) var(--ease-reveal),
+             transform var(--dur-reveal) var(--ease-reveal);
+  transition-delay:var(--reveal-delay,0ms);
+  /* Halbtransparente Zwischenbilder sauber rastern lassen. */
+  will-change:opacity,transform}
 .reveal.in{opacity:1;transform:none}
+/* Fuer Inhalte, die ohne Ortswechsel erscheinen sollen (Achsenlabel, Quadranten,
+   Prozesskarten): gleiche Mechanik, nur Opacity. */
+.reveal.ist-nur-opacity{transform:none}
+
+/* Wiederverwendbare Linie, die mit ihrem Element einlaeuft (Textraster-Spalten,
+   Kennzahlen). Element traegt .linie-oben + .reveal, sonst nichts. */
+.linie-oben{position:relative}
+.linie-oben::before{content:"";position:absolute;top:0;left:0;width:100%;height:1px;
+  background:var(--linie-farbe,var(--color-border));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform var(--dur-linie) var(--ease-linie);
+  transition-delay:var(--reveal-delay,0ms)}
+.linie-oben.in::before{transform:scaleX(1)}
+
 @media(prefers-reduced-motion:reduce){
-  .reveal{opacity:1;transform:none;transition:none}
-  .eyebrow-linie{transform:scaleX(1);transition:none}
+  .reveal{opacity:1;transform:none;transition:none;will-change:auto}
+  .eyebrow-linie,.linie-oben::before{transform:scaleX(1);transition:none}
   /* Erzwungenes Einrasten kann bei vestibulären Empfindlichkeiten unangenehm
      sein - dieselbe Vorsicht wie bei jedem anderen Bewegungseffekt hier. */
   html{scroll-behavior:auto;scroll-snap-type:none}

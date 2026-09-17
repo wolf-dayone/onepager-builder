@@ -1,85 +1,107 @@
 <style>
 /* ==== Matrix 2x2 ==== */
-/* Figma: beide Achsen tragen an JEDEM Ende ein eigenes Label (z. B. "Attribute A"
-   links / "Attribute B" rechts), nicht nur einen Achsennamen in der Mitte - dazu
-   eine durchgezogene Linie mit Pfeilspitze. Frueher stand hier nur je ein
-   zentrierter Achsenname ohne Linie/Pfeile; beim Figma-Abgleich aufgefallen,
-   2026-09-17. */
-.matrix-wrap{display:grid;grid-template-columns:32px 1fr;gap:var(--space-8)}
-.matrix-achse-y{position:relative;display:flex;flex-direction:column;
-  align-items:center;justify-content:space-between}
-/* Achsen wachsen von der Mitte nach aussen (nicht von oben/links nach unten/
-   rechts) - erst danach blenden die Endlabel per Opacity ein (keine
-   Vertikalbewegung). Reihenfolge kommt aus der DOM-Position ueber die
-   normale .reveal/.in-Stagger-Mechanik (_basis.js stageReveal). Video-
-   Feedback 2026-09-17, ersetzt die alte alte Scatter-Achsen-Idee. */
-.matrix-achse-y::before{content:"";position:absolute;top:6px;bottom:0;left:50%;
-  width:1px;background:var(--color-border);transform:scaleY(0);transform-origin:center;
-  transition:transform .7s var(--ease)}
-.matrix-achse-y.in::before{transform:scaleY(1)}
-.matrix-achse-y-pfeil{position:relative;z-index:1;width:0;height:0;
+/* Figma: ein Achsenkreuz um vier Quadranten. Die Y-Achse steht links NEBEN
+   den Quadranten, die X-Achse liegt UNTER ihnen (frueher hing sie als
+   Flex-Kind mit order-Trick zwischen Headline und Raster - dadurch stand die
+   waagerechte Achse ueber statt unter den Feldern, Feedback 2026-09-17).
+   Jetzt ein echtes 2x2-Raster: Spalte 1 = Y-Achse, Zeile 2 = X-Achse. */
+.matrix-wrap{display:grid;grid-template-columns:auto minmax(0,1fr);
+  grid-template-rows:auto auto;gap:var(--space-4) var(--space-6);
+  align-items:stretch}
+
+/* --- Y-Achse: Linie mit Pfeilspitzen an BEIDEN Enden, Label ausserhalb --- */
+/* Die Pfeilspitzen sassen vorher als eigenes Flex-Kind MITTEN im Strich, weil
+   sie zwischen den beiden Labels im Fluss lagen. Sie sind jetzt ::before/
+   ::after der Linie selbst und damit fest an deren Enden. */
+.matrix-achse-y{grid-column:1;grid-row:1;display:grid;grid-template-rows:auto 1fr auto;
+  justify-items:center;gap:8px}
+.matrix-achse-y .achsen-label{font-size:var(--text-body-s);font-weight:600;
+  color:var(--color-text);letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;opacity:0;transition:opacity .5s var(--ease-reveal)}
+.matrix-achse-y-linie{position:relative;width:1px;background:var(--color-border);
+  justify-self:center;align-self:stretch;
+  transform:scaleY(0);transform-origin:center;
+  transition:transform var(--dur-linie) var(--ease-linie)}
+.matrix-achse-y-linie::before,.matrix-achse-y-linie::after{content:"";position:absolute;
+  left:50%;transform:translateX(-50%);width:0;height:0;opacity:0;
   border-left:4px solid transparent;border-right:4px solid transparent;
-  border-bottom:6px solid var(--color-border);opacity:0;transition:opacity .4s var(--ease) .7s}
-.matrix-achse-y.in .matrix-achse-y-pfeil{opacity:1}
-.matrix-achse-y span{writing-mode:vertical-rl;transform:rotate(180deg);
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
-  letter-spacing:.08em;text-transform:uppercase;background:var(--color-bg);
-  position:relative;z-index:1;padding-block:6px;opacity:0;transition:opacity .5s var(--ease) .8s}
-.matrix-achse-y.in span{opacity:1}
-.matrix-main{display:flex;flex-direction:column;gap:var(--space-8)}
-.matrix-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);order:2}
+  transition:opacity .35s var(--ease-reveal) var(--dur-linie)}
+.matrix-achse-y-linie::before{top:0;border-bottom:6px solid var(--color-border)}
+.matrix-achse-y-linie::after{bottom:0;border-top:6px solid var(--color-border)}
+
+/* --- X-Achse: unter den Quadranten, Labels links/rechts daneben --- */
+.matrix-achse-x{grid-column:2;grid-row:2;display:flex;align-items:center;gap:var(--space-4);
+  margin-top:var(--space-4)}
+.matrix-achse-x .achsen-label{font-size:var(--text-body-s);font-weight:600;
+  color:var(--color-text);letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;opacity:0;transition:opacity .5s var(--ease-reveal)}
+.matrix-achse-x-linie{flex:1;position:relative;height:1px;background:var(--color-border);
+  transform:scaleX(0);transform-origin:center;
+  transition:transform var(--dur-linie) var(--ease-linie)}
+.matrix-achse-x-linie::before,.matrix-achse-x-linie::after{content:"";position:absolute;
+  top:50%;transform:translateY(-50%);width:0;height:0;opacity:0;
+  border-top:4px solid transparent;border-bottom:4px solid transparent;
+  transition:opacity .35s var(--ease-reveal) var(--dur-linie)}
+.matrix-achse-x-linie::before{left:0;border-right:6px solid var(--color-border)}
+.matrix-achse-x-linie::after{right:0;border-left:6px solid var(--color-border)}
+
+/* --- Reveal-Choreografie ---
+   1. Achsenlinien wachsen aus der MITTE nach aussen (scaleY/scaleX, kein
+      Versatz von oben/links).
+   2. Sobald die Pfeilspitzen stehen, blenden Labels und Quadranteninhalte
+      per Opacity ein - ohne Ortswechsel (Feedback 2026-09-17).
+   Nur Headline/Subline der Sektion bewegen sich zusaetzlich nach oben, das
+   regelt die globale .reveal-Rolle. */
+.matrix-achsen.in .matrix-achse-y-linie{transform:scaleY(1)}
+.matrix-achsen.in .matrix-achse-x-linie{transform:scaleX(1)}
+.matrix-achsen.in .matrix-achse-y-linie::before,.matrix-achsen.in .matrix-achse-y-linie::after,
+.matrix-achsen.in .matrix-achse-x-linie::before,.matrix-achsen.in .matrix-achse-x-linie::after{opacity:1}
+.matrix-achsen.in .achsen-label{opacity:1;transition-delay:calc(var(--dur-linie) + .2s)}
+
+.matrix-grid{grid-column:2;grid-row:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
 .matrix-quadrant{background:var(--color-detail);padding:var(--space-8);border-radius:var(--radius-card);
   display:flex;flex-direction:column;gap:12px;min-height:130px}
 .matrix-quadrant h3{font-size:var(--text-display-3);font-weight:600}
-.matrix-achse-x{display:flex;align-items:center;gap:var(--space-4);order:1;
-  font-size:var(--text-body-s);font-weight:600;color:var(--color-text);
-  letter-spacing:.08em;text-transform:uppercase}
-.matrix-achse-x-linie{flex:1;position:relative;height:1px;background:var(--color-border);
-  transform:scaleX(0);transform-origin:center;transition:transform .7s var(--ease)}
-.matrix-achse-x.in .matrix-achse-x-linie{transform:scaleX(1)}
-.matrix-achse-x-linie::before,.matrix-achse-x-linie::after{content:"";position:absolute;
-  top:50%;transform:translateY(-50%);width:0;height:0;opacity:0;transition:opacity .4s var(--ease) .7s;
-  border-top:4px solid transparent;border-bottom:4px solid transparent}
-.matrix-achse-x.in .matrix-achse-x-linie::before,.matrix-achse-x.in .matrix-achse-x-linie::after{opacity:1}
-.matrix-achse-x-linie::before{left:0;border-right:6px solid var(--color-border)}
-.matrix-achse-x-linie::after{right:0;border-left:6px solid var(--color-border)}
-.matrix-achse-x>span{opacity:0;transition:opacity .5s var(--ease) .8s}
-.matrix-achse-x.in>span{opacity:1}
+
 @media(prefers-reduced-motion:reduce){
-  .matrix-achse-y::before,.matrix-achse-x-linie{transition:none;transform:none}
-  .matrix-achse-y-pfeil,.matrix-achse-y span,.matrix-achse-x-linie::before,
-  .matrix-achse-x-linie::after,.matrix-achse-x>span{transition:none;opacity:1}
+  .matrix-achse-y-linie,.matrix-achse-x-linie{transform:none;transition:none}
+  .matrix-achse-y-linie::before,.matrix-achse-y-linie::after,
+  .matrix-achse-x-linie::before,.matrix-achse-x-linie::after,
+  .matrix-achsen .achsen-label{opacity:1;transition:none}
 }
-@media(max-width:900px){.matrix-grid{grid-template-columns:1fr}.matrix-wrap{grid-template-columns:1fr}
-  .matrix-achse-y{flex-direction:row;justify-content:space-between}
-  .matrix-achse-y::before{top:50%;left:6px;right:0;bottom:auto;width:auto;height:1px}
-  .matrix-achse-y-pfeil{border-left:6px solid transparent;border-bottom:4px solid transparent;
-    border-top:4px solid transparent;border-right:6px solid var(--color-border)}
-  .matrix-achse-y span{writing-mode:horizontal-tb;transform:none}}
+/* Figma: bricht auf Mobile schnell - dort Quadranten untereinander, die
+   Y-Achse entfaellt (eine 1px-Linie neben einer Spalte traegt dort nichts). */
+@media(max-width:900px){
+  .matrix-wrap{grid-template-columns:1fr;grid-template-rows:auto auto}
+  .matrix-grid{grid-column:1;grid-template-columns:1fr}
+  .matrix-achse-y{display:none}
+  .matrix-achse-x{grid-column:1;grid-row:2}
+}
 </style>
 
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="04 Daten/03 matrix-2x2">
   <div class="wrap">
     <p class="eyebrow reveal">[NN] — [Einordnung]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Vier Felder, zwei Achsen]</h2>
-    <div class="matrix-wrap">
-      <div class="matrix-achse-y reveal">
-        <span>[Achse Y oben]</span>
-        <span class="matrix-achse-y-pfeil"></span>
-        <span>[Achse Y unten]</span>
+    <!-- .matrix-achsen ist der gemeinsame Reveal-Ausloeser fuer Achsen,
+         Achsenlabel UND Quadranteninhalte: erst zeichnen sich die Linien aus
+         der Mitte, dann erscheint alles andere per Opacity. -->
+    <div class="matrix-wrap matrix-achsen reveal ist-nur-opacity">
+      <div class="matrix-achse-y">
+        <span class="achsen-label">[Achse Y oben]</span>
+        <span class="matrix-achse-y-linie"></span>
+        <span class="achsen-label">[Achse Y unten]</span>
       </div>
-      <div class="matrix-main">
-        <div class="matrix-achse-x reveal">
-          <span>[Achse X links]</span>
-          <span class="matrix-achse-x-linie"></span>
-          <span>[Achse X rechts]</span>
-        </div>
-        <div class="matrix-grid">
-          <div class="matrix-quadrant reveal"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant reveal"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant reveal"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-          <div class="matrix-quadrant reveal"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
-        </div>
+      <div class="matrix-grid">
+        <div class="matrix-quadrant"><h3>[Quadrant A]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+        <div class="matrix-quadrant"><h3>[Quadrant B]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+        <div class="matrix-quadrant"><h3>[Quadrant C]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+        <div class="matrix-quadrant"><h3>[Quadrant D]</h3><p class="body">[1–2 Sätze zur Einordnung.]</p></div>
+      </div>
+      <div class="matrix-achse-x">
+        <span class="achsen-label">[Achse X links]</span>
+        <span class="matrix-achse-x-linie"></span>
+        <span class="achsen-label">[Achse X rechts]</span>
       </div>
     </div>
   </div>
