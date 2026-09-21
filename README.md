@@ -1,4 +1,4 @@
-# DAYONE Onepager — Modulsystem und Qualitätssicherung
+# Dayonepager — Modulsystem und Qualitätssicherung
 
 Quelle für den Skill `dayonepager`. Hier liegen die 34 Module aus der Figma-Datei
 [DAYONE | AI-ready slides](https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides),
