@@ -2,10 +2,21 @@
 /* ==== Sticky-Nummernliste ==== */
 .sticky-list{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-24);align-items:start}
 .sticky-list .left{position:sticky;top:140px}
+/* Figma (node 9:6): die Liste startet nicht auf Hoehe der linken Spalte,
+   sondern deutlich tiefer versetzt (256px) - gibt der Seite Rhythmus statt
+   zweier stur nebeneinander startender Bloecke. Nur ein Desktop-Detail: im
+   Mobile-Stack darunter braucht es diesen Abstand nicht, dort wuerde er nur
+   als unmotivierte Luecke zwischen Intro-Text und Liste auffallen (Feedback
+   2026-09-21: "offset ... for desktop view, but not a bigger gap in mobile"). */
+.sticky-list .right{margin-top:256px}
 .sticky-list .item{display:flex;gap:var(--space-10);padding-block:var(--space-12);border-top:1px solid var(--color-border)}
 .sticky-list .item:last-child{border-bottom:1px solid var(--color-border)}
 .sticky-list .num{font-size:var(--text-display-2);font-weight:600;color:var(--gray-300);line-height:1;flex:none}
-@media(max-width:900px){.sticky-list{grid-template-columns:1fr;gap:var(--space-12)}.sticky-list .left{position:static}}
+@media(max-width:900px){
+  .sticky-list{grid-template-columns:1fr;gap:var(--space-12)}
+  .sticky-list .left{position:static}
+  .sticky-list .right{margin-top:0}
+}
 </style>
 
 <section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-modul="03 Inhalt/03 sticky-nummernliste">

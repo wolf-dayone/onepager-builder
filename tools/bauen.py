@@ -192,7 +192,7 @@ def zusammenbauen(titel, teile, stempel):
 
 
 def stempel(daten):
-    return (f"dayone-onepager · {len(daten['komponenten'])} Module · "
+    return (f"dayonepager · {len(daten['komponenten'])} Module · "
             f"Figma-Stand {daten['stand']} · gebaut mit tools/bauen.py")
 
 

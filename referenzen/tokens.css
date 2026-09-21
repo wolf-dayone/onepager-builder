@@ -61,7 +61,9 @@
   --color-inverse-hover: var(--gray-500);
   /* Weicher Hover-Tint auf einer Outline-Flaeche - dunkel auf hell, hell auf
      dunkel (siehe .dark-Override unten). */
-  --color-hover-tint: rgba(0,0,0,.06);
+  /* Figma "button/secondary-hover" (DAYONE Designsystem 3.0, node 20228-2627):
+     solide Flaeche, kein Alpha-Tint. */
+  --color-hover-tint: var(--gray-100);
 
   /* Auf dunklen Sektionen (bewusst invertiert, nicht mode-abhängig) */
   --color-dark-bg:        var(--gray-900);

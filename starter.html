@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>[Titel der Präsentation] — DAYONE</title>
-<!-- dayone-onepager · 34 Module · Figma-Stand 2026-09-15 · gebaut mit tools/bauen.py -->
+<!-- dayonepager · 34 Module · Figma-Stand 2026-09-15 · gebaut mit tools/bauen.py -->
 <style>
 
 
@@ -74,7 +74,9 @@
   --color-inverse-hover: var(--gray-500);
   /* Weicher Hover-Tint auf einer Outline-Flaeche - dunkel auf hell, hell auf
      dunkel (siehe .dark-Override unten). */
-  --color-hover-tint: rgba(0,0,0,.06);
+  /* Figma "button/secondary-hover" (DAYONE Designsystem 3.0, node 20228-2627):
+     solide Flaeche, kein Alpha-Tint. */
+  --color-hover-tint: var(--gray-100);
 
   /* Auf dunklen Sektionen (bewusst invertiert, nicht mode-abhängig) */
   --color-dark-bg:        var(--gray-900);
@@ -281,6 +283,12 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
 /* Fuer Inhalte, die ohne Ortswechsel erscheinen sollen (Achsenlabel, Quadranten,
    Prozesskarten): gleiche Mechanik, nur Opacity. */
 .reveal.ist-nur-opacity{transform:none}
+/* Siehe _basis.js, Abschnitt 5: unterdrueckt die Einflug-Transition fuer den
+   einen Frame, in dem eine Sektion ihren Endzustand ohne Animation bekommt
+   (weil sie schon vor jedem Scrollen im Trigger-Band stand). Wird direkt
+   danach wieder entfernt, damit spaetere Zustandswechsel (z. B. Tab-Wechsel
+   im Stepper) normal transitionieren. */
+.reveal.ohne-einflug{transition:none!important}
 
 /* Wiederverwendbare Linie, die mit ihrem Element einlaeuft (Textraster-Spalten,
    Kennzahlen). Element traegt .linie-oben + .reveal, sonst nichts. */
@@ -398,10 +406,21 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
 /* ==== Sticky-Nummernliste ==== */
 .sticky-list{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:var(--space-24);align-items:start}
 .sticky-list .left{position:sticky;top:140px}
+/* Figma (node 9:6): die Liste startet nicht auf Hoehe der linken Spalte,
+   sondern deutlich tiefer versetzt (256px) - gibt der Seite Rhythmus statt
+   zweier stur nebeneinander startender Bloecke. Nur ein Desktop-Detail: im
+   Mobile-Stack darunter braucht es diesen Abstand nicht, dort wuerde er nur
+   als unmotivierte Luecke zwischen Intro-Text und Liste auffallen (Feedback
+   2026-09-21: "offset ... for desktop view, but not a bigger gap in mobile"). */
+.sticky-list .right{margin-top:256px}
 .sticky-list .item{display:flex;gap:var(--space-10);padding-block:var(--space-12);border-top:1px solid var(--color-border)}
 .sticky-list .item:last-child{border-bottom:1px solid var(--color-border)}
 .sticky-list .num{font-size:var(--text-display-2);font-weight:600;color:var(--gray-300);line-height:1;flex:none}
-@media(max-width:900px){.sticky-list{grid-template-columns:1fr;gap:var(--space-12)}.sticky-list .left{position:static}}
+@media(max-width:900px){
+  .sticky-list{grid-template-columns:1fr;gap:var(--space-12)}
+  .sticky-list .left{position:static}
+  .sticky-list .right{margin-top:0}
+}
 
 /* ==== Karte (Baustein) ==== */
 /* Kein Abschnitt, sondern ein Element innerhalb anderer Module - laut Figma
@@ -461,7 +480,7 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
 .stat .note{margin-top:8px;font-size:var(--text-body-s);color:var(--color-text)}
 
 /* ==== Zitat ==== */
-.quote{background:var(--color-detail);text-align:center}
+.quote{text-align:center}
 .quote blockquote{margin:0 auto;max-width:60ch;font-size:var(--text-body-xl);font-weight:600;line-height:1.4}
 /* Das Zitat wird getippt statt eingeblendet (Feedback 2026-09-17). Damit die
    Sektion dabei nicht in der Hoehe springt, steht der vollstaendige Satz als
@@ -546,7 +565,14 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
   font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;font-family:inherit}
 .btn-primary{background:var(--color-main-text);color:var(--color-inverse-text)}
-.btn-primary:hover{background:var(--color-inverse-hover)}
+/* _basis.css setzt global ".btn:hover{color:inherit}" (verhindert, dass Buttons
+   beim Hover in die rote Link-Aktionsfarbe rutschen) - bei einem GEFUELLTEN
+   Button wie diesem kippt das aber den weissen Text zurueck auf die dunkle
+   Fliesstextfarbe, kaum noch lesbar vor dem ebenfalls dunklen Hover-Fill
+   (Feedback: "hover state is wrong"). Hier deshalb explizit zurueck auf
+   text/inverse, exakt wie im Default-Zustand - Figma aendert im Hover nur
+   die Flaeche (button/primary-hover), Text/Icon bleiben inverse/weiss. */
+.btn-primary:hover{background:var(--color-inverse-hover);color:var(--color-inverse-text)}
 .btn-secondary{border:1px solid var(--color-main-text);color:var(--color-main-text)}
 .btn-secondary:hover{background:var(--color-hover-tint)}
 .cta .footer-row{display:flex;gap:var(--space-4);align-items:center;margin-top:var(--space-20);
@@ -969,12 +995,37 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
       el.classList.add("in");
     });
   }
-  /* Auch der Hero laeuft ueber denselben Beobachter statt sofort beim Laden:
-     auf einem echten Onepager steht er ohnehin im Viewport und startet damit
-     praktisch gleichzeitig - in der Galerie (und bei jedem Direktsprung per
-     Anker) sieht man ihn dagegen genau dann, wenn man ihn erreicht. Vorher
-     spielte er blind beim Laden, unabhaengig davon, wo man gerade steht
-     (Feedback 2026-09-17: "nur beim Reinscrollen, nicht initial fuer alle"). */
+  /* Zeigt eine Sektion sofort im Endzustand, ohne die Einflug-Transition
+     abzuspielen: fuer den Fall, dass sie schon beim Anhaengen des Beobachters
+     im Trigger-Band steht (Seitenaufruf, Direktsprung per Anker/Nav-Klick).
+     Sie wurde ja nicht "hereingescrollt", also soll sie auch nicht so aussehen
+     (Feedback 2026-09-21: "get triggered once the section scrolls into view,
+     not before"). .ohne-einflug schaltet die CSS-Transition fuer einen Frame
+     stumm (siehe _basis.css) und wird danach wieder entfernt, damit spaetere
+     Zustandswechsel (z. B. Tab-Wechsel im Stepper) normal transitionieren. */
+  function stageRevealSofort(container) {
+    var items = container.classList && container.classList.contains("reveal")
+      ? [container] : container.querySelectorAll(".reveal");
+    items.forEach(function (el) {
+      el.classList.add("ohne-einflug");
+      el.classList.add("in");
+    });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        items.forEach(function (el) { el.classList.remove("ohne-einflug"); });
+      });
+    });
+  }
+  /* Der Hero ist die eine Ausnahme von "nicht vor dem Scrollen animieren":
+     er steht beim Seitenaufruf naturgemaess schon im Viewport, und genau das
+     Einlaufen beim Laden IST sein Moment - eine Landung auf der Seite zaehlt
+     als "ihn erreicht", kein Scroll noetig (Feedback 2026-09-21: "the hero
+     should still animate on first load"). Alle anderen Sektionen bleiben bei
+     der Regel "erst nach echtem Scrollen": sie sollen nicht schon animiert
+     wirken, bevor man sie ueberhaupt erreicht hat. In der Galerie und bei
+     einem Direktsprung per Anker/Nav auf den Hero (er steht dort nicht an
+     Position 0) greift dieselbe Ausnahme - er animiert immer, sobald er den
+     Trigger-Bereich erreicht, ob per Erstladung oder per Sprung. */
   var heroEl = document.getElementById("hero");
   var revealSections = Array.prototype.slice.call(
       document.querySelectorAll("section, header.hero, footer"))
@@ -984,10 +1035,25 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
   } else {
     /* Feuert, sobald die Sektion die vertikale Mitte des Viewports erreicht — nicht
        schon, wenn ihre Unterkante am unteren Bildschirmrand auftaucht. rootMargin
-       schrumpft den Beobachtungsbereich auf einen schmalen Streifen um die Mitte. */
+       schrumpft den Beobachtungsbereich auf einen schmalen Streifen um die Mitte.
+       ACHTUNG: IntersectionObserver meldet beim ersten observe() sofort den
+       Ist-Zustand - eine Sektion, die schon beim Seitenaufruf (oder direkt nach
+       einem Anker-/Nav-Sprung) im Trigger-Band steht, feuert dadurch OHNE jede
+       Scroll-Bewegung (Feedback 2026-09-21: "get triggered once the section
+       scrolls into view, not before"). hatGescrollt unterscheidet deshalb: kein
+       Scroll bislang -> animationsloser Endzustand (stageRevealSofort); nach dem
+       ersten 'scroll'-Event (auch ein Anker-/Nav-Sprung loest eins aus) -> normale,
+       gestaffelte Einflug-Animation (stageReveal). Der Hero ist von dieser
+       Unterscheidung ausgenommen (siehe Kommentar oben) und animiert immer. */
+    var hatGescrollt = false;
+    window.addEventListener("scroll", function () { hatGescrollt = true; },
+      { once: true, passive: true });
     var revObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { stageReveal(e.target); revObs.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        if (e.target === heroEl || hatGescrollt) { stageReveal(e.target); }
+        else { stageRevealSofort(e.target); }
+        revObs.unobserve(e.target);
       });
     }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 });
     revealSections.forEach(function (s) { revObs.observe(s); });
@@ -1122,9 +1188,14 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
      Die Segmentgeometrie kommt aus den echten Dot-Positionen statt aus einer
      Prozentformel: sie stimmt damit bei jeder Anzahl Meilensteine, bei
      unterschiedlich breiten Beschriftungen und nach jedem Resize. */
-  var TL_DOT = 300,     // Punkt setzt sich
-      TL_TEXT = 150,    // danach Beschriftung
-      TL_LINIE = 430;   // danach Linie zum naechsten Punkt
+  var TL_DOT = 300,      // Punkt setzt sich
+      TL_TEXT = 150,     // danach Beschriftung
+      // Muss der CSS-Breiten-Transition der Segmente entsprechen (var(--dur-lang),
+      // siehe referenzen/tokens.css) - der naechste Punkt darf erst auftauchen,
+      // wenn die Linie ihn WIRKLICH erreicht hat, nicht schon vorher nach einer
+      // kuerzeren, unabhaengigen Kadenz (Feedback: "dot/text arrive after the
+      // line reaches their position, not before").
+      TL_LINIE_MS = 1400;
 
   function timelineWaagerecht(tl) {
     // Mobile stapelt die Punkte untereinander (siehe Media-Query im Modul) -
@@ -1134,8 +1205,12 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
     return items[0].offsetTop === items[1].offsetTop;
   }
 
-  // Legt pro Luecke zwischen zwei Punkten ein Segment an und setzt es exakt
-  // von Dot-Mitte zu Dot-Mitte. Laeuft auch bei Resize erneut.
+  // Legt pro Luecke zwischen zwei Punkten ein Segmentpaar an und setzt es
+  // exakt von Dot-Mitte zu Dot-Mitte. Laeuft auch bei Resize erneut.
+  // Jede Luecke bekommt zwei uebereinanderliegende Striche: .timeline-seg-basis
+  // (heller Grundstrich, sofort auf voller Laenge - das "schon vorhandene,
+  // ungefuellte" Gleis) und darueber .timeline-seg (die rote/gestrichelte
+  // Fuellung, die timelineAbspielen() Stueck fuer Stueck ausfaehrt).
   function timelineSegmenteBauen(tl) {
     var ebene = tl.querySelector(".timeline-linien");
     if (!ebene) return [];
@@ -1147,22 +1222,36 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
       var r = (dot || it).getBoundingClientRect();
       return r.left + r.width / 2 - basis.left;
     });
+    var vorhandeneBasis = ebene.querySelectorAll(".timeline-seg-basis");
     var vorhandene = ebene.querySelectorAll(".timeline-seg");
-    if (vorhandene.length !== items.length - 1) {
+    if (vorhandene.length !== items.length - 1 || vorhandeneBasis.length !== items.length - 1) {
       ebene.innerHTML = "";
       for (var k = 0; k < items.length - 1; k++) {
+        ebene.appendChild(document.createElement("span")).className = "timeline-seg-basis";
         ebene.appendChild(document.createElement("span")).className = "timeline-seg";
       }
     }
+    var segmenteBasis = Array.prototype.slice.call(ebene.querySelectorAll(".timeline-seg-basis"));
     var segmente = Array.prototype.slice.call(ebene.querySelectorAll(".timeline-seg"));
     segmente.forEach(function (seg, i) {
-      seg.style.left = mitten[i] + "px";
+      var segBasis = segmenteBasis[i];
+      var breite = Math.max(0, mitten[i + 1] - mitten[i]);
       // Ein Segment gilt als Ausblick, sobald der Punkt an seinem RECHTEN Ende
       // noch bevorsteht - dann gestrichelt/grau statt durchgezogen rot.
-      seg.classList.toggle("ist-ausblick", items[i + 1].classList.contains("ist-ausblick"));
-      seg.dataset.ziel = Math.max(0, mitten[i + 1] - mitten[i]);
+      var istAusblick = items[i + 1].classList.contains("ist-ausblick");
+      seg.style.left = mitten[i] + "px";
+      seg.classList.toggle("ist-ausblick", istAusblick);
+      seg.dataset.ziel = breite;
       // Bereits ausgefahrene Segmente muessen beim Resize mitwandern.
-      if (seg.dataset.offen === "1") seg.style.width = seg.dataset.ziel + "px";
+      if (seg.dataset.offen === "1") seg.style.width = breite + "px";
+      // Der Grundstrich ist nie animiert - er steht sofort auf voller Breite,
+      // bei jedem Resize neu, unabhaengig davon, wie weit die Fuellung ist.
+      // Er ist immer gepunktet (kein ist-ausblick-Unterschied mehr) - das ist
+      // die "noch ungefuellte" Ansicht, bevor irgendetwas gespielt hat.
+      if (segBasis) {
+        segBasis.style.left = mitten[i] + "px";
+        segBasis.style.width = breite + "px";
+      }
     });
     return segmente;
   }
@@ -1205,18 +1294,22 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
       return;
     }
 
+    // Erster Punkt hat keine einlaufende Linie - er darf sofort stehen. Jeder
+    // weitere Punkt (samt Beschriftung) erscheint erst NACHDEM die Linie zu
+    // ihm fertig ausgefahren ist, siehe TL_LINIE_MS oben.
     var t = 0;
-    items.forEach(function (_, i) {
-      setTimeout(function () { punktZeigen(i); }, t);
+    setTimeout(function () { punktZeigen(0); }, t);
+    t += TL_DOT + TL_TEXT;
+    segmente.forEach(function (seg, i) {
+      setTimeout(function () {
+        seg.style.width = seg.dataset.ziel + "px";
+        seg.dataset.offen = "1";
+      }, t);
+      t += TL_LINIE_MS;
+      (function (naechster) {
+        setTimeout(function () { punktZeigen(naechster); }, t);
+      })(i + 1);
       t += TL_DOT + TL_TEXT;
-      var seg = segmente[i];
-      if (seg) {
-        setTimeout(function () {
-          seg.style.width = seg.dataset.ziel + "px";
-          seg.dataset.offen = "1";
-        }, t);
-        t += TL_LINIE;
-      }
     });
   }
 

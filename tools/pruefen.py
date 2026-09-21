@@ -162,6 +162,71 @@ def pruefe_rhythmus(s, b, zuordnung):
                      f"Kapitel sollte den Farbmodus wechseln.", sek.zeile)
 
 
+# --------------------------------------------------------- Kapitel-Kohaerenz
+def pruefe_kapitel_farbe(s, b):
+    """Ein Modul ohne eigenes data-chapter setzt ein laufendes Kapitel fort
+    und muss dessen Farbmodus behalten (siehe tools/bauen.py, starter_bauen:
+    "ein Modul ohne eigenes data-chapter ... behaelt dessen Modus"). Nur der
+    Kapitelwechsel selbst darf hell/dunkel umschalten - mitten in einem
+    Kapitel bricht ein Farbwechsel die optische Einheit (Feedback 2026-09-21:
+    "inside one chapter, the background color should stay identical")."""
+    aktuelle_nr, aktuell_dunkel, start_zeile = None, None, None
+    for sek in s.sektionen():
+        nr = sek.attrs.get("data-chapter")
+        if nr:
+            aktuelle_nr, aktuell_dunkel, start_zeile = nr, sek.hat_klasse("dark"), sek.zeile
+            continue
+        if aktuelle_nr is None:
+            continue
+        if sek.hat_klasse("dark") != aktuell_dunkel:
+            modus_start = "dunkel" if aktuell_dunkel else "hell"
+            modus_hier = "dunkel" if sek.hat_klasse("dark") else "hell"
+            b.melden(FEHLER, "kapitelfarbe",
+                     f"Kapitel {aktuelle_nr!r} startet {modus_start} (Zeile "
+                     f"{start_zeile}), dieses Modul mitten im selben Kapitel "
+                     f"ist aber {modus_hier}. Innerhalb eines Kapitels bleibt "
+                     f"die Farbe identisch — sie wechselt nur am Anfang des "
+                     f"naechsten Kapitels.", sek.zeile)
+
+
+# ------------------------------------------------------- Roadmap Zoom-In
+def pruefe_roadmap_zoom(s, b, zuordnung):
+    """Figma 06 Zeitachse/02 roadmap-zoom-in: jeder Gantt-Balken traegt
+    data-verweis="N" und zeigt damit auf GENAU EINEN Meilenstein mit
+    demselben Wert (siehe Kommentar im Baustein-HTML). Ungleiche Anzahl oder
+    eine andere Reihenfolge reisst die Verbindung zwischen Balken und
+    Meilenstein auseinander (Feedback 2026-09-21: "the link between gantt
+    bars and milestones on the right is broken")."""
+    figma_name = "06 Zeitachse/02 roadmap-zoom-in"
+    zu = zuordnung.get(figma_name)
+    if not zu:
+        return
+    for container in vorkommen(s, figma_name, zu):
+        balken = list(container.alle(klasse="gantt-balken"))
+        meilensteine = list(container.alle(klasse="zoom-meilenstein"))
+        if not balken and not meilensteine:
+            continue
+        zeile = balken[0].zeile if balken else meilensteine[0].zeile
+
+        if len(balken) != len(meilensteine):
+            b.melden(FEHLER, "roadmap-zoom",
+                     f"{len(balken)} Gantt-Balken, aber {len(meilensteine)} "
+                     f"Meilensteine — Figma verlangt für jeden Balken genau "
+                     f"einen Meilenstein, sonst verweist einer ins Leere.",
+                     zeile)
+            continue
+
+        balken_verweise = [k.attrs.get("data-verweis") for k in balken]
+        meilenstein_verweise = [k.attrs.get("data-verweis") for k in meilensteine]
+        if balken_verweise != meilenstein_verweise:
+            b.melden(FEHLER, "roadmap-zoom",
+                     f"Balken-Reihenfolge {balken_verweise} passt nicht zur "
+                     f"Meilenstein-Reihenfolge {meilenstein_verweise}. Jeder "
+                     f"Balken braucht ein data-verweis, das exakt einem "
+                     f"Meilenstein mit demselben Wert entspricht, in "
+                     f"derselben Reihenfolge.", zeile)
+
+
 # ------------------------------------------------------------------ Tokens
 def pruefe_tokens(s, b):
     css = s.css_ohne_tokens()
@@ -604,6 +669,8 @@ def pruefe_datei(pfad, regeln, zuordnung, ist_vorlage, ist_galerie=False):
     if not ist_galerie:
         pruefe_doppelmarker(s, b)
         pruefe_rhythmus(s, b, zuordnung)
+        pruefe_kapitel_farbe(s, b)
+    pruefe_roadmap_zoom(s, b, zuordnung)
     pruefe_tokens(s, b)
     pruefe_bilder(s, b)
     pruefe_bewegung(s, b)

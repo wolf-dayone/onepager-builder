@@ -147,12 +147,37 @@
       el.classList.add("in");
     });
   }
-  /* Auch der Hero laeuft ueber denselben Beobachter statt sofort beim Laden:
-     auf einem echten Onepager steht er ohnehin im Viewport und startet damit
-     praktisch gleichzeitig - in der Galerie (und bei jedem Direktsprung per
-     Anker) sieht man ihn dagegen genau dann, wenn man ihn erreicht. Vorher
-     spielte er blind beim Laden, unabhaengig davon, wo man gerade steht
-     (Feedback 2026-09-17: "nur beim Reinscrollen, nicht initial fuer alle"). */
+  /* Zeigt eine Sektion sofort im Endzustand, ohne die Einflug-Transition
+     abzuspielen: fuer den Fall, dass sie schon beim Anhaengen des Beobachters
+     im Trigger-Band steht (Seitenaufruf, Direktsprung per Anker/Nav-Klick).
+     Sie wurde ja nicht "hereingescrollt", also soll sie auch nicht so aussehen
+     (Feedback 2026-09-21: "get triggered once the section scrolls into view,
+     not before"). .ohne-einflug schaltet die CSS-Transition fuer einen Frame
+     stumm (siehe _basis.css) und wird danach wieder entfernt, damit spaetere
+     Zustandswechsel (z. B. Tab-Wechsel im Stepper) normal transitionieren. */
+  function stageRevealSofort(container) {
+    var items = container.classList && container.classList.contains("reveal")
+      ? [container] : container.querySelectorAll(".reveal");
+    items.forEach(function (el) {
+      el.classList.add("ohne-einflug");
+      el.classList.add("in");
+    });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        items.forEach(function (el) { el.classList.remove("ohne-einflug"); });
+      });
+    });
+  }
+  /* Der Hero ist die eine Ausnahme von "nicht vor dem Scrollen animieren":
+     er steht beim Seitenaufruf naturgemaess schon im Viewport, und genau das
+     Einlaufen beim Laden IST sein Moment - eine Landung auf der Seite zaehlt
+     als "ihn erreicht", kein Scroll noetig (Feedback 2026-09-21: "the hero
+     should still animate on first load"). Alle anderen Sektionen bleiben bei
+     der Regel "erst nach echtem Scrollen": sie sollen nicht schon animiert
+     wirken, bevor man sie ueberhaupt erreicht hat. In der Galerie und bei
+     einem Direktsprung per Anker/Nav auf den Hero (er steht dort nicht an
+     Position 0) greift dieselbe Ausnahme - er animiert immer, sobald er den
+     Trigger-Bereich erreicht, ob per Erstladung oder per Sprung. */
   var heroEl = document.getElementById("hero");
   var revealSections = Array.prototype.slice.call(
       document.querySelectorAll("section, header.hero, footer"))
@@ -162,10 +187,25 @@
   } else {
     /* Feuert, sobald die Sektion die vertikale Mitte des Viewports erreicht — nicht
        schon, wenn ihre Unterkante am unteren Bildschirmrand auftaucht. rootMargin
-       schrumpft den Beobachtungsbereich auf einen schmalen Streifen um die Mitte. */
+       schrumpft den Beobachtungsbereich auf einen schmalen Streifen um die Mitte.
+       ACHTUNG: IntersectionObserver meldet beim ersten observe() sofort den
+       Ist-Zustand - eine Sektion, die schon beim Seitenaufruf (oder direkt nach
+       einem Anker-/Nav-Sprung) im Trigger-Band steht, feuert dadurch OHNE jede
+       Scroll-Bewegung (Feedback 2026-09-21: "get triggered once the section
+       scrolls into view, not before"). hatGescrollt unterscheidet deshalb: kein
+       Scroll bislang -> animationsloser Endzustand (stageRevealSofort); nach dem
+       ersten 'scroll'-Event (auch ein Anker-/Nav-Sprung loest eins aus) -> normale,
+       gestaffelte Einflug-Animation (stageReveal). Der Hero ist von dieser
+       Unterscheidung ausgenommen (siehe Kommentar oben) und animiert immer. */
+    var hatGescrollt = false;
+    window.addEventListener("scroll", function () { hatGescrollt = true; },
+      { once: true, passive: true });
     var revObs = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        if (e.isIntersecting) { stageReveal(e.target); revObs.unobserve(e.target); }
+        if (!e.isIntersecting) return;
+        if (e.target === heroEl || hatGescrollt) { stageReveal(e.target); }
+        else { stageRevealSofort(e.target); }
+        revObs.unobserve(e.target);
       });
     }, { rootMargin: "-48% 0px -48% 0px", threshold: 0 });
     revealSections.forEach(function (s) { revObs.observe(s); });
@@ -300,9 +340,14 @@
      Die Segmentgeometrie kommt aus den echten Dot-Positionen statt aus einer
      Prozentformel: sie stimmt damit bei jeder Anzahl Meilensteine, bei
      unterschiedlich breiten Beschriftungen und nach jedem Resize. */
-  var TL_DOT = 300,     // Punkt setzt sich
-      TL_TEXT = 150,    // danach Beschriftung
-      TL_LINIE = 430;   // danach Linie zum naechsten Punkt
+  var TL_DOT = 300,      // Punkt setzt sich
+      TL_TEXT = 150,     // danach Beschriftung
+      // Muss der CSS-Breiten-Transition der Segmente entsprechen (var(--dur-lang),
+      // siehe referenzen/tokens.css) - der naechste Punkt darf erst auftauchen,
+      // wenn die Linie ihn WIRKLICH erreicht hat, nicht schon vorher nach einer
+      // kuerzeren, unabhaengigen Kadenz (Feedback: "dot/text arrive after the
+      // line reaches their position, not before").
+      TL_LINIE_MS = 1400;
 
   function timelineWaagerecht(tl) {
     // Mobile stapelt die Punkte untereinander (siehe Media-Query im Modul) -
@@ -312,8 +357,12 @@
     return items[0].offsetTop === items[1].offsetTop;
   }
 
-  // Legt pro Luecke zwischen zwei Punkten ein Segment an und setzt es exakt
-  // von Dot-Mitte zu Dot-Mitte. Laeuft auch bei Resize erneut.
+  // Legt pro Luecke zwischen zwei Punkten ein Segmentpaar an und setzt es
+  // exakt von Dot-Mitte zu Dot-Mitte. Laeuft auch bei Resize erneut.
+  // Jede Luecke bekommt zwei uebereinanderliegende Striche: .timeline-seg-basis
+  // (heller Grundstrich, sofort auf voller Laenge - das "schon vorhandene,
+  // ungefuellte" Gleis) und darueber .timeline-seg (die rote/gestrichelte
+  // Fuellung, die timelineAbspielen() Stueck fuer Stueck ausfaehrt).
   function timelineSegmenteBauen(tl) {
     var ebene = tl.querySelector(".timeline-linien");
     if (!ebene) return [];
@@ -325,22 +374,36 @@
       var r = (dot || it).getBoundingClientRect();
       return r.left + r.width / 2 - basis.left;
     });
+    var vorhandeneBasis = ebene.querySelectorAll(".timeline-seg-basis");
     var vorhandene = ebene.querySelectorAll(".timeline-seg");
-    if (vorhandene.length !== items.length - 1) {
+    if (vorhandene.length !== items.length - 1 || vorhandeneBasis.length !== items.length - 1) {
       ebene.innerHTML = "";
       for (var k = 0; k < items.length - 1; k++) {
+        ebene.appendChild(document.createElement("span")).className = "timeline-seg-basis";
         ebene.appendChild(document.createElement("span")).className = "timeline-seg";
       }
     }
+    var segmenteBasis = Array.prototype.slice.call(ebene.querySelectorAll(".timeline-seg-basis"));
     var segmente = Array.prototype.slice.call(ebene.querySelectorAll(".timeline-seg"));
     segmente.forEach(function (seg, i) {
-      seg.style.left = mitten[i] + "px";
+      var segBasis = segmenteBasis[i];
+      var breite = Math.max(0, mitten[i + 1] - mitten[i]);
       // Ein Segment gilt als Ausblick, sobald der Punkt an seinem RECHTEN Ende
       // noch bevorsteht - dann gestrichelt/grau statt durchgezogen rot.
-      seg.classList.toggle("ist-ausblick", items[i + 1].classList.contains("ist-ausblick"));
-      seg.dataset.ziel = Math.max(0, mitten[i + 1] - mitten[i]);
+      var istAusblick = items[i + 1].classList.contains("ist-ausblick");
+      seg.style.left = mitten[i] + "px";
+      seg.classList.toggle("ist-ausblick", istAusblick);
+      seg.dataset.ziel = breite;
       // Bereits ausgefahrene Segmente muessen beim Resize mitwandern.
-      if (seg.dataset.offen === "1") seg.style.width = seg.dataset.ziel + "px";
+      if (seg.dataset.offen === "1") seg.style.width = breite + "px";
+      // Der Grundstrich ist nie animiert - er steht sofort auf voller Breite,
+      // bei jedem Resize neu, unabhaengig davon, wie weit die Fuellung ist.
+      // Er ist immer gepunktet (kein ist-ausblick-Unterschied mehr) - das ist
+      // die "noch ungefuellte" Ansicht, bevor irgendetwas gespielt hat.
+      if (segBasis) {
+        segBasis.style.left = mitten[i] + "px";
+        segBasis.style.width = breite + "px";
+      }
     });
     return segmente;
   }
@@ -383,18 +446,22 @@
       return;
     }
 
+    // Erster Punkt hat keine einlaufende Linie - er darf sofort stehen. Jeder
+    // weitere Punkt (samt Beschriftung) erscheint erst NACHDEM die Linie zu
+    // ihm fertig ausgefahren ist, siehe TL_LINIE_MS oben.
     var t = 0;
-    items.forEach(function (_, i) {
-      setTimeout(function () { punktZeigen(i); }, t);
+    setTimeout(function () { punktZeigen(0); }, t);
+    t += TL_DOT + TL_TEXT;
+    segmente.forEach(function (seg, i) {
+      setTimeout(function () {
+        seg.style.width = seg.dataset.ziel + "px";
+        seg.dataset.offen = "1";
+      }, t);
+      t += TL_LINIE_MS;
+      (function (naechster) {
+        setTimeout(function () { punktZeigen(naechster); }, t);
+      })(i + 1);
       t += TL_DOT + TL_TEXT;
-      var seg = segmente[i];
-      if (seg) {
-        setTimeout(function () {
-          seg.style.width = seg.dataset.ziel + "px";
-          seg.dataset.offen = "1";
-        }, t);
-        t += TL_LINIE;
-      }
     });
   }
 

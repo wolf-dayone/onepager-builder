@@ -7,7 +7,7 @@
    Dot-Positionen - dadurch stimmt sie bei 3 wie bei 6 Meilensteinen und nach
    jedem Resize, ohne dass hier eine Anzahl hart verdrahtet ist. */
 .timeline{position:relative;display:flex;align-items:stretch;
-  --tl-datum-hoehe:28px; --tl-dot:14px}
+  --tl-datum-hoehe:36px; --tl-dot:14px}
 .timeline-item{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;
   text-align:center;padding-inline:var(--space-2)}
 
@@ -16,13 +16,19 @@
   font-size:var(--text-body-s);font-weight:600;color:var(--color-text);white-space:nowrap}
 /* Zeile 2: der Punkt. */
 .timeline-dot{width:var(--tl-dot);height:var(--tl-dot);border-radius:50%;
-  background:var(--color-action);position:relative;z-index:1;flex:none;
-  transform:scale(0);
-  /* leichtes Ueberschwingen: der Punkt "setzt sich", statt nur aufzutauchen */
-  transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
-.timeline-dot.ist-da{transform:scale(1)}
-/* Ausblick: noch nicht erreichte Meilensteine sind gedeckelt grau, nicht rot. */
-.timeline-item.ist-ausblick .timeline-dot{background:var(--color-muted)}
+  background:var(--color-bg);border:2px solid var(--color-border);box-sizing:border-box;
+  position:relative;z-index:1;flex:none;
+  transition:background-color .45s var(--ease-ui),border-color .45s var(--ease-ui)}
+/* Aktivierung: der Punkt war schon immer da (heller Ring) - er "fuellt sich"
+   jetzt rot, statt aus dem Nichts aufzutauchen. Das leichte Ueberschwingen
+   (setzt sich) laeuft als einmaliges Keyframe beim Hinzufuegen der Klasse,
+   nicht mehr als scale(0)->scale(1)-Transition. */
+.timeline-dot.ist-da{background:var(--color-action);border-color:var(--color-action);
+  animation:tl-dot-pop .5s var(--ease-reveal)}
+@keyframes tl-dot-pop{0%{transform:scale(1)}45%{transform:scale(1.35)}100%{transform:scale(1)}}
+/* Ausblick: noch nicht erreichte Meilensteine bleiben als heller Ring stehen,
+   bis sie dran sind - erreicht fuellen sie sich gedeckelt grau, nicht rot. */
+.timeline-item.ist-ausblick .timeline-dot.ist-da{background:var(--color-muted);border-color:var(--color-muted)}
 .timeline-item.ist-ausblick .timeline-titel{color:var(--color-text)}
 
 /* Dauerpuls am aktuellen Punkt: zwei versetzte Ringe, die nach aussen laufen
@@ -36,12 +42,12 @@
 .timeline-dot.ist-aktuell.ist-da::after{animation-delay:1.3s}
 @keyframes tl-puls{
   0%  {transform:scale(1);   opacity:.9}
-  70% {transform:scale(3.2); opacity:0}
-  100%{transform:scale(3.2); opacity:0}
+  70% {transform:scale(2.6); opacity:0}
+  100%{transform:scale(2.6); opacity:0}
 }
 
 /* Zeile 3: Meilenstein + optionales Badge. */
-.timeline-titel{margin-top:14px;font-size:var(--text-body-ms);font-weight:600;
+.timeline-titel{margin-top:26px;font-size:var(--text-body-ms);font-weight:600;
   line-height:1.3;color:var(--color-main-text)}
 .timeline-badge{margin-top:10px;align-self:center;background:var(--color-action);
   color:var(--gray-50);border-radius:var(--radius-pill);padding:4px 12px;
@@ -61,6 +67,13 @@
    Ausblicks beim Wachsen ihre Laenge behalten. */
 .timeline-linien{position:absolute;left:0;right:0;
   top:calc(var(--tl-datum-hoehe) + var(--tl-dot) / 2);height:1px;pointer-events:none}
+/* Heller Grundstrich: liegt UNTER dem Fuellsegment, volle Laenge sofort
+   (kein Reveal noetig) - das ist das "schon vorhandene, ungefuellte" Gleis.
+   Fuer Ausblick-Luecken schon gestrichelt, weil das statisch aus dem Markup
+   feststeht, nicht erst aus der Abspielreihenfolge. */
+.timeline-seg-basis{position:absolute;top:0;height:1px;width:0;background:none;
+  color:var(--color-border);
+  background-image:repeating-linear-gradient(90deg,currentColor 0 6px,transparent 6px 12px)}
 .timeline-seg{position:absolute;top:0;height:1px;width:0;
   background:var(--color-action);
   transition:width var(--dur-lang) var(--ease-linie)}
@@ -69,7 +82,8 @@
   background-image:repeating-linear-gradient(90deg,currentColor 0 6px,transparent 6px 12px)}
 
 @media(prefers-reduced-motion:reduce){
-  .timeline-dot{transform:scale(1);transition:none}
+  .timeline-dot{transition:none}
+  .timeline-dot.ist-da{animation:none}
   .timeline-dot.ist-aktuell.ist-da::before,.timeline-dot.ist-aktuell.ist-da::after{animation:none}
   .timeline-datum,.timeline-titel,.timeline-badge{opacity:1;transform:none;transition:none}
   .timeline-seg{transition:none}

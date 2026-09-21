@@ -1,6 +1,6 @@
 # DAYONE Onepager — Modulsystem und Qualitätssicherung
 
-Quelle für den Skill `dayone-onepager`. Hier liegen die 34 Module aus der Figma-Datei
+Quelle für den Skill `dayonepager`. Hier liegen die 34 Module aus der Figma-Datei
 [DAYONE | AI-ready slides](https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides),
 die Werkzeuge, die daraus Vorlagen bauen, und der Prüfer, der fertige Seiten gegen die
 Figma-Regeln hält.
@@ -25,7 +25,7 @@ Jetzt gibt es **eine Quelle je Sache**:
 | Regeln je Modul | Figma-Component-Description | `referenzen/module-katalog.md`, `data/regeln.json` |
 | Aussehen und Markup | `bausteine/<modul>.html` | `starter.html`, `modul-galerie.html` |
 | Farben, Größen, Abstände | `referenzen/tokens.css` | Token-Block in jeder gebauten Datei |
-| Das Skill-Paket | dieses Repo | `dist/dayone-onepager/` |
+| Das Skill-Paket | dieses Repo | `dist/dayonepager/` |
 
 Was generiert wird, trägt einen Hinweis im Kopf. Wer dort von Hand ändert, verliert es
 beim nächsten Build.
@@ -119,7 +119,7 @@ Schritte — einer davon läuft automatisch, einer nicht:
 | Schritt | Wer macht ihn |
 |---|---|
 | Bausteine → `starter.html`, `modul-galerie.html`, Katalog, Regeln | pre-commit-Hook |
-| → `dist/dayone-onepager.skill` | pre-commit-Hook |
+| → `dist/dayonepager.skill` | pre-commit-Hook |
 | → installierter Skill in der Claude-Skill-Verwaltung | **von Hand, ein Upload** |
 
 Den letzten Schritt kann kein Hook übernehmen: die Skill-Verwaltung nimmt die
@@ -131,7 +131,7 @@ python3 tools/skill_bauen.py --pruefen
 ```
 
 vergleicht das gebaute Paket Datei für Datei mit dem installierten Skill. Bei
-`UPLOAD NOETIG` liegt der neue Stand als `dist/dayone-onepager.skill` bereit.
+`UPLOAD NOETIG` liegt der neue Stand als `dist/dayonepager.skill` bereit.
 
 **Hook einmalig aktivieren** (pro Klon, weil `.git/hooks` nicht mitversioniert wird):
 

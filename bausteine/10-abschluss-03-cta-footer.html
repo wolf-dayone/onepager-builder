@@ -4,7 +4,14 @@
 .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
   font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;font-family:inherit}
 .btn-primary{background:var(--color-main-text);color:var(--color-inverse-text)}
-.btn-primary:hover{background:var(--color-inverse-hover)}
+/* _basis.css setzt global ".btn:hover{color:inherit}" (verhindert, dass Buttons
+   beim Hover in die rote Link-Aktionsfarbe rutschen) - bei einem GEFUELLTEN
+   Button wie diesem kippt das aber den weissen Text zurueck auf die dunkle
+   Fliesstextfarbe, kaum noch lesbar vor dem ebenfalls dunklen Hover-Fill
+   (Feedback: "hover state is wrong"). Hier deshalb explizit zurueck auf
+   text/inverse, exakt wie im Default-Zustand - Figma aendert im Hover nur
+   die Flaeche (button/primary-hover), Text/Icon bleiben inverse/weiss. */
+.btn-primary:hover{background:var(--color-inverse-hover);color:var(--color-inverse-text)}
 .btn-secondary{border:1px solid var(--color-main-text);color:var(--color-main-text)}
 .btn-secondary:hover{background:var(--color-hover-tint)}
 .cta .footer-row{display:flex;gap:var(--space-4);align-items:center;margin-top:var(--space-20);

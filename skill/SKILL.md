@@ -1,5 +1,5 @@
 ---
-name: dayone-onepager
+name: dayonepager
 description: Baut aus Inhalten eine fertige, teilbare Scrollytelling-Onepager-Website im DAYONE-Branding — auf Basis der 34 Module aus der Figma-Datei "DAYONE | AI-ready slides". Diesen Skill immer verwenden, wenn jemand einen Onepager, eine Präsentationsseite, eine Weekly-Präsentation, eine Pitch-Page, eine Case-Study-Seite oder eine Scrollytelling-Seite erstellen will — auch dann, wenn nur von "Präsentation", "Slides", "Deck", "Landingpage für das Projekt", "Seite für das Weekly" oder "das als Website bauen" die Rede ist und die Begriffe Onepager oder Scrollytelling gar nicht fallen. Ebenfalls verwenden, wenn ein bestehender DAYONE-Onepager erweitert, umgebaut oder mit neuen Modulen gefüllt werden soll.
 ---
 
@@ -275,6 +275,46 @@ Braucht die Seite eine eigene URL, `references/ausliefern.md` lesen — dort ste
 Vercel-Weg, der Umgang mit Bildern, die Schrift-Lizenzfrage und der Zugriffsschutz für
 Kundeninhalte.
 
+### 10. Nach der Freigabe: nächste Schritte proaktiv anbieten
+
+Sobald der Mensch den ersten Entwurf freigibt ("passt so", "sieht gut aus", o. ä.), nicht
+abwarten, ob von selbst noch etwas kommt. Aktiv den nächsten Schritt anbieten und kurz
+zusammenfassen, was jetzt möglich ist — zum Beispiel so:
+
+> „Die Seite ist freigegeben. Aktuell hast du sie als Datei — die kannst du direkt per
+> Doppelklick öffnen und verschicken. Wenn du sie stattdessen unter einer eigenen URL
+> teilen willst (für einen Kundenpitch, zum Verlinken, oder einfach damit niemand eine
+> Datei herunterladen muss), kann ich dich jetzt durch die Einrichtung von Git und Vercel
+> führen — dauert in der Regel unter 15 Minuten, du brauchst dafür nur einen GitHub- und
+> einen Vercel-Account. Sag Bescheid, wenn du das möchtest."
+
+Diese Frage **immer stellen**, nicht nur wenn danach gefragt wird. Die meisten Menschen,
+die diesen Skill benutzen, kennen den Unterschied zwischen Datei und eigener URL nicht
+und wissen entsprechend nicht, dass Letzteres mit wenig Aufwand möglich ist — genau
+deshalb ist das Anbieten Teil der Aufgabe, nicht der Person überlassen.
+
+Will die Person eine URL: `references/ausliefern.md`, Abschnitt „Weg B — Vercel", **Schritt
+für Schritt gemeinsam durchgehen** — nicht nur darauf verweisen und warten. Konkret heißt
+das:
+
+- vor jedem Schritt in einem Satz erklären, was er bewirkt und warum er nötig ist (die
+  Person hat meist keinen Code-Hintergrund und soll nicht raten müssen, wofür `git init`
+  gut ist),
+- ist eine Shell mit Zugriff auf `git`/`gh` vorhanden, die Befehle **selbst ausführen**
+  statt sie nur aufzulisten — die Person tippt nichts ab, sondern bestätigt nur Zugänge
+  (GitHub-Login, Vercel-Login) und Entscheidungen (Repo-Name, privat oder öffentlich),
+- nach jedem Schritt kurz bestätigen, dass er geklappt hat, bevor der nächste folgt —
+  nicht alle Schritte auf einmal abarbeiten und erst am Ende berichten; falls etwas
+  nicht griffbereit ist, das an dieser Stelle klar benennen (fehlender GitHub-Zugang,
+  fehlender Vercel-Zugang) und dort anhalten statt zu improvisieren,
+- am Ende die fertige URL nennen und, falls es sich um Kundeninhalte handelt, aktiv an
+  den Zugriffsschutz erinnern (siehe Checkliste in `ausliefern.md`) — nicht erst wenn
+  danach gefragt wird.
+
+Will die Person (noch) keine URL: bei der Datei bleiben, aber kurz erwähnen, dass sich
+das jederzeit nachholen lässt — die Seite dafür nicht extra vorbereiten müssen, der
+Git-Schritt funktioniert auch später noch mit der fertigen Datei.
+
 ---
 
 ## Worauf zu achten ist
@@ -309,7 +349,7 @@ Viewports mitschreiben. Der Qualitäts-Check meldet mehrspaltige Raster ohne sol
 | `references/module-katalog.md` | Immer vor der Modulauswahl — alle 34 Bausteine mit Zweck, Füllregeln, Abgrenzung und erprobten Abfolgen. Generiert aus Figma. |
 | `references/scroll-patterns.md` | Wenn Scroll-Effekte über das Template hinaus gebraucht werden |
 | `references/animationen.md` | Wenn etwas animiert wird: Tokens, Reveal-Rollen, Choreografien |
-| `references/ausliefern.md` | Wenn die Seite eine eigene URL braucht oder Bilder/Schrift/Zugriffsschutz zu klären sind |
+| `references/ausliefern.md` | Nach jeder Freigabe eines ersten Entwurfs proaktiv anbieten (Schritt 10) — Vercel-Weg mit Git-Schritt-für-Schritt-Anleitung, Umgang mit Bildern/Schrift/Zugriffsschutz |
 | `assets/starter.html` | Immer — Grundlage jeder neuen Seite (Weekly-Abfolge) |
 | `assets/modul-galerie.html` | Sobald ein Modul gebraucht wird, das nicht im Starter steht — alle 34 zum Herauskopieren |
 | `assets/tokens.css` | Wenn ein Modul von Grund auf neu gebaut wird |

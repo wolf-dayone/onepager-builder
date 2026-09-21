@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Packt das Skill-Paket aus dem Repo.
 
-    python3 tools/skill_bauen.py            # baut dist/dayone-onepager/
+    python3 tools/skill_bauen.py            # baut dist/dayonepager/
     python3 tools/skill_bauen.py --pruefen  # meldet nur, ob etwas auseinanderlaeuft
 
 Bisher lief es andersherum: der Skill war die Quelle, das Repo die Spielwiese -
@@ -21,7 +21,7 @@ import zipfile
 import sys
 
 WURZEL = pathlib.Path(__file__).resolve().parent.parent
-ZIEL = WURZEL / "dist" / "dayone-onepager"
+ZIEL = WURZEL / "dist" / "dayonepager"
 
 # Woher im Repo -> wohin im Skill-Paket.
 INHALT = {
@@ -51,10 +51,10 @@ INHALT = {
 # stillschweigend aus ("nichts zu vergleichen") und Drift sammelt sich wieder
 # an, genau wie vor der Umstellung auf das Repo als Quelle (2026-09-21).
 SUCHMUSTER = [
-    ".claude/skills/synced/*/dayone-onepager",
-    ".claude/skills/*/dayone-onepager",
+    ".claude/skills/synced/*/dayonepager",
+    ".claude/skills/*/dayonepager",
     "Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/"
-    "*/*/skills/dayone-onepager",
+    "*/*/skills/dayonepager",
 ]
 
 
@@ -104,13 +104,13 @@ def bauen():
 
     # Die Skill-Verwaltung nimmt eine .skill-Datei: ein ZIP mit dem
     # Skill-Ordner auf oberster Ebene (Format aus der bestehenden
-    # dayone-onepager.skill uebernommen).
-    paket = ZIEL.parent / "dayone-onepager.skill"
+    # dayonepager.skill uebernommen).
+    paket = ZIEL.parent / "dayonepager.skill"
     if paket.exists():
         paket.unlink()
     with zipfile.ZipFile(paket, "w", zipfile.ZIP_DEFLATED) as z:
         for ziel in INHALT.values():
-            z.write(ZIEL / ziel, f"dayone-onepager/{ziel}")
+            z.write(ZIEL / ziel, f"dayonepager/{ziel}")
     print(f"\nZum Hochladen: {paket.relative_to(WURZEL)}  "
           f"({paket.stat().st_size:,} B)")
 
@@ -129,7 +129,7 @@ def drift_pruefen():
               "werden.")
         return 0
     installiert = INSTALLIERT[-1]
-    print(f"Vergleich mit: …/{installiert.parent.parent.name}/skills/dayone-onepager\n")
+    print(f"Vergleich mit: …/{installiert.parent.parent.name}/skills/dayonepager\n")
 
     abweichungen = 0
     for _, ziel in INHALT.items():
@@ -148,7 +148,7 @@ def drift_pruefen():
     print()
     if abweichungen:
         print(f"UPLOAD NOETIG — {abweichungen} Datei(en) weichen ab.")
-        print(f"Das Paket unter dist/dayone-onepager.skill ist der neue Stand:")
+        print(f"Das Paket unter dist/dayonepager.skill ist der neue Stand:")
         print("in der Skill-Verwaltung hochladen, damit Kolleg:innen ihn bekommen.")
         print("Bis dahin arbeiten alle weiter mit der alten Fassung - auch dieses "
               "Repo aendert daran nichts.")

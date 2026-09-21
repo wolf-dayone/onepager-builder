@@ -139,6 +139,12 @@ a:focus-visible{outline:2px solid var(--color-action);outline-offset:3px;border-
 /* Fuer Inhalte, die ohne Ortswechsel erscheinen sollen (Achsenlabel, Quadranten,
    Prozesskarten): gleiche Mechanik, nur Opacity. */
 .reveal.ist-nur-opacity{transform:none}
+/* Siehe _basis.js, Abschnitt 5: unterdrueckt die Einflug-Transition fuer den
+   einen Frame, in dem eine Sektion ihren Endzustand ohne Animation bekommt
+   (weil sie schon vor jedem Scrollen im Trigger-Band stand). Wird direkt
+   danach wieder entfernt, damit spaetere Zustandswechsel (z. B. Tab-Wechsel
+   im Stepper) normal transitionieren. */
+.reveal.ohne-einflug{transition:none!important}
 
 /* Wiederverwendbare Linie, die mit ihrem Element einlaeuft (Textraster-Spalten,
    Kennzahlen). Element traegt .linie-oben + .reveal, sonst nichts. */

@@ -54,13 +54,73 @@ mein-onepager/
 └── assets/         (Bilder, ggf. Roobert-Webfonts)
 ```
 
-Deployment über den Vercel-Connector (Tool `deploy_to_vercel`) oder per Git-Repo.
-Beides braucht einen Vercel-Zugang — wer keinen hat, bleibt bei Weg A und lässt jemanden
-mit Zugang deployen.
+Am schnellsten geht es über den Vercel-Connector (Tool `deploy_to_vercel`) — damit
+entfällt der Git-Schritt komplett, und es reicht ein Vercel-Zugang. Wer die Seite aber
+später selbst weiterpflegen will oder ohnehin ein GitHub-Konto hat, nimmt besser den
+Weg über ein Git-Repo — jede Änderung landet dann mit einem `git push` automatisch live.
+Beide Wege brauchen einen Vercel-Zugang; wer keinen hat, bleibt bei Weg A und lässt
+jemanden mit Zugang deployen.
 
-**Zugriffsschutz:** Kundeninhalte gehören nicht offen ins Netz. In den Vercel-Projekt-
-einstellungen Password Protection oder Vercel Authentication aktivieren
-(`cupra-pitch` ist so geschützt). Vor dem Teilen prüfen — nicht danach.
+### Schritt für Schritt: Git-Repo → GitHub → Vercel
+
+Diese Schritte gemeinsam mit dem Menschen durchgehen, nicht nur auflisten — vor jedem
+kurz erklären, was er bewirkt, und nach jedem kurz bestätigen, dass er geklappt hat.
+Ist eine Shell mit `git`/`gh` vorhanden, die Befehle selbst ausführen; der Mensch
+bestätigt nur Zugänge (GitHub-Login, Vercel-Login) und Entscheidungen (Repo-Name,
+privat oder öffentlich).
+
+1. **Projektordner vorbereiten.** Die fertige `index.html` (und ein `assets/`-Ordner
+   für Bilder, falls vorhanden) liegen zusammen in einem eigenen Ordner — siehe
+   Struktur oben. Noch offene `[Platzhalter]` vorher ersetzen, sonst landen sie live.
+
+2. **Lokales Git-Repo anlegen.**
+   ```
+   cd mein-onepager
+   git init
+   git add .
+   git commit -m "Erster Entwurf Onepager"
+   ```
+   `git init` macht aus dem Ordner ein Repo, das Änderungen nachvollziehen kann;
+   `git add` merkt die Dateien vor, `git commit` speichert diesen Stand als ersten
+   Schnappschuss. Ohne GitHub-Konto geht es hier erstmal nicht weiter — dann Schritt 3
+   überspringen und direkt mit dem Vercel-Connector (oben) arbeiten.
+
+3. **Bei GitHub veröffentlichen.** Mit der GitHub-CLI (`gh`), falls vorhanden:
+   ```
+   gh repo create mein-onepager --private --source=. --remote=origin --push
+   ```
+   Das legt das Repo auf GitHub an (privat, sofern nicht anders gewünscht — bei
+   Kundeninhalten immer privat), verknüpft es mit dem lokalen Ordner und lädt den
+   ersten Stand hoch. Ohne `gh`: Repo auf github.com anlegen, dann
+   ```
+   git remote add origin <die-von-github-angezeigte-URL>
+   git push -u origin main
+   ```
+   Fehlt der GitHub-Zugang komplett, hier anhalten und das dem Menschen sagen —
+   nicht improvisieren.
+
+4. **Mit Vercel verbinden.** Auf vercel.com „Add New… → Project" wählen, das gerade
+   erstellte GitHub-Repo importieren und mit den Standardeinstellungen deployen (es ist
+   statisches HTML, es gibt nichts zu konfigurieren). Nach ein bis zwei Minuten steht
+   die live-URL fest. Alternativ per CLI: `vercel` im Projektordner ausführen und den
+   Dialogen folgen (fragt beim ersten Mal nach Login und Team).
+
+5. **Zugriffsschutz einrichten, falls Kundeninhalte betroffen sind.** In den
+   Vercel-Projekteinstellungen Password Protection oder Vercel Authentication
+   aktivieren (`cupra-pitch` ist so geschützt) — **vor** dem Teilen der URL, nicht
+   danach.
+
+6. **Fertige URL nennen.** Die von Vercel vergebene URL (oder eine später eingerichtete
+   eigene Domain) an den Menschen weitergeben, zusammen mit einer aktiven Erinnerung
+   an den Zugriffsschutz bei Kundeninhalten.
+
+**Später etwas ändern?** Datei lokal bearbeiten, dann:
+```
+git add .
+git commit -m "Beschreibung der Änderung"
+git push
+```
+Vercel deployt bei jedem Push automatisch neu — die URL bleibt gleich.
 
 Wenn ein React/Next.js-Projekt gewünscht ist, gilt zusätzlich das DAYONE UI Kit
 (`ui.dayone.de`): `npx shadcn@latest init --base radix --preset nova`, dann
@@ -101,5 +161,5 @@ python3 tools/skill_bauen.py --pruefen
 ```
 
 Meldet er `UPLOAD NOETIG`, liegt der neue Stand als
-`dist/dayone-onepager.skill` bereit und gehört in die Skill-Verwaltung. Bis
+`dist/dayonepager.skill` bereit und gehört in die Skill-Verwaltung. Bis
 dahin bauen alle Kolleg:innen weiter mit der alten Fassung.

@@ -8,27 +8,41 @@
    Ersatzinhalt eines kaputten <img> selbst. Dadurch sah dieses Modul anders
    aus als jeder andere Bild-Platzhalter im System (Figma-Abgleich,
    2026-09-17). */
-/* max-height statt reinem aspect-ratio: bei sehr breiten/kurzen Screens durfte
-   das Bild vorher so hoch werden, dass man erst scrollen musste, um ueberhaupt
-   die Caption darunter zu sehen (Video-Feedback 2026-09-17: "das Bild ist zu
-   hoch ... maximal Viewport-Hoehe, danach darf es ruhig etwas beschnitten
-   werden"). aspect-ratio bleibt als Ziel-Verhaeltnis, max-height deckelt es. */
-.fullbleed{width:100%;aspect-ratio:16/9;max-height:85svh;background:var(--color-detail);
+/* Die Sektion selbst darf keine ganze Viewport-Hoehe mehr UEBERSCHREITEN
+   (Feedback: "should not exceed the viewport height") - vorher deckelte nur
+   das Bild seine eigene Hoehe (max-height:85svh), Kopfzeile/Caption kamen
+   aber oben drauf, wodurch die Sektion insgesamt trotzdem hoeher als der
+   Viewport wurde und man scrollen musste, um die Caption ueberhaupt zu sehen.
+   Jetzt bekommt die Sektion eine feste Hoehe von genau 100svh (min-height
+   aus _basis.css wird damit zur festen Hoehe), Kopfzeile und Caption behalten
+   ihre natuerliche Groesse, und das Bild ist der einzige flexible Block: es
+   fuellt per flex:1 genau den uebrigen Platz. Ist wenig davon uebrig, wird
+   das Bild eben knapper und object-fit:cover beschneidet es automatisch auf
+   das Hauptmotiv (mittig), statt die Sektion aufzublasen. */
+.grossbild{max-height:100svh}
+.fullbleed{width:100%;flex:1 1 auto;min-height:0;background:var(--color-detail);
   display:grid;place-items:center;color:var(--color-muted);font-size:var(--text-body-s);
   overflow:hidden}
 .fullbleed img{width:100%;height:100%;object-fit:cover;display:block}
 .caption{display:flex;gap:var(--space-12);justify-content:space-between;align-items:start;
-  margin-top:var(--space-12)}
-.caption p{font-size:var(--text-body-l);line-height:1.4;color:var(--color-text);margin:0}
-.caption .credit{font-size:var(--text-body-s);color:var(--color-text);white-space:nowrap}
+  margin-top:var(--space-8)}
+/* Figma (node 72:31): beide Zeilen laufen auf demselben Type-Style "Text/small"
+   (14px) - vorher griff hier ein Alt-Selektor ".caption .credit", der wegen
+   eines Klassen-Tippfehlers nie ein Element traf (im Markup stand "small",
+   nicht "credit"); dadurch landeten BEIDE <p> beim allgemeineren ".caption p"
+   und liefen auf 24px statt 14px. Jetzt bestimmt allein die Utility-Klasse
+   (.small, siehe _basis.css) die Groesse, ".caption p" liefert nur noch
+   Farbe/Abstand/Zeilenhoehe. */
+.caption p{line-height:1.3;color:var(--color-text);margin:0}
+.caption .credit{white-space:nowrap}
 @media(max-width:700px){.caption{flex-direction:column;gap:var(--space-4)}}
 </style>
 
-<section data-modul="07 Media/04 grossbild">
+<section class="grossbild" data-modul="07 Media/04 grossbild">
   <div class="wrap">
     <!-- Eyebrow ist optional: nur behalten und mit echter Kapitelnummer fuellen, wenn DIESE Sektion zusaetzlich data-chapter/data-chapter-title/id traegt und damit ein neues, in der Kapitel-Nav verlinktes Kapitel markiert (siehe referenzen/module-katalog.md, Abschnitt "Eyebrow"). Sonst die Zeile komplett loeschen, nicht nur den Platzhaltertext ersetzen - ein unnumeriertes "[NN]" bleibt sonst als Platzhalter-Fehler stehen (Figma-Regel, 2026-09-16 bestaetigt). -->
     <p class="eyebrow reveal">[NN] — [Eindruck]<span class="eyebrow-linie" aria-hidden="true"></span></p>
-    <h2 class="h2 reveal" style="margin-bottom:var(--space-12)">[Was das Bild sagt — nicht was es zeigt]</h2>
+    <h2 class="h2 reveal" style="margin-bottom:var(--space-8)">[Was das Bild sagt — nicht was es zeigt]</h2>
     <!-- Caption unten (Zeile + Text) fehlte bisher komplett in der .reveal-Kette -
          stand von Anfang an unbewegt da ("erster Teil der Animation fehlt",
          Video-Feedback 2026-09-17). Jetzt eigener, letzter Reveal-Schritt. -->
@@ -37,8 +51,8 @@
   <div class="fullbleed reveal"><img src="[bild.jpg]" alt="[Was auf dem Bild zu sehen ist]" loading="lazy"></div>
   <div class="wrap">
     <div class="caption reveal">
-      <p class="lead">[Ein Satz Einordnung, was hier zu sehen ist und warum es hier steht.]</p>
-      <p class="small">[Foto: Name]</p>
+      <p class="small">[Ein Satz Einordnung, was hier zu sehen ist und warum es hier steht.]</p>
+      <p class="small credit">[Foto: Name]</p>
     </div>
   </div>
 </section>

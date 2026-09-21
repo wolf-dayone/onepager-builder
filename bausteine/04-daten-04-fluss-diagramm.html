@@ -5,6 +5,15 @@
    Verarbeitung gefuellt, Ziel gefuellt mit kraeftiger Kontur. Dadurch sieht
    man die Richtung schon am Stillstand, nicht erst am Pfeil. */
 .fluss-diagramm{display:flex;align-items:stretch;gap:var(--space-6);margin-top:var(--space-12)}
+/* Eigene, etwas langsamere und weichere Einblendkurve fuer dieses Modul
+   (Feedback: "koennte smoother und etwas langsamer sein") - .reveal nutzt
+   sonst --ease-reveal (schneller Start, langes Ausrollen), was bei reiner
+   Opacity (kein Ortswechsel, siehe .ist-nur-opacity) eher wie ein Sprung
+   wirkt. Hier stattdessen die gleichmaessige Standard-Kurve, laenger. */
+.fluss-diagramm .reveal.ist-nur-opacity{transition:opacity 1.4s var(--ease)}
+@media(prefers-reduced-motion:reduce){
+  .fluss-diagramm .reveal.ist-nur-opacity{transition:none}
+}
 .fluss-station{flex:1;min-height:120px;border-radius:var(--radius-card);
   border:1px solid var(--color-border);background:transparent;
   display:flex;flex-direction:column;
@@ -30,7 +39,7 @@
      ausschliesslich per Opacity, ohne Versatz (Feedback 2026-09-17). Eine
      Flussrichtung, die sich beim Erscheinen selbst noch bewegt, liest sich
      doppelt; der Takt allein traegt die Richtung schon. -->
-<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-stagger="150" data-modul="04 Daten/04 fluss-diagramm">
+<section data-chapter="[NN]" data-chapter-title="[Kapitelname]" id="kapitel-[nn]" data-stagger="220" data-modul="04 Daten/04 fluss-diagramm">
   <div class="wrap">
     <p class="eyebrow reveal">[NN] — [Architektur]<span class="eyebrow-linie" aria-hidden="true"></span></p>
     <h2 class="h2 reveal">[Was fließt von wo nach wo]</h2>

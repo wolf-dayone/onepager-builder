@@ -62,8 +62,11 @@ FAELLE = [
 
     ("Mehrspaltiges Raster ohne Mobilregel",
      lambda s: s.replace(
-         "@media(max-width:900px){.sticky-list{grid-template-columns:1fr;"
-         "gap:var(--space-12)}.sticky-list .left{position:static}}", ""),
+         "@media(max-width:900px){\n"
+         "  .sticky-list{grid-template-columns:1fr;gap:var(--space-12)}\n"
+         "  .sticky-list .left{position:static}\n"
+         "  .sticky-list .right{margin-top:0}\n"
+         "}", ""),
      "mobil"),
 
     ("CTA-Button zu flach für den Daumen",

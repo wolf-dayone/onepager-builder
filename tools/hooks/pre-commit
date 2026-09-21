@@ -49,9 +49,9 @@ for f in referenzen/module-katalog.md data/regeln.json starter.html modul-galeri
 done
 [ -n "$NACHGEZOGEN" ] && echo "pre-commit: neu gebaut und mitcommittet:$NACHGEZOGEN"
 
-# Skill-Paket immer frisch ziehen, damit dist/dayone-onepager.skill nie aelter
+# Skill-Paket immer frisch ziehen, damit dist/dayonepager.skill nie aelter
 # ist als der Commit. dist/ ist bewusst gitignored (122 KB ZIP pro Commit
 # waeren reine Historie ohne Nutzen) - die Datei liegt also lokal bereit.
 python3 tools/skill_bauen.py >/dev/null
-echo "pre-commit: dist/dayone-onepager.skill neu gebaut."
+echo "pre-commit: dist/dayonepager.skill neu gebaut."
 echo "pre-commit: HOCHLADEN nicht vergessen - 'python3 tools/skill_bauen.py --pruefen' sagt, ob es noetig ist."

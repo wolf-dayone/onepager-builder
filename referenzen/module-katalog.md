@@ -17,6 +17,12 @@ zusammengehörige Abschnitte optisch als Einheit. Es gibt **keine feste**
 **Zuordnung** von Farbe zu Modul oder Kapiteltyp — Notizen wie „· dunkel“
 an einzelnen Modulen sind falsch und wurden entfernt.
 
+**Innerhalb eines Kapitels bleibt die Farbe identisch.** Ein Modul ohne
+eigenes `data-chapter` setzt ein laufendes Kapitel fort und übernimmt
+dessen Farbmodus — es wechselt nie mitten im Kapitel. Nur der Übergang zu
+einem neuen Kapitel darf hell/dunkel umschalten (`tools/pruefen.py`
+meldet einen Bruch als FEHLER unter der Regel `kapitelfarbe`).
+
 ## Mindesthöhe gilt für alle Module
 
 Jedes Modul ist **mindestens eine Bildschirmhöhe groß** (Code: `100svh`;
