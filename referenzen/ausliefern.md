@@ -77,3 +77,29 @@ Overkill — statisches HTML reicht und ist schneller.
 - [ ] Sensible Daten in Screenshots anonymisiert
 - [ ] Zitate von den zitierten Personen freigegeben
 - [ ] Bei Kundeninhalten: Zugriffsschutz aktiv
+
+---
+
+## Wenn du die Vorlagen selbst geändert hast
+
+Dieser Skill ist ein **Build-Ergebnis**, keine Quelle. Er entsteht aus dem Repo
+`onepager-builder` (`bausteine/`, `referenzen/`, `skill/SKILL.md`) über
+`tools/skill_bauen.py`.
+
+Das heißt: eine Änderung an einem Modul ist erst dann hier angekommen, wenn das
+Paket neu gebaut **und in der Skill-Verwaltung hochgeladen** wurde. Ein Commit
+allein genügt nicht — er ändert das Repo, nicht den installierten Skill. Genau
+das ist schon zweimal passiert: der ausgelieferte Stand lag einmal sechs Module
+und einmal zwei komplette Feedback-Runden hinter dem Repo, ohne dass es jemandem
+auffiel.
+
+Im Repo läuft der Bau automatisch bei jedem Commit (`git config core.hooksPath
+tools/hooks`). Ob der **installierte** Skill noch hinterherhinkt, beantwortet:
+
+```
+python3 tools/skill_bauen.py --pruefen
+```
+
+Meldet er `UPLOAD NOETIG`, liegt der neue Stand als
+`dist/dayone-onepager.skill` bereit und gehört in die Skill-Verwaltung. Bis
+dahin bauen alle Kolleg:innen weiter mit der alten Fassung.

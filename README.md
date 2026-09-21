@@ -105,8 +105,50 @@ die aktuelle Anzahl und Auswahl.
 3. `modul-galerie.html` im Browser ansehen — dort steht jedes Modul einmal.
 4. `python3 tools/pruefen.py starter.html modul-galerie.html index.html`
 5. `python3 tools/selbsttest.py`
-6. Committen. Die CI wiederholt 2–5 und schlägt fehl, wenn die gebauten Dateien nicht
-   zu den Bausteinen passen.
+6. Committen. Der pre-commit-Hook wiederholt 2–5 von selbst, zieht die gebauten
+   Dateien nach und baut das Skill-Paket neu (siehe unten). Die CI prüft dasselbe
+   nochmal nach dem Push.
+7. **Skill hochladen**, wenn die Änderung bei den Kolleg:innen ankommen soll:
+   `python3 tools/skill_bauen.py --pruefen` sagt, ob es nötig ist.
+
+## Vom Repo in den Skill
+
+Das Repo ist die Quelle, der Skill das Build-Ergebnis. Dazwischen liegen zwei
+Schritte — einer davon läuft automatisch, einer nicht:
+
+| Schritt | Wer macht ihn |
+|---|---|
+| Bausteine → `starter.html`, `modul-galerie.html`, Katalog, Regeln | pre-commit-Hook |
+| → `dist/dayone-onepager.skill` | pre-commit-Hook |
+| → installierter Skill in der Claude-Skill-Verwaltung | **von Hand, ein Upload** |
+
+Den letzten Schritt kann kein Hook übernehmen: die Skill-Verwaltung nimmt die
+`.skill`-Datei über die Oberfläche entgegen, es gibt dafür keinen Repo-Zugriff.
+Deshalb meldet sich der Hook nach jedem relevanten Commit, und
+
+```bash
+python3 tools/skill_bauen.py --pruefen
+```
+
+vergleicht das gebaute Paket Datei für Datei mit dem installierten Skill. Bei
+`UPLOAD NOETIG` liegt der neue Stand als `dist/dayone-onepager.skill` bereit.
+
+**Hook einmalig aktivieren** (pro Klon, weil `.git/hooks` nicht mitversioniert wird):
+
+```bash
+git config core.hooksPath tools/hooks
+```
+
+Der Hook springt nur an, wenn `bausteine/`, `referenzen/`, `skill/`, `tools/` oder
+die Modul-Daten im Commit stecken, und bricht ab, wenn `pruefen.py` oder
+`selbsttest.py` etwas finden — eine kaputte Vorlage kommt so gar nicht erst in
+einen Commit.
+
+Warum der Aufwand: der ausgelieferte Skill lag schon zweimal deutlich hinter dem
+Repo (einmal sechs Module, einmal zwei Feedback-Runden), ohne dass es auffiel.
+Beides wäre mit diesen zwei Zeilen aufgefallen.
+
+---
 
 ## Eine Regel ändern
 

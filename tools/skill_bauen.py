@@ -45,9 +45,28 @@ INHALT = {
 }
 
 # Wo der Skill auf diesem Rechner installiert ist (fuer den Drift-Vergleich).
-INSTALLIERT = sorted(pathlib.Path.home().glob(
+# Mehrere Orte, weil die Desktop-App im Lauf der Zeit umgezogen ist: seit dem
+# Skill-Sync liegt sie unter ~/.claude/skills/synced/, davor unter Library/
+# Application Support. Wird nur EIN Muster gepflegt, faellt der Vergleich
+# stillschweigend aus ("nichts zu vergleichen") und Drift sammelt sich wieder
+# an, genau wie vor der Umstellung auf das Repo als Quelle (2026-09-21).
+SUCHMUSTER = [
+    ".claude/skills/synced/*/dayone-onepager",
+    ".claude/skills/*/dayone-onepager",
     "Library/Application Support/Claude/local-agent-mode-sessions/skills-plugin/"
-    "*/*/skills/dayone-onepager"))
+    "*/*/skills/dayone-onepager",
+]
+
+
+def _installierte_skills():
+    treffer = []
+    for muster in SUCHMUSTER:
+        treffer.extend(sorted(pathlib.Path.home().glob(muster)))
+    # Nach Aenderungszeit, damit bei mehreren Fundorten der juengste gewinnt.
+    return sorted(treffer, key=lambda p: p.stat().st_mtime)
+
+
+INSTALLIERT = _installierte_skills()
 
 # Die QA-Leiste in modul-galerie.html (Replay/Viewport/Reduced-Motion-Steuerung
 # fuer die Modul-Galerie dieses Repos) ist kein Bestandteil ausgelieferter
@@ -99,7 +118,15 @@ def bauen():
 def drift_pruefen():
     """Vergleicht das gebaute Paket mit dem installierten Skill."""
     if not INSTALLIERT:
-        print("Kein installierter Skill gefunden — nichts zu vergleichen.")
+        # Nicht kommentarlos durchwinken: ein stiller "nichts zu vergleichen"
+        # sieht aus wie Entwarnung, heisst aber nur, dass niemand hinsieht.
+        print("Kein installierter Skill gefunden. Gesucht unter:")
+        for muster in SUCHMUSTER:
+            print(f"  ~/{muster}")
+        print("\nWenn der Skill installiert ist, aber woanders liegt: Pfad in "
+              "SUCHMUSTER (oben in dieser Datei) ergaenzen.")
+        print("Sonst gilt das Paket unten als neuer Stand und muss hochgeladen "
+              "werden.")
         return 0
     installiert = INSTALLIERT[-1]
     print(f"Vergleich mit: …/{installiert.parent.parent.name}/skills/dayone-onepager\n")
@@ -120,9 +147,11 @@ def drift_pruefen():
 
     print()
     if abweichungen:
-        print(f"{abweichungen} Datei(en) weichen ab. Das Paket unter "
-              f"{ZIEL.relative_to(WURZEL)}/ ist der neue Stand —")
+        print(f"UPLOAD NOETIG — {abweichungen} Datei(en) weichen ab.")
+        print(f"Das Paket unter dist/dayone-onepager.skill ist der neue Stand:")
         print("in der Skill-Verwaltung hochladen, damit Kolleg:innen ihn bekommen.")
+        print("Bis dahin arbeiten alle weiter mit der alten Fassung - auch dieses "
+              "Repo aendert daran nichts.")
     else:
         print("Installierter Skill ist auf dem Stand des Repos.")
     return abweichungen

@@ -1,0 +1,57 @@
+#!/bin/sh
+# ---------------------------------------------------------------------------
+# pre-commit: haelt gebaute Dateien und Skill-Paket am Stand der Bausteine.
+#
+# Warum es diesen Hook gibt: starter.html, modul-galerie.html, der
+# Modul-Katalog, die Regeln und das Skill-Paket sind ABGELEITETE Dateien. Wer
+# ein Modul aendert und nur das Modul committet, hinterlaesst einen Stand, in
+# dem Quelle und Ergebnis auseinanderlaufen. Genau so lag der ausgelieferte
+# Skill einmal sechs Module hinter dem Repo (siehe Kopf von
+# tools/skill_bauen.py) - und genau so stand er am 21.09.2026 wieder vier Tage
+# hinter zwei Feedback-Runden. Die CI meldet das, aber erst NACH dem Push.
+# Hier passiert es vorher und von selbst.
+#
+# Einmalig aktivieren:  git config core.hooksPath tools/hooks
+#
+# Was der Hook NICHT kann: den Skill in der Claude-Skill-Verwaltung
+# austauschen. Das bleibt ein Klick von Hand - der Hook sagt nur an, wann er
+# faellig ist.
+# ---------------------------------------------------------------------------
+set -e
+
+# Nur anspringen, wenn wirklich etwas Relevantes im Commit steckt.
+RELEVANT=$(git diff --cached --name-only --diff-filter=ACMR | grep -E \
+  '^(bausteine/|referenzen/|skill/|tools/|data/figma-komponenten\.json|data/modul-zuordnung\.json|page-plans/_vorlage\.plan\.md)' \
+  || true)
+[ -z "$RELEVANT" ] && exit 0
+
+echo "pre-commit: Bausteine/Referenzen geaendert - baue ab und pruefe ..."
+
+python3 tools/katalog_bauen.py >/dev/null
+python3 tools/bauen.py >/dev/null
+
+# Der Pruefer ist die eigentliche Bremse: lieber hier ein abgebrochener
+# Commit als eine kaputte Vorlage im Skill.
+python3 tools/pruefen.py --keine-farbe starter.html modul-galerie.html
+python3 tools/selbsttest.py >/dev/null
+
+# Abgeleitete Dateien nachziehen. Nur was sich wirklich geaendert hat, und nur
+# diese Pfade - der Hook fasst nichts an, was nicht aus dem Build stammt.
+# (Hinweis: hat eine dieser Dateien zusaetzlich unstaged Handaenderungen,
+# wandern die mit in den Commit. Sie sind generiert, von Hand gehoert hier
+# ohnehin nichts hinein.)
+NACHGEZOGEN=""
+for f in referenzen/module-katalog.md data/regeln.json starter.html modul-galerie.html; do
+  if ! git diff --quiet -- "$f" 2>/dev/null; then
+    git add "$f"
+    NACHGEZOGEN="$NACHGEZOGEN $f"
+  fi
+done
+[ -n "$NACHGEZOGEN" ] && echo "pre-commit: neu gebaut und mitcommittet:$NACHGEZOGEN"
+
+# Skill-Paket immer frisch ziehen, damit dist/dayone-onepager.skill nie aelter
+# ist als der Commit. dist/ ist bewusst gitignored (122 KB ZIP pro Commit
+# waeren reine Historie ohne Nutzen) - die Datei liegt also lokal bereit.
+python3 tools/skill_bauen.py >/dev/null
+echo "pre-commit: dist/dayone-onepager.skill neu gebaut."
+echo "pre-commit: HOCHLADEN nicht vergessen - 'python3 tools/skill_bauen.py --pruefen' sagt, ob es noetig ist."
