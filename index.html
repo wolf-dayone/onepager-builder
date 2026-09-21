@@ -6,6 +6,7 @@
 <title>Dayonepager — DAYONE</title>
 <meta name="description" content="Ein Claude-Skill, der aus Inhalten eine fertige, teilbare Onepager-Website im DAYONE-Branding baut.">
 <link rel="stylesheet" href="referenzen/tokens.css">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -28,12 +29,11 @@ a{color:inherit}
   color:var(--color-main-text);opacity:1;transition:opacity var(--dur-ui) var(--ease-ui)}
 .brand:hover{opacity:.7}
 .brand svg{flex:none;color:var(--color-main-text)}
-.brand-name{font-size:var(--text-body-m);font-weight:600}
+.brand-name{font-size:var(--text-body-s);font-weight:600;color:var(--color-text)}
 .top-nav nav{display:flex;gap:var(--space-8)}
 .top-nav nav a{font-size:var(--text-body-s);font-weight:600;text-decoration:none;
-  color:var(--color-text);border-bottom:2px solid transparent;padding-bottom:2px;
-  transition:color var(--dur-ui) var(--ease-ui),border-color var(--dur-ui) var(--ease-ui)}
-.top-nav nav a:hover{color:var(--color-main-text);border-bottom-color:var(--color-action)}
+  color:var(--color-text);opacity:.55;transition:opacity .2s var(--ease),color .2s var(--ease)}
+.top-nav nav a:hover{opacity:1;color:var(--color-main-text)}
 @media(max-width:640px){.top-nav nav{gap:var(--space-4)}.top-nav nav a{font-size:12px}}
 
 /* ---- Hero ---- */
@@ -45,14 +45,14 @@ a{color:inherit}
 .hero .lead{margin-top:var(--space-8);font-size:var(--text-body-l);line-height:1.4;
   color:var(--color-text);max-width:56ch}
 .hero .aktionen{margin-top:var(--space-10);display:flex;gap:var(--space-4);flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;gap:var(--space-2);padding:var(--space-3) var(--space-6);
-  border-radius:var(--radius-pill);font-size:var(--text-body-ms);font-weight:600;
-  text-decoration:none;transition:background var(--dur-ui) var(--ease-ui),color var(--dur-ui) var(--ease-ui)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:4px;
+  font-weight:600;font-size:var(--text-body-ms);text-decoration:none;min-height:44px;
+  font-family:inherit;transition:background var(--dur-ui) var(--ease-ui)}
 .btn-primary{background:var(--color-main-text);color:var(--color-inverse-text)}
 .btn-primary:hover{background:var(--color-inverse-hover);color:var(--color-inverse-text)}
-.btn-secondary{background:transparent;color:var(--color-main-text);
-  border:1px solid var(--color-border)}
+.btn-secondary{border:1px solid var(--color-main-text);color:var(--color-main-text)}
 .btn-secondary:hover{background:var(--color-hover-tint)}
+@media(max-width:700px){.btn{width:100%;justify-content:center}}
 
 /* ---- Content-Sektionen ---- */
 section.block{padding-block:var(--space-24);border-top:1px solid var(--color-border)}
@@ -66,9 +66,7 @@ section.block .intro{margin-top:var(--space-4);font-size:var(--text-body-l);
 .karten{margin-top:var(--space-12);display:grid;grid-template-columns:repeat(3,1fr);
   gap:var(--space-8)}
 .karte{padding:var(--space-8);border-radius:var(--radius-card);background:var(--color-surface);
-  border:1px solid var(--color-border);transition:border-color var(--dur-ui) var(--ease-ui),
-  transform var(--dur-ui) var(--ease-ui)}
-.karte:hover{border-color:var(--color-action);transform:translateY(-2px)}
+  border:1px solid var(--color-border)}
 .karte .num{font-size:var(--text-body-s);font-weight:600;color:var(--color-muted)}
 .karte h3{margin-top:var(--space-3);font-size:var(--text-body-l);font-weight:600}
 .karte p{margin-top:var(--space-3);font-size:var(--text-body-s);color:var(--color-text);
@@ -132,7 +130,7 @@ footer.cta .fein{margin-top:var(--space-12);font-size:var(--text-body-s);
   <div class="wrap">
     <p class="eyebrow">Claude-Skill · DAYONE</p>
     <h1>Inhalte werden zur Seite, die man teilt</h1>
-    <p class="lead">Dayonepager nimmt Rohmaterial wie Notizen, ein altes Deck oder ein paar
+    <p class="lead">Der Dayonepager nimmt Rohmaterial wie Notizen, ein altes Deck oder ein paar
       Stichpunkte und baut daraus eine fertige, scrollbare Onepager-Website im
       DAYONE-Branding. Kein Slide-Deck als PDF, sondern eine Seite, die man teilt: als
       Datei oder mit eigener URL.</p>
