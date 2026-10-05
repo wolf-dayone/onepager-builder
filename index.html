@@ -35,8 +35,8 @@ a{color:inherit}
   color:var(--color-text);opacity:.55;transition:opacity .2s var(--ease),color .2s var(--ease)}
 .top-nav nav a:hover{opacity:1;color:var(--color-main-text)}
 .top-nav nav a{white-space:nowrap}
-/* Schmale Viewports: nur Live-Demo und Modul-Galerie in der Leiste, Repo und
-   Figma stehen ohnehin im Footer. Produktname weicht, das Logo bleibt. */
+/* Schmale Viewports: nur Anleitung und Live-Demo in der Leiste, Galerie, Repo
+   und Figma stehen ohnehin im Footer. Produktname weicht, das Logo bleibt. */
 @media(max-width:640px){.top-nav nav{gap:var(--space-4)}.top-nav .nur-breit,.brand-name{display:none}}
 
 /* ---- Hero ---- */
@@ -59,6 +59,8 @@ a{color:inherit}
 
 /* ---- Content-Sektionen ---- */
 section.block{padding-block:var(--space-24);border-top:1px solid var(--color-border)}
+/* Sprungziele (#anleitung) nicht unter der Sticky-Nav verstecken. */
+section.block{scroll-margin-top:var(--space-16)}
 section.block .eyebrow{font-size:var(--text-body-s);font-weight:600;letter-spacing:.04em;
   text-transform:uppercase;color:var(--color-text)}
 section.block h2{font-size:var(--text-display-2);font-weight:600;line-height:1.15;
@@ -83,6 +85,17 @@ section.block .intro{margin-top:var(--space-4);font-size:var(--text-body-l);
 .schritte .schritt:last-child{border-bottom:1px solid var(--color-border)}
 .schritt .num{font-size:var(--text-display-3);font-weight:600;color:var(--gray-300)}
 .schritt h3{font-size:var(--text-body-l);font-weight:600}
+/* Schritt 01: zwei Listen nebeneinander, bricht von selbst um (auto-fit). */
+.format-check{margin-top:var(--space-6);display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:var(--space-8);max-width:70ch}
+/* Grid-Spalten haben sonst min-width:auto und druecken die Seite breiter als den Screen. */
+.schritt>div{min-width:0}
+.format-check h4{margin:0;font-size:var(--text-body-m);font-weight:600}
+.format-check ul{margin:var(--space-2) 0 0;padding-left:1.2em;color:var(--color-text);
+  font-size:var(--text-body-m);line-height:1.4}
+.format-check li+li{margin-top:var(--space-1)}
+.schritt p+p,.format-check+p{margin-top:var(--space-4)}
+.schritt strong{color:var(--color-main-text)}
 .schritt p{margin-top:var(--space-2);font-size:var(--text-body-m);color:var(--color-text);
   line-height:1.4;max-width:70ch}
 @media(max-width:640px){.schritt{grid-template-columns:1fr;gap:var(--space-2)}}
@@ -134,8 +147,9 @@ footer.cta .fein{margin-top:var(--space-12);font-size:var(--text-body-s);
       <span class="brand-name">Dayonepager</span>
     </a>
     <nav>
+      <a href="#anleitung">Anleitung</a>
       <a href="beispiele/emoji-report/">Live-Demo</a>
-      <a href="modul-galerie.html">Modul-Galerie</a>
+      <a class="nur-breit" href="modul-galerie.html">Modul-Galerie</a>
       <a class="nur-breit" href="https://github.com/wolf-dayone/onepager-builder" target="_blank" rel="noopener">Skill-Repo</a>
       <a class="nur-breit" href="https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides" target="_blank" rel="noopener">Figma</a>
     </nav>
@@ -187,24 +201,56 @@ footer.cta .fein{margin-top:var(--space-12);font-size:var(--text-body-s);
   </div>
 </section>
 
-<section class="block">
+<section class="block" id="anleitung">
   <div class="wrap">
-    <p class="eyebrow">So funktioniert die Einrichtung</p>
-    <h2>Vier Schritte von der Idee zur geteilten Seite</h2>
+    <p class="eyebrow">Anleitung: Wie man einen Onepager anlegt</p>
+    <h2>Fünf Schritte von der Idee zur geteilten Seite</h2>
+    <p class="intro">Der erste Schritt klärt vorab, ob es überhaupt ein Onepager sein sollte
+      oder ob eine statische Präsentation mit dem Keynote-Master besser passt. Dieselben
+      Schritte stehen auch in der Figma-Datei.</p>
     <div class="schritte">
       <div class="schritt">
         <p class="num">01</p>
+        <div>
+          <h3>Format-Check: Onepager oder Keynote?</h3>
+          <p>Nicht jeder Inhalt braucht einen interaktiven Onepager, nur weil es jetzt
+            möglich ist. Vorher kurz prüfen, was wirklich passt.</p>
+          <div class="format-check">
+            <div>
+              <h4>Onepager, wenn:</h4>
+              <ul>
+                <li>Kundenpräsentation mit gewünschtem Wow-Faktor</li>
+                <li>Inhalte brauchen aufwendigere/notwendige Visualisierung (Scrollytelling,
+                  Sticky, Animation) — nicht nur „sieht schicker aus"</li>
+                <li>Seite soll als Link geteilt oder eigenständig gelesen werden</li>
+              </ul>
+            </div>
+            <div>
+              <h4>Statische Präsentation mit dem Keynote-Master, wenn:</h4>
+              <ul>
+                <li>Einfache, interne Anwendung (Weekly, Status-Update)</li>
+                <li>Statische Slides transportieren den Inhalt genauso gut</li>
+                <li>Tempo/Kosten wichtiger als Wow-Faktor</li>
+              </ul>
+            </div>
+          </div>
+          <p><strong>Faustregel:</strong> Würde eine Keynote es genauso gut transportieren →
+            Keynote nehmen. Der Onepager ist der aufwendigere Weg, nicht der Standard.</p>
+          <p><a href="https://www.icloud.com/keynote/08eiT7bx6lwwEiMFEcTkAsA7w#DAYONE_MASTER" target="_blank" rel="noopener">Zum DAYONE Keynote-Master →</a></p>
+        </div>
+      </div>
+      <div class="schritt">
+        <p class="num">02</p>
         <div>
           <h3>Skill aktivieren</h3>
           <p>„Dayonepager" ist als Claude-Skill installiert. Er greift, sobald Begriffe wie
             Onepager, Online-Präsentation, Scrollytelling-Seite oder Website-Pitch fallen.
             Geht es allgemeiner um eine Präsentation, ein Deck oder eine Case Study, reicht
-            ein Satz wie „das Ergebnis soll teilbar sein" oder „mit eigener URL", damit der
-            Skill greift.</p>
+            ein Satz wie „das Ergebnis soll teilbar sein" oder „mit eigener URL".</p>
         </div>
       </div>
       <div class="schritt">
-        <p class="num">02</p>
+        <p class="num">03</p>
         <div>
           <h3>Inhalt geben</h3>
           <p>Anlass, drei bis sechs Kernbotschaften, vorhandene Zahlen, Zitate, Screenshots
@@ -213,16 +259,16 @@ footer.cta .fein{margin-top:var(--space-12);font-size:var(--text-body-s);
         </div>
       </div>
       <div class="schritt">
-        <p class="num">03</p>
+        <p class="num">04</p>
         <div>
           <h3>Seite entsteht</h3>
-          <p>Der Skill wählt Module aus <a href="modul-galerie.html">der Modul-Galerie</a>,
+          <p>Der Skill wählt Module aus der <a href="modul-galerie.html">Modul-Galerie</a>,
             füllt sie mit geschärftem Text, setzt Bilder ein und lässt den Qualitäts-Check
             gegen die Figma-Regeln laufen.</p>
         </div>
       </div>
       <div class="schritt">
-        <p class="num">04</p>
+        <p class="num">05</p>
         <div>
           <h3>Teilen oder deployen</h3>
           <p>Als Datei per Doppelklick öffnen und verschicken. Wird eine eigene URL
