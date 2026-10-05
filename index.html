@@ -34,7 +34,10 @@ a{color:inherit}
 .top-nav nav a{font-size:var(--text-body-s);font-weight:600;text-decoration:none;
   color:var(--color-text);opacity:.55;transition:opacity .2s var(--ease),color .2s var(--ease)}
 .top-nav nav a:hover{opacity:1;color:var(--color-main-text)}
-@media(max-width:640px){.top-nav nav{gap:var(--space-4)}.top-nav nav a{font-size:12px}}
+.top-nav nav a{white-space:nowrap}
+/* Schmale Viewports: nur Live-Demo und Modul-Galerie in der Leiste, Repo und
+   Figma stehen ohnehin im Footer. Produktname weicht, das Logo bleibt. */
+@media(max-width:640px){.top-nav nav{gap:var(--space-4)}.top-nav .nur-breit,.brand-name{display:none}}
 
 /* ---- Hero ---- */
 .hero{padding-block:var(--space-30) var(--space-24)}
@@ -72,6 +75,7 @@ section.block .intro{margin-top:var(--space-4);font-size:var(--text-body-l);
 .karte p{margin-top:var(--space-3);font-size:var(--text-body-s);color:var(--color-text);
   line-height:1.4}
 @media(max-width:900px){.karten{grid-template-columns:1fr;gap:var(--space-4)}}
+/* Schmale Viewports: Nummer ueber den Text statt eigener 56px-Spalte. */
 
 .schritte{margin-top:var(--space-12);display:flex;flex-direction:column}
 .schritt{display:grid;grid-template-columns:56px 1fr;gap:var(--space-6);
@@ -81,6 +85,7 @@ section.block .intro{margin-top:var(--space-4);font-size:var(--text-body-l);
 .schritt h3{font-size:var(--text-body-l);font-weight:600}
 .schritt p{margin-top:var(--space-2);font-size:var(--text-body-m);color:var(--color-text);
   line-height:1.4;max-width:70ch}
+@media(max-width:640px){.schritt{grid-template-columns:1fr;gap:var(--space-2)}}
 
 /* ---- Footer / Links ---- */
 /* ---- Live-Beispiel ---- */
@@ -95,6 +100,14 @@ footer.cta .links a{font-size:var(--text-body-m);font-weight:600;text-decoration
 footer.cta .links a:hover{color:var(--color-dark-text-soft)}
 footer.cta .fein{margin-top:var(--space-12);font-size:var(--text-body-s);
   color:var(--color-dark-text-soft)}
+/* Wer Bewegung im System abgeschaltet hat, bekommt sofortige Spruenge statt
+   Smooth-Scroll und Hover-Uebergaenge. */
+/* Footer-Links sind die CTA dieser Seite: 44px Trefferflaeche (Figma cta-footer). */
+.fusslink{min-height:44px}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .brand,.top-nav nav a,.btn,footer.cta .links a{transition:none}
+}
 </style>
 </head>
 <body>
@@ -123,8 +136,8 @@ footer.cta .fein{margin-top:var(--space-12);font-size:var(--text-body-s);
     <nav>
       <a href="beispiele/emoji-report/">Live-Demo</a>
       <a href="modul-galerie.html">Modul-Galerie</a>
-      <a href="https://github.com/wolf-dayone/onepager-builder" target="_blank" rel="noopener">Skill-Repo</a>
-      <a href="https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides" target="_blank" rel="noopener">Figma</a>
+      <a class="nur-breit" href="https://github.com/wolf-dayone/onepager-builder" target="_blank" rel="noopener">Skill-Repo</a>
+      <a class="nur-breit" href="https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides" target="_blank" rel="noopener">Figma</a>
     </nav>
   </div>
 </div>
@@ -240,10 +253,10 @@ footer.cta .fein{margin-top:var(--space-12);font-size:var(--text-body-s);
       <p class="fein">Quelle: github.com/wolf-dayone/onepager-builder</p>
     </div>
     <div class="links">
-      <a href="beispiele/emoji-report/">→ Live-Beispiel: Emoji-Report</a>
-      <a href="modul-galerie.html">→ Modul-Galerie (alle 34 Bausteine)</a>
-      <a href="https://github.com/wolf-dayone/onepager-builder" target="_blank" rel="noopener">→ Skill-Repo auf GitHub</a>
-      <a href="https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides" target="_blank" rel="noopener">→ Figma-Datei „AI-ready slides"</a>
+      <a class="fusslink" href="beispiele/emoji-report/">→ Live-Beispiel: Emoji-Report</a>
+      <a class="fusslink" href="modul-galerie.html">→ Modul-Galerie (alle 34 Bausteine)</a>
+      <a class="fusslink" href="https://github.com/wolf-dayone/onepager-builder" target="_blank" rel="noopener">→ Skill-Repo auf GitHub</a>
+      <a class="fusslink" href="https://www.figma.com/design/1CL62lpdnyiFW98MFs1GPS/DAYONE-%7C-AI-ready-slides" target="_blank" rel="noopener">→ Figma-Datei „AI-ready slides"</a>
     </div>
   </div>
 </footer>
